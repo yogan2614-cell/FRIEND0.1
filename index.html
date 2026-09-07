@@ -9,10 +9,8 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">(function() { emailjs.init("N7Ujc_t07A816cODD"); })();</script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- Firebase App & Realtime Database CDN Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    <!-- Stable Cloudflare Socket.io Client CDN for WebRTC Signaling -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
     <style>
         :root { --bg-color: #080c14; --card-bg: rgba(15, 23, 42, 0.85); --text-main: #f1f5f9; --text-sub: #94a3b8; --accent-color: #f43f5e; --accent-gradient: linear-gradient(135deg, #1e1b4b, #831843); --nav-bg: rgba(15, 23, 42, 0.95); --font-family: 'Poppins', sans-serif; }
@@ -251,6 +249,19 @@
         .sender-options-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
         .sender-btn { background: rgba(30,41,59,0.8); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; }
         .sender-btn.selected-sender { background: var(--accent-color); border-color: var(--accent-color); font-weight: 600; }
+
+        /* --- JEE MENTOR (AI AGENT) STYLES --- */
+        .mentor-container { display: flex; flex-direction: column; height: 70vh; background: rgba(15, 23, 42, 0.85); border-radius: 18px; border: 1px solid rgba(56, 189, 248, 0.3); overflow: hidden; }
+        .mentor-header { background: rgba(30, 41, 59, 0.9); padding: 12px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .mentor-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #38bdf8, #0284c7); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .mentor-stream { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .mentor-bubble { max-width: 80%; padding: 12px 16px; border-radius: 14px; word-wrap: break-word; line-height: 1.5; font-size: 0.95rem; }
+        .mentor-bubble.ai { background: rgba(56, 189, 248, 0.15); border-left: 4px solid #38bdf8; color: #f8fafc; align-self: flex-start; }
+        .mentor-bubble.user { background: rgba(244, 63, 94, 0.2); border-right: 4px solid var(--accent-color); color: #f8fafc; align-self: flex-end; }
+        .mentor-input-area { padding: 12px 15px; background: rgba(15, 23, 42, 0.95); border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; align-items: center; }
+        .mentor-input-area textarea { flex: 1; padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: #fff; resize: none; outline: none; height: 45px; font-size: 0.9rem; }
+        .mentor-send-btn { background: #38bdf8; color: #0f172a; border: none; padding: 0 20px; height: 45px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .mentor-send-btn:hover { background: #0ea5e9; }
     </style>
 </head>
 <body class="theme-dark">
@@ -265,7 +276,6 @@
         </div>
     </div>
 
-    <!-- 📞 INCOMING CALL NOTIFICATION MODAL -->
     <div id="incomingCallModal">
         <div class="webrtc-call-card" style="border-color: #38bdf8;">
             <div class="call-pulsing-avatar" style="background: linear-gradient(135deg, #0369a1, #0284c7);">📞</div>
@@ -278,7 +288,6 @@
         </div>
     </div>
 
-    <!-- 📞 ACTIVE WEBRTC NATIVE AUDIO CALL OVERLAY -->
     <div id="webrtcCallModal">
         <div class="webrtc-call-card">
             <div class="call-pulsing-avatar">🎙️</div>
@@ -289,7 +298,6 @@
         </div>
     </div>
 
-    <!-- 🔍 FULLSCREEN IMAGE ZOOM MODAL -->
     <div id="imageZoomModal" onclick="closeImageZoom()">
         <button class="close-zoom-btn" onclick="closeImageZoom()">×</button>
         <img id="zoomedImageElement" src="" alt="Zoomed View">
@@ -334,6 +342,7 @@
                 <button class="drawer-item" onclick="switchTabMobile('sec-specialday', this)">👑 A Special Day</button>
                 <button class="drawer-item" onclick="switchTabMobile('sec-views', this, false, 'najriyaModal')">👁️ Najriya</button>
                 <button class="drawer-item" onclick="switchTabMobile('sec-samvad', this, true)">💬 Samvad <span class="notif-badge" id="drawerNotifBadge" style="position:static; display:inline-block; margin-left:6px;"></span></button>
+                <button class="drawer-item" onclick="switchTabMobile('sec-mentor', this)">🤖 JEE Mentor</button>
                 <button class="drawer-item" onclick="switchTabMobile('sec-timer', this, false, 'timerModal')">⏳ Study Timer</button>
                 <button class="drawer-item" onclick="switchTabMobile('sec-jar', this, false, 'bhuviSmileModal')">🫙 Reason Jar</button>
                 <button class="drawer-item" onclick="switchTabMobile('sec-diary', this, false, 'diaryModal')">📔 Hamari Diary</button>
@@ -350,6 +359,7 @@
                     <button class="nav-item" onclick="switchTab('sec-specialday', this)">A Special Day</button>
                     <button class="nav-item" onclick="switchTab('sec-views', this, false, 'najriyaModal')">Najriya</button>
                     <button class="nav-item" onclick="switchTab('sec-samvad', this, true, '', 'samvadMsgModal')" id="navSamvadBtn">Samvad <span class="notif-badge" id="samvadNotifBadge"></span></button>
+                    <button class="nav-item" onclick="switchTab('sec-mentor', this)">🤖 JEE Mentor</button>
                     <button class="nav-item" onclick="switchTab('sec-timer', this, false, 'timerModal')">Study Timer</button>
                     <button class="nav-item" onclick="switchTab('sec-jar', this, false, 'bhuviSmileModal')">Reason Jar</button>
                     <button class="nav-item" onclick="switchTab('sec-diary', this, false, 'diaryModal')">Hamari Diary</button>
@@ -421,7 +431,6 @@
                 </div>
             </div>
 
-            <!-- 💬 SAMVAD SECTION WITH SOCKET.IO SIGNALING -->
             <div id="sec-samvad" class="section">
                 <div class="samvad-bg-container">
                     <div id="samvadLockScreen">
@@ -464,7 +473,31 @@
                 </div>
             </div>
 
-            <!-- 🎮 REAL-TIME TIC-TAC-TOE MINI GAME MODAL -->
+            <div id="sec-mentor" class="section">
+                <div class="main-container" style="max-width: 900px; padding: 10px 0;">
+                    <div class="page-header">
+                        <h2>🤖 JEE Mentor AI</h2>
+                        <p>"Tumhare har JEE doubt aur life stress ka personal AI solution"</p>
+                    </div>
+                    <div class="mentor-container">
+                        <div class="mentor-header">
+                            <div class="mentor-avatar">🧠</div>
+                            <div>
+                                <h4 style="color: #fff; font-size: 1rem; font-family: 'Playfair Display',serif;">JEE & Life Guide AI</h4>
+                                <span style="font-size: 0.75rem; color: #38bdf8;">● Ready to help Manu & Bhuvi</span>
+                            </div>
+                        </div>
+                        <div class="mentor-stream" id="mentorChatStream">
+                            <div class="mentor-bubble ai">Hello Manu & Bhuvi! Main aapka personal JEE Mentor aur AI Friend hoon. Physics, Chemistry, Maths ka koi bhi sawal ho ya life mein koi stress chal raha ho, mujhse बेझिझक पूछो! 🚀💖</div>
+                        </div>
+                        <div class="mentor-input-area">
+                            <textarea id="mentorInputText" placeholder="Ask your JEE doubt or share your problem..." onkeydown="handleMentorKeydown(event)"></textarea>
+                            <button class="mentor-send-btn" onclick="sendToMentorAi()">Ask AI ✦</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="tictactoeModal">
                 <div class="section-modal-card" style="max-width:340px;">
                     <h2>🎮 Tic-Tac-Toe</h2>
@@ -742,13 +775,13 @@
                 initFirebaseSamvadListener();
                 initSocketCallSignaling();
                 loadViewsGallery();
-                initRealtimeTttListener(); // Live Game Listener Active
+                initRealtimeTttListener();
             } else { document.getElementById("masterErrorMsg").style.display = "block"; }
         }
         function handleMasterKeydown(e) { if (e.key === 'Enter') unlockMasterApp(); }
         function closeSectionModal(id) { document.getElementById(id).style.display = "none"; }
 
-        // --- FIXED CROSS-ENVIRONMENT APP-TO-BROWSER WEBRTC SIGNALING & AUDIO ---
+        // --- WEBRTC CALL SIGNALING ---
         let localAudioStream = null;
         let peerConnection = null;
         const rtcConfig = { 
@@ -818,7 +851,7 @@
                         let playPromise = remoteAudio.play();
                         if (playPromise !== undefined) {
                             playPromise.catch(error => {
-                                console.log("Audio autoplay restricted, waiting for user gesture:", error);
+                                console.log("Audio autoplay restricted:", error);
                             });
                         }
                     }
@@ -858,7 +891,7 @@
                         let playPromise = remoteAudio.play();
                         if (playPromise !== undefined) {
                             playPromise.catch(error => {
-                                console.log("Audio autoplay restricted, waiting for user gesture:", error);
+                                console.log("Audio autoplay restricted:", error);
                             });
                         }
                     }
@@ -893,6 +926,55 @@
             if (notifyRemote) { socket.emit('end-call', { toRoom: 'wwt-private-room-2028' }); }
             document.getElementById("webrtcCallModal").style.display = "none";
             document.getElementById("incomingCallModal").style.display = "none";
+        }
+
+        // --- 🤖 JEE MENTOR AI AGENT INTEGRATION ---
+        function handleMentorKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendToMentorAi();
+            }
+        }
+
+        async function sendToMentorAi() {
+            let inputField = document.getElementById("mentorInputText");
+            let streamBox = document.getElementById("mentorChatStream");
+            let userText = inputField.value.trim();
+
+            if (!userText) return;
+
+            // User bubble add karo
+            streamBox.innerHTML += `<div class="mentor-bubble user">${userText}</div>`;
+            inputField.value = "";
+            streamBox.scrollTop = streamBox.scrollHeight;
+
+            // Loading / Typing indicator
+            let loadingId = "loading_" + Date.now();
+            streamBox.innerHTML += `<div class="mentor-bubble ai" id="${loadingId}">JEE Mentor is thinking... 🤖</div>`;
+            streamBox.scrollTop = streamBox.scrollHeight;
+
+            try {
+                // Render Backend API Call
+                let response = await fetch('https://sabvas2-o.onrender.com/api/ai-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userText })
+                });
+
+                let data = await response.json();
+                let aiReply = data.reply || "Mujhe samajh nahi aaya, thoda aur clearly batao!";
+
+                // Loading hatao aur AI ka jawab dikhao
+                document.getElementById(loadingId).remove();
+                streamBox.innerHTML += `<div class="mentor-bubble ai">${aiReply}</div>`;
+                streamBox.scrollTop = streamBox.scrollHeight;
+
+            } catch (error) {
+                console.error("Mentor AI Error:", error);
+                document.getElementById(loadingId).remove();
+                streamBox.innerHTML += `<div class="mentor-bubble ai">Arre yaar, abhi server se connect nahi ho pa raha. Thodi der baad try karo! 😅</div>`;
+                streamBox.scrollTop = streamBox.scrollHeight;
+            }
         }
 
         // --- VOICE NOTE RECORDING FEATURE ---
@@ -943,16 +1025,9 @@
         function makeTttMove(idx) {
             db.ref('wwtTttGame').once('value', (snapshot) => {
                 let gameState = snapshot.val() || { board: ['', '', '', '', '', '', '', '', ''], turn: 'X' };
-                
-                // Agar box pehle se bhara hua hai ya game jeet chuke hain toh kuch mat karo
                 if (gameState.board[idx] !== '' || checkWinnerState(gameState.board)) return;
-
-                // Move update karo
                 gameState.board[idx] = gameState.turn;
-                // Turn badlo (X ke baad O)
                 gameState.turn = gameState.turn === 'X' ? 'O' : 'X';
-
-                // Firebase par naya state save karo taaki dono devices par sync ho jaye
                 db.ref('wwtTttGame').set(gameState);
             });
         }
@@ -961,16 +1036,10 @@
             db.ref('wwtTttGame').on('value', (snapshot) => {
                 let gameState = snapshot.val();
                 if (!gameState) return;
-
-                // Board ke sabhi buttons ko update karo
                 for (let i = 0; i < 9; i++) {
                     let btn = document.getElementById(`ttt-${i}`);
-                    if (btn) {
-                        btn.innerText = gameState.board[i] || '';
-                    }
+                    if (btn) { btn.innerText = gameState.board[i] || ''; }
                 }
-
-                // Check karo koi jeeta ya draw hua kya
                 let winner = checkWinnerState(gameState.board);
                 if (winner) {
                     document.getElementById("tttStatusText").innerText = `🎉 Player ${winner} Wins!`;
@@ -986,18 +1055,13 @@
             const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
             for (let w of wins) {
                 let [a,b,c] = w;
-                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-                    return board[a];
-                }
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) { return board[a]; }
             }
             return null;
         }
 
         function resetTttGame() {
-            let freshState = {
-                board: ['', '', '', '', '', '', '', '', ''],
-                turn: 'X'
-            };
+            let freshState = { board: ['', '', '', '', '', '', '', '', ''], turn: 'X' };
             db.ref('wwtTttGame').set(freshState);
         }
 
