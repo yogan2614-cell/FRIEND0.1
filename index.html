@@ -928,7 +928,7 @@
             document.getElementById("incomingCallModal").style.display = "none";
         }
 
-        // --- 🤖 JEE MENTOR AI AGENT INTEGRATION (UPDATED WITH N8N PRODUCTION WEBHOOK) ---
+        // --- 🤖 JEE MENTOR AI AGENT INTEGRATION (PRODUCTION URL INTEGRATED) ---
         function handleMentorKeydown(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -954,15 +954,18 @@
             streamBox.scrollTop = streamBox.scrollHeight;
 
             try {
-                // n8n Production Webhook API Call (Sahi Production URL with /webhook/)
-                let response = await fetch('https://weworktogether.app.n8n.cloud/webhook/35dddfc0-d230-41f4-877a-8dc6e54047f6', {
+                // n8n Production Webhook API Call with exact production URL
+                let response = await fetch('https://weworktogether.app.n8n.cloud/webhook/jee-tutor', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: userText })
+                    body: JSON.stringify({ 
+                        message: userText,
+                        sessionID: "user-123"
+                    })
                 });
 
                 let data = await response.json();
-                let aiReply = data.reply || "Mujhe samajh nahi aaya, thoda aur clearly batao!";
+                let aiReply = data.reply || data.output || "Mujhe samajh nahi aaya, thoda aur clearly batao!";
 
                 // Loading hatao aur AI ka jawab dikhao
                 document.getElementById(loadingId).remove();
