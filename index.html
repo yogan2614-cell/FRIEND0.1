@@ -747,13 +747,15 @@
         function handleMasterKeydown(e) { if (e.key === 'Enter') unlockMasterApp(); }
         function closeSectionModal(id) { document.getElementById(id).style.display = "none"; }
 
-        // --- FIXED REAL-TIME WEBRTC & SOCKET.IO CALL SIGNALING SYSTEM ---
+        // --- FIXED CROSS-ENVIRONMENT APP-TO-BROWSER WEBRTC SIGNALING & AUDIO ---
         let localAudioStream = null;
         let peerConnection = null;
         const rtcConfig = { 
             iceServers: [
                 { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' }
+                { urls: 'stun:stun1.l.google.com:19302' },
+                { urls: 'stun:stun2.l.google.com:19302' },
+                { urls: 'stun:openrelay.metered.ca:80' }
             ] 
         };
 
@@ -812,7 +814,12 @@
                     let remoteAudio = document.getElementById("remoteAudioStream");
                     if (remoteAudio.srcObject !== event.streams[0]) {
                         remoteAudio.srcObject = event.streams[0];
-                        remoteAudio.play().catch(e => console.log("Audio play error:", e));
+                        let playPromise = remoteAudio.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                console.log("Audio autoplay restricted, waiting for user gesture:", error);
+                            });
+                        }
                     }
                 };
 
@@ -847,7 +854,12 @@
                     let remoteAudio = document.getElementById("remoteAudioStream");
                     if (remoteAudio.srcObject !== event.streams[0]) {
                         remoteAudio.srcObject = event.streams[0];
-                        remoteAudio.play().catch(e => console.log("Audio play error:", e));
+                        let playPromise = remoteAudio.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                console.log("Audio autoplay restricted, waiting for user gesture:", error);
+                            });
+                        }
                     }
                 };
 
