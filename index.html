@@ -928,7 +928,7 @@
             document.getElementById("incomingCallModal").style.display = "none";
         }
 
-        // --- 🤖 JEE MENTOR AI AGENT INTEGRATION ---
+        // --- 🤖 JEE MENTOR AI AGENT INTEGRATION (UPDATED WITH N8N WEBHOOK) ---
         function handleMentorKeydown(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -954,8 +954,8 @@
             streamBox.scrollTop = streamBox.scrollHeight;
 
             try {
-                // Render Backend API Call
-                let response = await fetch('https://sabvas2-o.onrender.com/api/ai-chat', {
+                // n8n Webhook API Call
+                let response = await fetch('https://weworktogether.app.n8n.cloud/webhook/35dddfc0-d230-41f4-877a-8dc6e54047f6', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: userText })
