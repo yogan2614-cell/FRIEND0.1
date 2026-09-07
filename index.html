@@ -671,7 +671,7 @@
             { id: 4, title: "Step 4: IIT Bombay 2028 Gate", desc: "Final destination unlocked!", done: false }
         ];
 
-        const defaultScratchNotes = ["Bhuvi, no matter how hard the syllabus gets, we are conquering IIT Bombay together! 💖", "Tumhari mehnat dekh kar mujhe khud aur behtar karne ki taakat milti hai.", "IIT Bombay ka woh campus humara intezaار kar raha hai!", "Tum meri sabse achhi study partner aur life partner ho.", "Mushkil sawal kitne bhi hon, hum dono milkar crack kar denge.", "Har subah tumhari yaad aur goal ke sath shuru hoti hai."];
+        const defaultScratchNotes = ["Bhuvi, no matter how hard the syllabus gets, we are conquering IIT Bombay together! 💖", "Tumhari mehnat dekh kar mujhe khud aur behtar karne ki taakat milti hai.", "IIT Bombay ka woh campus humara intezaar kar raha hai!", "Tum meri sabse achhi study partner aur life partner ho.", "Mushkil sawal kitne bhi hon, hum dono milkar crack kar denge.", "Har subah tumhari yaad aur goal ke sath shuru hoti hai."];
 
         const defaultZigZagMonths = [
             { id: 1, month: "May", shayari: "Phool khilte hain baharon ka sama hota hai, jab aap jaisa dost paas hota hai.", img: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=600&q=80", monthIndex: 4 },
@@ -1340,8 +1340,9 @@
         function saveNajriyaBackground() {
             let inp = document.getElementById("najriyaBgImgInput");
             if (inp.files && inp.files[0]) {
-                let r.onload = function(e) { document.getElementById("najriyaBgContainer").style.backgroundImage = `url('${e.target.result}')`; closeNajriyaBgModal(); alert("Updated! ✦"); };
-                r.readAsDataURL(inp.files[0]);
+                let reader = new FileReader();
+                reader.onload = function(e) { document.getElementById("najriyaBgContainer").style.backgroundImage = `url('${e.target.result}')`; closeNajriyaBgModal(); alert("Updated! ✦"); };
+                reader.readAsDataURL(inp.files[0]);
             }
         }
         function openUrgentEmailModal() { document.getElementById("urgentEmailModal").style.display = "flex"; }
