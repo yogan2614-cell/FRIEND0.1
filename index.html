@@ -928,7 +928,7 @@
             document.getElementById("incomingCallModal").style.display = "none";
         }
 
-        // --- 🤖 JEE MENTOR AI AGENT INTEGRATION (UPDATED WITH N8N WEBHOOK) ---
+        // --- 🤖 JEE MENTOR AI AGENT INTEGRATION (UPDATED WITH N8N PRODUCTION WEBHOOK) ---
         function handleMentorKeydown(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -954,7 +954,7 @@
             streamBox.scrollTop = streamBox.scrollHeight;
 
             try {
-                // n8n Production Webhook API Call
+                // n8n Production Webhook API Call (Sahi Production URL with /webhook/)
                 let response = await fetch('https://weworktogether.app.n8n.cloud/webhook/35dddfc0-d230-41f4-877a-8dc6e54047f6', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
