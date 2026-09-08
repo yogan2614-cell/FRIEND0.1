@@ -464,11 +464,11 @@
                 </div>
             </div>
 
-            <!-- 🎮 REAL-TIME TIC-TAC-TOE MINI GAME MODAL -->
+            <!-- 🎮 TIC-TAC-TOE MINI GAME MODAL -->
             <div id="tictactoeModal">
                 <div class="section-modal-card" style="max-width:340px;">
                     <h2>🎮 Tic-Tac-Toe</h2>
-                    <p id="tttStatusText" style="font-size:0.95rem; font-style:normal; margin-bottom:15px;">Turn: Player (X)</p>
+                    <p id="tttStatusText" style="font-size:0.95rem; font-style:normal; margin-bottom:15px;">Your Turn (X)</p>
                     <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:20px;">
                         <button onclick="makeTttMove(0)" id="ttt-0" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
                         <button onclick="makeTttMove(1)" id="ttt-1" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
@@ -742,7 +742,6 @@
                 initFirebaseSamvadListener();
                 initSocketCallSignaling();
                 loadViewsGallery();
-                initRealtimeTttListener(); // Live Game Listener Active
             } else { document.getElementById("masterErrorMsg").style.display = "block"; }
         }
         function handleMasterKeydown(e) { if (e.key === 'Enter') unlockMasterApp(); }
@@ -932,73 +931,36 @@
             db.ref(`samvadMessages/${msgFirebaseKey}/reactions`).set(emoji);
         }
 
-        // --- 🎮 REAL-TIME SYNCED TIC-TAC-TOE MINI GAME LOGIC ---
-        function openTicTacToeModal() { 
-            document.getElementById("tictactoeModal").style.display = "flex"; 
-        }
-        function closeTicTacToeModal() { 
-            document.getElementById("tictactoeModal").style.display = "none"; 
-        }
-
+        // --- TIC-TAC-TOE MINI GAME LOGIC ---
+        let tttBoard = ['', '', '', '', '', '', '', '', ''], ttsTurn = 'X';
+        function openTicTacToeModal() { document.getElementById("tictactoeModal").style.display = "flex"; }
+        function closeTicTacToeModal() { document.getElementById("tictactoeModal").style.display = "none"; }
         function makeTttMove(idx) {
-            db.ref('wwtTttGame').once('value', (snapshot) => {
-                let gameState = snapshot.val() || { board: ['', '', '', '', '', '', '', '', ''], turn: 'X' };
-                
-                // Agar box pehle se bhara hua hai ya game jeet chuke hain toh kuch mat karo
-                if (gameState.board[idx] !== '' || checkWinnerState(gameState.board)) return;
-
-                // Move update karo
-                gameState.board[idx] = gameState.turn;
-                // Turn badlo (X ke baad O)
-                gameState.turn = gameState.turn === 'X' ? 'O' : 'X';
-
-                // Firebase par naya state save karo taaki dono devices par sync ho jaye
-                db.ref('wwtTttGame').set(gameState);
-            });
+            if (tttBoard[idx] === '') {
+                tttBoard[idx] = ttsTurn;
+                document.getElementById(`ttt-${idx}`).innerText = ttsTurn;
+                checkTttWin();
+                ttsTurn = ttsTurn === 'X' ? 'O' : 'X';
+                document.getElementById("tttStatusText").innerText = `Turn: ${ttsTurn}`;
+            }
         }
-
-        function initRealtimeTttListener() {
-            db.ref('wwtTttGame').on('value', (snapshot) => {
-                let gameState = snapshot.val();
-                if (!gameState) return;
-
-                // Board ke sabhi buttons ko update karo
-                for (let i = 0; i < 9; i++) {
-                    let btn = document.getElementById(`ttt-${i}`);
-                    if (btn) {
-                        btn.innerText = gameState.board[i] || '';
-                    }
-                }
-
-                // Check karo koi jeeta ya draw hua kya
-                let winner = checkWinnerState(gameState.board);
-                if (winner) {
-                    document.getElementById("tttStatusText").innerText = `🎉 Player ${winner} Wins!`;
-                } else if (!gameState.board.includes('')) {
-                    document.getElementById("tttStatusText").innerText = `🤝 It's a Draw!`;
-                } else {
-                    document.getElementById("tttStatusText").innerText = `Turn: Player (${gameState.turn})`;
-                }
-            });
-        }
-
-        function checkWinnerState(board) {
+        function checkTttWin() {
             const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
             for (let w of wins) {
                 let [a,b,c] = w;
-                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-                    return board[a];
+                if (tttBoard[a] && tttBoard[a] === tttBoard[b] && tttBoard[a] === tttBoard[c]) {
+                    document.getElementById("tttStatusText").innerText = `🎉 Player ${tttBoard[a]} Wins!`;
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                    return;
                 }
             }
-            return null;
+            if (!tttBoard.includes('')) document.getElementById("tttStatusText").innerText = `🤝 It's a Draw!`;
         }
-
         function resetTttGame() {
-            let freshState = {
-                board: ['', '', '', '', '', '', '', '', ''],
-                turn: 'X'
-            };
-            db.ref('wwtTttGame').set(freshState);
+            tttBoard = ['', '', '', '', '', '', '', '', ''];
+            ttsTurn = 'X';
+            document.getElementById("tttStatusText").innerText = "Your Turn (X)";
+            for (let i = 0; i < 9; i++) document.getElementById(`ttt-${i}`).innerText = '';
         }
 
         function openImageZoom(imgSrc) {
