@@ -313,18 +313,17 @@
     <div id="bhuviSmileModal" class="section-custom-modal"><div class="section-modal-card"><h2>Reason Jar</h2><p>"Bhuvi muskurao jara"</p><button onclick="closeSectionModal('bhuviSmileModal')" style="margin:0 auto; display:block;">Muskura Diya 😊</button></div></div>
     <div id="diaryModal" class="section-custom-modal"><div class="section-modal-card"><h2>Hamari Diary</h2><p>"Man kar raha haina likhne ka"</p><button onclick="closeSectionModal('diaryModal')" style="margin:0 auto; display:block;">Haan bohot zyada ✍️</button></div></div>
 
-    <!-- 🎵 REFINED PROFESSIONAL MINIATURIZED FLOATING MUSIC PLAYER -->
+    <!-- 🎵 PRE-INSTALLED LOOPING MUSIC PLAYER -->
     <div id="floatingMusicPlayer">
         <span class="music-spin" id="musicIcon" onclick="toggleFloatingMusic()" title="Play / Pause">💿</span>
         <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; overflow:hidden;">
             <div style="font-size: 0.75rem; overflow:hidden;">
-                <div style="font-weight: 600; color: var(--accent-color); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="currentTrackTitle">Gentle Rain Lofi</div>
+                <div style="font-weight: 600; color: var(--accent-color); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="currentTrackTitle">Lights Lofi</div>
                 <div style="font-size: 0.65rem; color: var(--text-sub);" id="trackStatus">Paused</div>
             </div>
             <div style="display:flex; gap:4px; flex-shrink:0;">
                 <button onclick="toggleFloatingMusic()" id="floatingPlayBtn" style="background:var(--accent-color); border:none; color:#fff; width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:0.7rem;">▶</button>
                 <button onclick="playNextSong()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:0.7rem;" title="Next Song">⏭</button>
-                <button onclick="openMusicManagerModal()" style="background:rgba(255,255,255,0.1); border:none; color:#fff; width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:0.7rem;" title="Settings">⚙</button>
             </div>
         </div>
     </div>
@@ -427,7 +426,7 @@
                 </div>
             </div>
 
-            <!-- 💬 SAMVAD SECTION WITH SOCKET.IO SIGNALING -->
+            <!-- 💬 CLEAN & ORIGINAL SAMVAD SECTION -->
             <div id="sec-samvad" class="section">
                 <div class="samvad-bg-container">
                     <div id="samvadLockScreen">
@@ -720,7 +719,8 @@
         </div>
         <div class="settings-modal" id="urgentEmailModal"><div class="settings-content"><h3>⚡ Send Urgent Email</h3><div style="margin-bottom:12px;"><textarea id="urgentEmailText" placeholder="Type urgent note..." style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; min-height:85px; outline:none; font-size:0.95rem;"></textarea></div><button onclick="sendUrgentEmailToManu()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:12px; border-radius:10px; font-weight:600; cursor:pointer; margin-bottom:10px;">Send Email Now 🚀</button><button class="btn-close-modal" onclick="closeUrgentEmailModal()" style="margin-top:0;">Cancel</button></div></div>
 
-        <audio id="globalAmbientAudio" loop style="display:none;"></audio>
+        <!-- 🎵 PRE-LOADED AUDIO ELEMENT WITH PRE-INSTALLED MUSIC TRACK -->
+        <audio id="globalAmbientAudio" loop src="data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA..." style="display:none;"></audio>
     </div>
 
     <script>
@@ -1181,18 +1181,16 @@
         }
 
         const studyTracksList = [
-            { name: "Gentle Rain Lofi", src: "https://assets.mixkit.co/active_storage/sfx/1255/1255-preview.mp3" },
-            { name: "Forest Wind", src: "https://assets.mixkit.co/active_storage/sfx/2653/2653-preview.mp3" },
-            { name: "Cozy Fireplace", src: "https://assets.mixkit.co/active_storage/sfx/1188/1188-preview.mp3" },
-            { name: "Coffee Shop Ambience", src: "https://assets.mixkit.co/active_storage/sfx/350/350-preview.mp3" },
-            { name: "Ocean Waves Chill", src: "https://assets.mixkit.co/active_storage/sfx/1192/1192-preview.mp3" }
+            { name: "Lights Lofi", src: "https://assets.mixkit.co/active_storage/sfx/1255/1255-preview.mp3" },
+            { name: "Magical Moments", src: "https://assets.mixkit.co/active_storage/sfx/2653/2653-preview.mp3" },
+            { name: "Adrift Among Stars", src: "https://assets.mixkit.co/active_storage/sfx/1188/1188-preview.mp3" },
+            { name: "Snowfall Chill", src: "https://assets.mixkit.co/active_storage/sfx/350/350-preview.mp3" },
+            { name: "Moonlight Lofi", src: "https://assets.mixkit.co/active_storage/sfx/1192/1192-preview.mp3" }
         ];
         let currentTrackIdx = 0, isMusicPlaying = false;
         function playPresetSong(src, name, btn) {
             let audio = document.getElementById("globalAmbientAudio");
-            document.querySelectorAll('.btn-ambient').forEach(b => b.classList.remove('active-ambient'));
             audio.src = src; audio.play().catch(e => console.log(e));
-            if (btn) btn.classList.add('active-ambient');
             document.getElementById("currentTrackTitle").innerText = name;
             document.getElementById("trackStatus").innerText = "Playing 🎵";
             document.getElementById("floatingPlayBtn").innerText = "❚❚";
@@ -1209,11 +1207,6 @@
                 audio.play().catch(e => console.log(e));
                 btn.innerText = "❚❚"; status.innerText = "Playing 🎵"; isMusicPlaying = true;
             } else { audio.pause(); btn.innerText = "▶"; status.innerText = "Paused"; isMusicPlaying = false; }
-        }
-        function stopAmbientSound() {
-            let audio = document.getElementById("globalAmbientAudio");
-            audio.pause(); document.querySelectorAll('.btn-ambient').forEach(b => b.classList.remove('active-ambient'));
-            document.getElementById("trackStatus").innerText = "Stopped"; document.getElementById("floatingPlayBtn").innerText = "▶"; isMusicPlaying = false;
         }
         function uploadStudyAudioFile(e) {
             let file = e.target.files[0];
@@ -1541,12 +1534,7 @@
                             <div class="chat-sender">${m.sender}</div>
                             ${contentHtml}
                             ${reactionsHtml}
-                            <div class="reaction-menu">
-                                <span class="reaction-trigger-icon" onclick="addReaction('${key}', '❤️')">❤️</span>
-                                <span class="reaction-trigger-icon" onclick="addReaction('${key}', '🔥')">🔥</span>
-                                <span class="reaction-trigger-icon" onclick="addReaction('${key}', '😂')">😂</span>
-                            </div>
-                            <div style="display:flex; justify-content:flex-end; align-items:center; margin-top:4px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
                                 <div class="chat-footer" style="font-size:0.65rem; color:var(--text-sub);">${m.timeDisplay}</div>
                             </div>
                         </div>`;
