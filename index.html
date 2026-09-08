@@ -54,7 +54,7 @@
         .master-lock-card button:hover { opacity: 0.9; transform: translateY(-1px); }
         .master-error { color: #f87171; font-size: 0.85rem; display: none; margin-top: 12px; }
 
-        .section-custom-modal, .settings-modal, .zoom-modal, #birthdayPopupModal, #envelopeModal, #incomingCallModal, #tictactoeModal, #emojiPickerModal, #musicSettingsModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 5, 10, 0.82); z-index: 999998; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(12px); animation: fadeIn 0.3s ease; }
+        .section-custom-modal, .settings-modal, .zoom-modal, #birthdayPopupModal, #envelopeModal, #incomingCallModal, #tictactoeModal, #emojiPickerModal, #musicSettingsModal, #editZigZagModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 5, 10, 0.82); z-index: 999998; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(12px); animation: fadeIn 0.3s ease; }
         .section-modal-card { background: linear-gradient(145deg, rgba(13, 19, 33, 0.95), rgba(20, 16, 45, 0.95)); border: 1px solid var(--border-glass); width: 100%; max-width: 440px; border-radius: 28px; padding: 35px 25px; text-align: center; box-shadow: var(--shadow-pro); }
         .section-modal-card h2 { color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.7rem; margin-bottom: 12px; }
         .section-modal-card p { color: #e2e8f0; font-size: 1.05rem; line-height: 1.6; font-family: 'Playfair Display', serif; font-style: italic; margin-bottom: 25px; }
@@ -176,22 +176,22 @@
         @media(min-width: 768px) { .special-day-container h2 { font-size: 3rem; } }
         .special-day-container p { font-size: 1.05rem; color: #fecdd3; font-style: italic; margin-bottom: 30px; }
 
-        .zigzag-timeline { position: relative; margin: 35px auto; padding: 15px 0; max-width: 780px; }
-        .zigzag-timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 24px; width: 4px; background: linear-gradient(180deg, #38bdf8, #c084fc, #f43f5e, #facc15, #34d399); z-index: 1; box-shadow: 0 0 15px rgba(244,63,94,0.8); border-radius: 4px; }
+        /* 🔥 RESTORED ORIGINAL SPECIAL DAY ZIGZAG TIMELINE */
+        .zigzag-timeline { position: relative; margin: 30px auto; padding: 10px 0; max-width: 750px; }
+        .zigzag-timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 20px; width: 4px; background: linear-gradient(180deg, #38bdf8, #c084fc, #f43f5e, #facc15, #34d399); transform: none; z-index: 1; box-shadow: 0 0 15px rgba(244,63,94,0.8); border-radius: 4px; }
         @media(min-width: 768px) { .zigzag-timeline::before { left: 50%; width: 5px; transform: translateX(-50%); } }
-        .zigzag-item { position: relative; margin-bottom: 40px; width: 100%; display: flex; justify-content: flex-end; align-items: center; z-index: 2; }
+        .zigzag-item { position: relative; margin-bottom: 35px; width: 100%; display: flex; justify-content: flex-end; align-items: center; z-index: 2; }
         @media(min-width: 768px) { .zigzag-item { justify-content: space-between; } .zigzag-item:nth-child(odd) { flex-direction: row-reverse; } }
-        .zigzag-box { width: calc(100% - 60px); background: rgba(13, 19, 33, 0.95); border: 1px solid var(--border-glass); border-radius: 20px; padding: 22px; text-align: left; box-shadow: 0 15px 35px rgba(0,0,0,0.7); position: relative; transition: all 0.3s ease; backdrop-filter: blur(12px); }
-        @media(min-width: 768px) { .zigzag-box { width: 44%; padding: 25px; } }
-        .zigzag-box:hover { transform: translateY(-4px); border-color: var(--accent-color); }
-        .zigzag-dot { position: absolute; top: 50%; left: 24px; width: 22px; height: 22px; background: var(--accent-color); border: 3px solid #fff; border-radius: 50%; transform: translate(-50%, -50%); z-index: 3; box-shadow: 0 0 15px var(--accent-color); }
-        @media(min-width: 768px) { .zigzag-dot { left: 50%; width: 28px; height: 28px; border: 4px solid #fff; } }
+        .zigzag-box { width: calc(100% - 50px); background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255,255,255,0.18); border-radius: 18px; padding: 18px; text-align: left; box-shadow: 0 12px 35px rgba(0,0,0,0.7); position: relative; transition: 0.3s; }
+        @media(min-width: 768px) { .zigzag-box { width: 44%; padding: 22px; } }
+        .zigzag-box:hover { transform: translateY(-3px); border-color: var(--accent-color); }
+        .zigzag-dot { position: absolute; top: 50%; left: 20px; width: 22px; height: 22px; background: var(--accent-color); border: 3px solid #fff; border-radius: 50%; transform: translate(-50%, -50%); z-index: 3; box-shadow: 0 0 12px var(--accent-color); }
+        @media(min-width: 768px) { .zigzag-dot { left: 50%; width: 28px; height: 28px; border: 4px solid #fff; transform: translate(-50%, -50%); } }
         .zigzag-dot.filled { background: #34d399; border-color: #064e3b; box-shadow: 0 0 20px #34d399; }
-        .zigzag-dot.blinking { background: #facc15; border-color: #713f12; animation: blinkNode 1s infinite alternate; }
-        @keyframes blinkNode { 0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 100% { transform: translate(-50%, -50%) scale(1.35); opacity: 1; box-shadow: 0 0 35px #facc15; } }
-        .zigzag-shayari { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: #fecdd3; font-style: italic; line-height: 1.6; margin-bottom: 12px; border-left: 3px solid var(--accent-color); padding-left: 12px; }
-        .zigzag-img { width: 100%; height: 140px; object-fit: cover; border-radius: 12px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; transition: transform 0.2s; }
-        .zigzag-img:hover { transform: scale(1.02); }
+        .zigzag-dot.blinking { background: #facc15; border-color: #713f12; box-shadow: 0 0 25px #facc15, 0 0 40px #facc15; animation: blinkNode 1s infinite alternate; }
+        @keyframes blinkNode { 0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; } 100% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; box-shadow: 0 0 35px #facc15, 0 0 60px #facc15; } }
+        .zigzag-shayari { font-family: 'Playfair Display', serif; font-size: 0.9rem; color: #fecdd3; font-style: italic; line-height: 1.5; margin-bottom: 10px; border-left: 3px solid var(--accent-color); padding-left: 10px; }
+        .zigzag-img { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; }
 
         .scratch-card-box { margin-top: 25px; background: var(--card-bg); border-radius: 24px; padding: 25px 20px; text-align: center; border: 1px solid var(--border-glass); box-shadow: var(--shadow-pro); position: relative; overflow: hidden; backdrop-filter: blur(12px); }
         .scratch-container { width: 100%; max-width: 460px; height: 140px; margin: 15px auto 0 auto; position: relative; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #4c1d95, #831843); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.6); }
@@ -268,7 +268,6 @@
         .samvad-stream { flex: 1; background: rgba(13, 19, 33, 0.7); border-radius: 20px; padding: 18px; border: 1px solid var(--border-glass); margin-bottom: 18px; max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; backdrop-filter: blur(10px); }
         @media(min-width: 768px) { .samvad-stream { padding: 24px; } }
         
-        /* 🔥 Requirement 1: Compact & Smaller Chat Bubbles */
         .chat-bubble { max-width: 65%; padding: 8px 12px; border-radius: 12px; position: relative; word-wrap: break-word; font-size: 0.9rem; line-height: 1.4; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .chat-left { background: rgba(30, 41, 59, 0.85); border-left: 3px solid #38bdf8; color: #f8fafc; align-self: flex-start; border-top-left-radius: 3px; }
         .chat-right { background: linear-gradient(135deg, #831843, #4c1d95); border-right: 3px solid var(--accent-color); color: #f8fafc; align-self: flex-end; border-top-right-radius: 3px; }
@@ -312,7 +311,7 @@
         </div>
     </div>
 
-    <!-- 🔥 Requirement 2: Emoji Picker Modal on Double Tap -->
+    <!-- Emoji Picker Modal on Double Tap -->
     <div id="emojiPickerModal">
         <div class="section-modal-card" style="max-width:320px;">
             <h2>Add Emoji Reaction</h2>
@@ -328,7 +327,7 @@
         </div>
     </div>
 
-    <!-- 🔥 Requirement 3: Music Settings Modal for Lo-Fi Songs Management -->
+    <!-- Music Settings Modal -->
     <div id="musicSettingsModal">
         <div class="settings-content" style="max-width:480px;">
             <h3>⚙ Lo-Fi Songs Manager</h3>
@@ -341,6 +340,18 @@
             </div>
             <div id="customSongsListContainer" style="max-height:200px; overflow-y:auto; margin-bottom:15px;"></div>
             <button class="btn-close-modal" onclick="closeMusicSettingsModal()">Close Manager</button>
+        </div>
+    </div>
+
+    <!-- Edit ZigZag Month Memory Modal -->
+    <div class="settings-modal" id="editZigZagModal">
+        <div class="settings-content">
+            <h3>⚙ Edit Month Memory & Note</h3>
+            <input type="hidden" id="editZigZagMonthId">
+            <div style="margin-bottom:15px;"><label style="font-size:0.9rem; display:block; margin-bottom:6px; color:var(--text-sub);">Fun Note / Quote:</label><textarea id="editZigZagShayari" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; min-height:85px; outline:none; font-size:0.95rem;"></textarea></div>
+            <div style="margin-bottom:18px;"><label style="font-size:0.9rem; display:block; margin-bottom:6px; color:var(--text-sub);">Memory Photo:</label><div class="file-upload-wrapper" style="width:100%;">📁 Choose Photo <input type="file" id="editZigZagImgInput" accept="image/*"></div></div>
+            <button onclick="saveZigZagEdit()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer;">Save Changes ✦</button>
+            <button class="btn-close-modal" onclick="closeEditZigZagModal()">Cancel</button>
         </div>
     </div>
 
@@ -474,6 +485,7 @@
                 </div>
             </div>
 
+            <!-- 🔥 RESTORED ORIGINAL SPECIAL DAY SECTION -->
             <div id="sec-specialday" class="section">
                 <div class="special-day-container">
                     <h2>👑 A Special Day — Bhuvi's Birthday Journey</h2>
@@ -604,7 +616,7 @@
                         <div class="ambient-box" style="background:rgba(13,19,33,0.9); border-radius:20px; padding:20px; text-align:left; border:1px solid var(--border-glass); backdrop-filter:blur(10px);">
                             <h4 style="color:var(--accent-color); font-family:'Playfair Display',serif; margin-bottom:12px; font-size:1.1rem;">🎧 Lofi & Natural Study Sounds</h4>
                             <div class="ambient-buttons" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:15px;" id="ambientPresetsContainer">
-                                <!-- Dynamically loaded songs -->
+                                <!-- Loaded dynamically -->
                             </div>
                             <button class="sender-btn btn-ambient" onclick="stopAmbientSound()" style="background:#334155; margin-top:5px;">⏹ Stop Audio</button>
                         </div>
@@ -753,17 +765,6 @@
             </div>
         </div>
 
-        <div class="settings-modal" id="editZigZagModal">
-            <div class="settings-content">
-                <h3>⚙ Edit Month Memory & Note</h3>
-                <input type="hidden" id="editZigZagMonthId">
-                <div style="margin-bottom:15px;"><label style="font-size:0.9rem; display:block; margin-bottom:6px; color:var(--text-sub);">Fun Note / Quote:</label><textarea id="editZigZagShayari" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; min-height:85px; outline:none; font-size:0.95rem;"></textarea></div>
-                <div style="margin-bottom:18px;"><label style="font-size:0.9rem; display:block; margin-bottom:6px; color:var(--text-sub);">Memory Photo:</label><div class="file-upload-wrapper" style="width:100%;">📁 Choose Photo <input type="file" id="editZigZagImgInput" accept="image/*"></div></div>
-                <button onclick="saveZigZagEdit()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer;">Save Changes ✦</button>
-                <button class="btn-close-modal" onclick="closeEditZigZagModal()">Cancel</button>
-            </div>
-        </div>
-
         <div class="settings-modal" id="studyTimerBgModal"><div class="settings-content"><h3>⚙ Change Study Timer Background</h3><div style="margin-bottom:15px;"><div class="file-upload-wrapper" style="width:100%;">📁 Choose Image <input type="file" id="studyTimerBgImgInput" accept="image/*"></div></div><button onclick="saveStudyTimerBackground()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer; margin-bottom:10px;">Save</button><button class="btn-close-modal" onclick="closeStudyTimerBgModal()" style="margin-top:0;">Cancel</button></div></div>
         <div class="settings-modal" id="diaryBgModal"><div class="settings-content"><h3>⚙ Change Diary Background</h3><div style="margin-bottom:15px;"><div class="file-upload-wrapper" style="width:100%;">📁 Choose Image <input type="file" id="diaryBgImgInput" accept="image/*"></div></div><button onclick="saveDiaryBackground()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer; margin-bottom:10px;">Save</button><button class="btn-close-modal" onclick="closeDiaryBgModal()" style="margin-top:0;">Cancel</button></div></div>
         <div class="settings-modal" id="najriyaBgModal"><div class="settings-content"><h3>⚙ Change Najriya BG</h3><div style="margin-bottom:15px;"><div class="file-upload-wrapper" style="width:100%;">📁 Choose Image <input type="file" id="najriyaBgImgInput" accept="image/*"></div></div><button onclick="saveNajriyaBackground()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer; margin-bottom:10px;">Save</button><button class="btn-close-modal" onclick="closeNajriyaBgModal()" style="margin-top:0;">Cancel</button></div></div>
@@ -841,7 +842,7 @@
         function handleMasterKeydown(e) { if (e.key === 'Enter') unlockMasterApp(); }
         function closeSectionModal(id) { document.getElementById(id).style.display = "none"; }
 
-        // --- 🔥 REQUIREMENT 3: LO-FI SONGS FULL SETTINGS MANAGER ---
+        // --- LO-FI SONGS FULL SETTINGS MANAGER ---
         const defaultStudySongs = [
             { id: 1, name: "Lights Lofi", src: "https://assets.mixkit.co/active_storage/sfx/1255/1255-preview.mp3", isDefault: true },
             { id: 2, name: "Magical Moments", src: "https://assets.mixkit.co/active_storage/sfx/2653/2653-preview.mp3", isDefault: false },
@@ -899,15 +900,11 @@
                     localStorage.setItem("wwtCustomSongsDb", JSON.stringify(list));
                     document.getElementById("newSongNameInput").value = "";
                     fileInp.value = "";
-                    openMusicSettingsManagerModalData();
+                    openMusicSettingsModal();
                     alert("Song added successfully! ✦");
                 };
                 reader.readAsDataURL(fileInp.files[0]);
             } else { alert("Please select an audio file!"); }
-        }
-
-        function openMusicSettingsManagerModalData() {
-            openMusicSettingsModal();
         }
 
         function setSongDefault(id) {
@@ -962,7 +959,7 @@
             isMusicPlaying = false;
         }
 
-        // --- 🔥 REQUIREMENT 2: DOUBLE TAP EMOJI FEATURE ---
+        // --- DOUBLE TAP EMOJI FEATURE ---
         let selectedMsgKeyForReaction = null;
         function triggerEmojiPicker(msgKey) {
             selectedMsgKeyForReaction = msgKey;
@@ -977,7 +974,7 @@
             }
         }
 
-        // --- 🔥 REQUIREMENT 4: STRICT DATE-WISE CHAT FILTERING ---
+        // --- STRICT DATE-WISE CHAT FILTERING ---
         function initFirebaseSamvadListener() {
             db.ref('samvadMessages').on('value', (snapshot) => {
                 renderSamvadStream(snapshot.val());
@@ -993,15 +990,14 @@
                 return;
             }
 
-            let selectedDateValue = document.getElementById("calendarFilter").value; // Format: YYYY-MM-DD
+            let selectedDateValue = document.getElementById("calendarFilter").value;
 
             Object.entries(data).forEach(([key, m]) => {
-                // Strict Date Filtering Check
                 if (selectedDateValue) {
-                    let msgDateObj = new Date(m.id); // m.id is Date.now() timestamp
+                    let msgDateObj = new Date(m.id);
                     let msgDateFormatted = msgDateObj.toISOString().split('T')[0];
                     if (msgDateFormatted !== selectedDateValue) {
-                        return; // Skip messages of other dates completely!
+                        return;
                     }
                 }
 
@@ -1044,7 +1040,92 @@
             db.ref(`samvadMessages/${firebaseKey}`).remove();
         }
 
-        // --- STANDARD WEBRTC & OTHER UTILITIES ---
+        // --- SPECIAL DAY ZIGZAG TIMELINE FUNCTIONS ---
+        const defaultZigZagMonths = [
+            { id: 1, month: "May", shayari: "Padhai ki shuruat ho gayi hai, par dimaag abhi bhi vacation mode mein hai! 😂", img: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=600&q=80", monthIndex: 4 },
+            { id: 2, month: "June", shayari: "Garmi chahe jitni ho, formulas ratne ka josh thanda nahi hona chahiye bhai! 🧊", img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=600&q=80", monthIndex: 5 },
+            { id: 3, month: "July", shayari: "Barish mein chai piyo aur chupchaap baith kar physics ke numericals solve karo. ☕", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80", monthIndex: 6 },
+            { id: 4, month: "August", shayari: "Mock test mein kam number aaye toh rona mat, agli baar phodenge! 🚀", img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=600&q=80", monthIndex: 7 },
+            { id: 5, month: "September", shayari: "Syllabus itna bada hai ki lagta hai adha janam isi mein nikal jayega! 📚", img: "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80", monthIndex: 8 },
+            { id: 6, month: "October", shayari: "Neend poori ho ya na ho, target pura hona chahiye boss! ⏰", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80", monthIndex: 9 },
+            { id: 7, month: "November", shayari: "Sardiyon ki shuruat aur blanket ke andar baith kar padhne ka alag hi maza hai. 🛌", img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80", monthIndex: 10 },
+            { id: 8, month: "December", shayari: "Saal khatam ho raha hai par hamara backlogs khatam hone ka naam hi nahi le raha! 📉", img: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&w=600&q=80", monthIndex: 11 },
+            { id: 9, month: "January", shayari: "Naya saal, wahi purane dukh... matlab wahi purane hard questions! 😅", img: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80", monthIndex: 0 },
+            { id: 10, month: "February", shayari: "Valentine's day gaya tel lagane, humein toh bas IIT Bombay ka gate chahiye! 🚪", img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80", monthIndex: 1 },
+            { id: 11, month: "March", shayari: "Birthday paas aa raha hai, party ki taiyari shuru karo jaldi se! 🎉", img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80", monthIndex: 2 },
+            { id: 12, month: "April (Birthday 👑)", shayari: "Happy Birthday Bhuvi! Ab jaldi se party do aur IIT Bombay fodte hain! 🎂🔥", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80", monthIndex: 3 }
+        ];
+
+        function getZigZagDb() { return JSON.parse(localStorage.getItem("wwtZigZagMonths")) || defaultZigZagMonths; }
+        
+        function loadZigZagTimeline() {
+            let container = document.getElementById("zigzagTimelineContainer");
+            if (!container) return;
+            let list = getZigZagDb();
+            container.innerHTML = "";
+            let now = new Date(), curMonth = now.getMonth(); 
+            
+            list.forEach((item) => {
+                let isPassed = false, isBlinking = false;
+                if (curMonth >= 4) {
+                    if (item.monthIndex >= 4 && item.monthIndex < curMonth) isPassed = true;
+                    if (item.monthIndex === curMonth) isBlinking = true;
+                    if (item.monthIndex < 4) isPassed = true;
+                } else {
+                    if (item.monthIndex >= 4 || item.monthIndex < curMonth) isPassed = true;
+                    if (item.monthIndex === curMonth) isBlinking = true;
+                }
+                let dotClass = "zigzag-dot";
+                if (isBlinking) dotClass = "zigzag-dot blinking";
+                else if (isPassed) dotClass = "zigzag-dot filled";
+
+                let box = document.createElement("div");
+                box.className = "zigzag-item";
+                box.innerHTML = `
+                    <div class="zigzag-box">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <b style="color:var(--accent-color); font-family:'Playfair Display',serif; font-size:1rem;">${item.month}</b>
+                            <button onclick="openEditZigZag(${item.id})" style="background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:3px 8px; border-radius:10px; font-size:0.7rem; cursor:pointer;">⚙ Edit</button>
+                        </div>
+                        <div class="zigzag-shayari">"${item.shayari}"</div>
+                        ${item.img ? `<img src="${item.img}" class="zigzag-img" onclick="openImageZoom('${item.img}')" alt="Memory">` : ''}
+                    </div>
+                    <div class="${dotClass}"></div>
+                `;
+                container.appendChild(box);
+            });
+        }
+
+        let editingZigZagId = null;
+        function openEditZigZag(id) {
+            let list = getZigZagDb(), item = list.find(i => i.id === id);
+            if (!item) return;
+            editingZigZagId = id;
+            document.getElementById("editZigZagMonthId").value = id;
+            document.getElementById("editZigZagShayari").value = item.shayari;
+            document.getElementById("editZigZagModal").style.display = "flex";
+        }
+        function closeEditZigZagModal() { document.getElementById("editZigZagModal").style.display = "none"; }
+        function saveZigZagEdit() {
+            let list = getZigZagDb(), item = list.find(i => i.id == editingZigZagId);
+            if (!item) return;
+            let newShayari = document.getElementById("editZigZagShayari").value.trim(), inp = document.getElementById("editZigZagImgInput");
+            if (newShayari) item.shayari = newShayari;
+            if (inp.files && inp.files[0]) {
+                let r = new FileReader();
+                r.onload = function(e) {
+                    item.img = e.target.result;
+                    localStorage.setItem("wwtZigZagMonths", JSON.stringify(list));
+                    closeEditZigZagModal(); loadZigZagTimeline(); alert("Month memory updated successfully! ✦");
+                };
+                r.readAsDataURL(inp.files[0]);
+            } else {
+                localStorage.setItem("wwtZigZagMonths", JSON.stringify(list));
+                closeEditZigZagModal(); loadZigZagTimeline(); alert("Month memory updated successfully! ✦");
+            }
+        }
+
+        // Standard WebRTC & Utility bindings
         let localAudioStream = null;
         let peerConnection = null;
         const rtcConfig = { 
