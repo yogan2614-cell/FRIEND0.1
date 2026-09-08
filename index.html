@@ -9,8 +9,10 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">(function() { emailjs.init("N7Ujc_t07A816cODD"); })();</script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Firebase App & Realtime Database CDN Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <!-- Stable Cloudflare Socket.io Client CDN for WebRTC Signaling -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
     <style>
         :root { --bg-color: #080c14; --card-bg: rgba(15, 23, 42, 0.85); --text-main: #f1f5f9; --text-sub: #94a3b8; --accent-color: #f43f5e; --accent-gradient: linear-gradient(135deg, #1e1b4b, #831843); --nav-bg: rgba(15, 23, 42, 0.95); --font-family: 'Poppins', sans-serif; }
@@ -263,6 +265,7 @@
         </div>
     </div>
 
+    <!-- 📞 INCOMING CALL NOTIFICATION MODAL -->
     <div id="incomingCallModal">
         <div class="webrtc-call-card" style="border-color: #38bdf8;">
             <div class="call-pulsing-avatar" style="background: linear-gradient(135deg, #0369a1, #0284c7);">📞</div>
@@ -275,6 +278,7 @@
         </div>
     </div>
 
+    <!-- 📞 ACTIVE WEBRTC NATIVE AUDIO CALL OVERLAY -->
     <div id="webrtcCallModal">
         <div class="webrtc-call-card">
             <div class="call-pulsing-avatar">🎙️</div>
@@ -285,6 +289,7 @@
         </div>
     </div>
 
+    <!-- 🔍 FULLSCREEN IMAGE ZOOM MODAL -->
     <div id="imageZoomModal" onclick="closeImageZoom()">
         <button class="close-zoom-btn" onclick="closeImageZoom()">×</button>
         <img id="zoomedImageElement" src="" alt="Zoomed View">
@@ -416,6 +421,7 @@
                 </div>
             </div>
 
+            <!-- 💬 SAMVAD SECTION WITH SOCKET.IO SIGNALING -->
             <div id="sec-samvad" class="section">
                 <div class="samvad-bg-container">
                     <div id="samvadLockScreen">
@@ -458,10 +464,11 @@
                 </div>
             </div>
 
+            <!-- 🎮 REAL-TIME TIC-TAC-TOE MINI GAME MODAL -->
             <div id="tictactoeModal">
                 <div class="section-modal-card" style="max-width:340px;">
                     <h2>🎮 Tic-Tac-Toe</h2>
-                    <p id="tttStatusText" style="font-size:0.95rem; font-style:normal; margin-bottom:15px;">Your Turn (X)</p>
+                    <p id="tttStatusText" style="font-size:0.95rem; font-style:normal; margin-bottom:15px;">Turn: Player (X)</p>
                     <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:20px;">
                         <button onclick="makeTttMove(0)" id="ttt-0" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
                         <button onclick="makeTttMove(1)" id="ttt-1" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
@@ -735,15 +742,23 @@
                 initFirebaseSamvadListener();
                 initSocketCallSignaling();
                 loadViewsGallery();
+                initRealtimeTttListener(); // Live Game Listener Active
             } else { document.getElementById("masterErrorMsg").style.display = "block"; }
         }
         function handleMasterKeydown(e) { if (e.key === 'Enter') unlockMasterApp(); }
         function closeSectionModal(id) { document.getElementById(id).style.display = "none"; }
 
-        // --- REAL-TIME WEBRTC & SOCKET.IO CALL SIGNALING SYSTEM (FIXED AUDIO BUG) ---
+        // --- FIXED CROSS-ENVIRONMENT APP-TO-BROWSER WEBRTC SIGNALING & AUDIO ---
         let localAudioStream = null;
         let peerConnection = null;
-        const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+        const rtcConfig = { 
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+                { urls: 'stun:stun2.l.google.com:19302' },
+                { urls: 'stun:openrelay.metered.ca:80' }
+            ] 
+        };
 
         function initSocketCallSignaling() {
             socket.on('incoming-call', async ({ offer, caller }) => {
@@ -761,7 +776,11 @@
 
             socket.on('ice-candidate', async ({ candidate }) => {
                 if (peerConnection && candidate) {
-                    try { await peerConnection.addIceCandidate(new RTCIceCandidate(candidate)); } catch(e){}
+                    try { 
+                        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate)); 
+                    } catch(e){
+                        console.error("Error adding received ice candidate", e);
+                    }
                 }
             });
 
@@ -782,54 +801,43 @@
             socket.emit('typing-status', { toRoom: 'wwt-private-room-2028', sender: currentSelectedSender });
         }
 
-        async function createPeerConnection() {
-            if (peerConnection) return peerConnection;
-            peerConnection = new RTCPeerConnection(rtcConfig);
-
-            // Get local audio stream and add tracks properly
-            try {
-                localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                localAudioStream.getTracks().forEach(track => {
-                    peerConnection.addTrack(track, localAudioStream);
-                });
-            } catch (err) {
-                console.error("Mic access error:", err);
-                document.getElementById("callStatusText").innerText = "Microphone permission denied.";
-            }
-
-            peerConnection.ontrack = (event) => {
-                let remoteAudio = document.getElementById("remoteAudioStream");
-                if (event.streams && event.streams[0]) {
-                    remoteAudio.srcObject = event.streams[0];
-                } else {
-                    let inboundStream = new MediaStream();
-                    inboundStream.addTrack(event.track);
-                    remoteAudio.srcObject = inboundStream;
-                }
-                remoteAudio.play().then(() => {
-                    console.log("Remote audio playing successfully");
-                }).catch(e => {
-                    console.log("Audio autoplay restricted by browser, click play if needed", e);
-                });
-            };
-
-            peerConnection.onicecandidate = (event) => {
-                if (event.candidate) {
-                    socket.emit('ice-candidate', { toRoom: 'wwt-private-room-2028', candidate: event.candidate });
-                }
-            };
-
-            return peerConnection;
-        }
-
         async function initiateVoiceCall() {
             document.getElementById("webrtcCallModal").style.display = "flex";
             document.getElementById("callStatusText").innerText = "Calling partner... Ringing 📞";
 
-            let pc = await createPeerConnection();
-            let offer = await pc.createOffer();
-            await pc.setLocalDescription(offer);
-            socket.emit('call-user', { toRoom: 'wwt-private-room-2028', offer: offer, caller: currentSelectedSender });
+            try {
+                localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true }, video: false });
+                peerConnection = new RTCPeerConnection(rtcConfig);
+                
+                localAudioStream.getTracks().forEach(track => peerConnection.addTrack(track, localAudioStream));
+
+                peerConnection.ontrack = (event) => {
+                    let remoteAudio = document.getElementById("remoteAudioStream");
+                    if (remoteAudio.srcObject !== event.streams[0]) {
+                        remoteAudio.srcObject = event.streams[0];
+                        let playPromise = remoteAudio.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                console.log("Audio autoplay restricted, waiting for user gesture:", error);
+                            });
+                        }
+                    }
+                };
+
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        socket.emit('ice-candidate', { toRoom: 'wwt-private-room-2028', candidate: event.candidate });
+                    }
+                };
+
+                let offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                socket.emit('call-user', { toRoom: 'wwt-private-room-2028', offer: offer, caller: currentSelectedSender });
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById("callStatusText").innerText = "Microphone permission denied.";
+            }
         }
 
         async function acceptIncomingCall() {
@@ -837,12 +845,41 @@
             document.getElementById("webrtcCallModal").style.display = "flex";
             document.getElementById("callStatusText").innerText = "Connecting call...";
 
-            let pc = await createPeerConnection();
-            await pc.setRemoteDescription(new RTCSessionDescription(window.pendingOffer));
-            let answer = await pc.createAnswer();
-            await pc.setLocalDescription(answer);
-            socket.emit('make-answer', { toRoom: 'wwt-private-room-2028', answer: answer });
-            document.getElementById("callStatusText").innerText = "Connected! Live Voice Channel Active 🎙️";
+            try {
+                localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true }, video: false });
+                peerConnection = new RTCPeerConnection(rtcConfig);
+                
+                localAudioStream.getTracks().forEach(track => peerConnection.addTrack(track, localAudioStream));
+
+                peerConnection.ontrack = (event) => {
+                    let remoteAudio = document.getElementById("remoteAudioStream");
+                    if (remoteAudio.srcObject !== event.streams[0]) {
+                        remoteAudio.srcObject = event.streams[0];
+                        let playPromise = remoteAudio.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                console.log("Audio autoplay restricted, waiting for user gesture:", error);
+                            });
+                        }
+                    }
+                };
+
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        socket.emit('ice-candidate', { toRoom: 'wwt-private-room-2028', candidate: event.candidate });
+                    }
+                };
+
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(window.pendingOffer));
+                let answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                socket.emit('make-answer', { toRoom: 'wwt-private-room-2028', answer: answer });
+                document.getElementById("callStatusText").innerText = "Connected! Live Voice Channel Active 🎙️";
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById("callStatusText").innerText = "Microphone permission denied.";
+            }
         }
 
         function declineIncomingCall() {
@@ -851,17 +888,9 @@
         }
 
         function endWebRtcCall(notifyRemote = true) {
-            if (localAudioStream) { 
-                localAudioStream.getTracks().forEach(track => track.stop()); 
-                localAudioStream = null;
-            }
-            if (peerConnection) { 
-                peerConnection.close(); 
-                peerConnection = null; 
-            }
-            if (notifyRemote) { 
-                socket.emit('end-call', { toRoom: 'wwt-private-room-2028' }); 
-            }
+            if (localAudioStream) { localAudioStream.getTracks().forEach(track => track.stop()); }
+            if (peerConnection) { peerConnection.close(); peerConnection = null; }
+            if (notifyRemote) { socket.emit('end-call', { toRoom: 'wwt-private-room-2028' }); }
             document.getElementById("webrtcCallModal").style.display = "none";
             document.getElementById("incomingCallModal").style.display = "none";
         }
@@ -903,36 +932,73 @@
             db.ref(`samvadMessages/${msgFirebaseKey}/reactions`).set(emoji);
         }
 
-        // --- TIC-TAC-TOE MINI GAME LOGIC ---
-        let tttBoard = ['', '', '', '', '', '', '', '', ''], ttsTurn = 'X';
-        function openTicTacToeModal() { document.getElementById("tictactoeModal").style.display = "flex"; }
-        function closeTicTacToeModal() { document.getElementById("tictactoeModal").style.display = "none"; }
-        function makeTttMove(idx) {
-            if (tttBoard[idx] === '') {
-                tttBoard[idx] = ttsTurn;
-                document.getElementById(`ttt-${idx}`).innerText = ttsTurn;
-                checkTttWin();
-                ttsTurn = ttsTurn === 'X' ? 'O' : 'X';
-                document.getElementById("tttStatusText").innerText = `Turn: ${ttsTurn}`;
-            }
+        // --- 🎮 REAL-TIME SYNCED TIC-TAC-TOE MINI GAME LOGIC ---
+        function openTicTacToeModal() { 
+            document.getElementById("tictactoeModal").style.display = "flex"; 
         }
-        function checkTttWin() {
+        function closeTicTacToeModal() { 
+            document.getElementById("tictactoeModal").style.display = "none"; 
+        }
+
+        function makeTttMove(idx) {
+            db.ref('wwtTttGame').once('value', (snapshot) => {
+                let gameState = snapshot.val() || { board: ['', '', '', '', '', '', '', '', ''], turn: 'X' };
+                
+                // Agar box pehle se bhara hua hai ya game jeet chuke hain toh kuch mat karo
+                if (gameState.board[idx] !== '' || checkWinnerState(gameState.board)) return;
+
+                // Move update karo
+                gameState.board[idx] = gameState.turn;
+                // Turn badlo (X ke baad O)
+                gameState.turn = gameState.turn === 'X' ? 'O' : 'X';
+
+                // Firebase par naya state save karo taaki dono devices par sync ho jaye
+                db.ref('wwtTttGame').set(gameState);
+            });
+        }
+
+        function initRealtimeTttListener() {
+            db.ref('wwtTttGame').on('value', (snapshot) => {
+                let gameState = snapshot.val();
+                if (!gameState) return;
+
+                // Board ke sabhi buttons ko update karo
+                for (let i = 0; i < 9; i++) {
+                    let btn = document.getElementById(`ttt-${i}`);
+                    if (btn) {
+                        btn.innerText = gameState.board[i] || '';
+                    }
+                }
+
+                // Check karo koi jeeta ya draw hua kya
+                let winner = checkWinnerState(gameState.board);
+                if (winner) {
+                    document.getElementById("tttStatusText").innerText = `🎉 Player ${winner} Wins!`;
+                } else if (!gameState.board.includes('')) {
+                    document.getElementById("tttStatusText").innerText = `🤝 It's a Draw!`;
+                } else {
+                    document.getElementById("tttStatusText").innerText = `Turn: Player (${gameState.turn})`;
+                }
+            });
+        }
+
+        function checkWinnerState(board) {
             const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
             for (let w of wins) {
                 let [a,b,c] = w;
-                if (tttBoard[a] && tttBoard[a] === tttBoard[b] && tttBoard[a] === tttBoard[c]) {
-                    document.getElementById("tttStatusText").innerText = `🎉 Player ${tttBoard[a]} Wins!`;
-                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                    return;
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    return board[a];
                 }
             }
-            if (!tttBoard.includes('')) document.getElementById("tttStatusText").innerText = `🤝 It's a Draw!`;
+            return null;
         }
+
         function resetTttGame() {
-            tttBoard = ['', '', '', '', '', '', '', '', ''];
-            ttsTurn = 'X';
-            document.getElementById("tttStatusText").innerText = "Your Turn (X)";
-            for (let i = 0; i < 9; i++) document.getElementById(`ttt-${i}`).innerText = '';
+            let freshState = {
+                board: ['', '', '', '', '', '', '', '', ''],
+                turn: 'X'
+            };
+            db.ref('wwtTttGame').set(freshState);
         }
 
         function openImageZoom(imgSrc) {
