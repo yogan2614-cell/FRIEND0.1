@@ -176,7 +176,6 @@
         @media(min-width: 768px) { .special-day-container h2 { font-size: 3rem; } }
         .special-day-container p { font-size: 1.05rem; color: #fecdd3; font-style: italic; margin-bottom: 30px; }
 
-        /* 🔥 RESTORED ORIGINAL SPECIAL DAY ZIGZAG TIMELINE */
         .zigzag-timeline { position: relative; margin: 30px auto; padding: 10px 0; max-width: 750px; }
         .zigzag-timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 20px; width: 4px; background: linear-gradient(180deg, #38bdf8, #c084fc, #f43f5e, #facc15, #34d399); transform: none; z-index: 1; box-shadow: 0 0 15px rgba(244,63,94,0.8); border-radius: 4px; }
         @media(min-width: 768px) { .zigzag-timeline::before { left: 50%; width: 5px; transform: translateX(-50%); } }
@@ -485,7 +484,7 @@
                 </div>
             </div>
 
-            <!-- 🔥 RESTORED ORIGINAL SPECIAL DAY SECTION -->
+            <!-- Special Day Section -->
             <div id="sec-specialday" class="section">
                 <div class="special-day-container">
                     <h2>👑 A Special Day — Bhuvi's Birthday Journey</h2>
@@ -514,13 +513,13 @@
                 </div>
             </div>
 
-            <!-- 💬 SAMVAD SECTION WITH STRICT DATE FILTER -->
+            <!-- Samvad Section -->
             <div id="sec-samvad" class="section">
                 <div class="samvad-bg-container">
                     <div id="samvadLockScreen">
                         <h2 style="color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.8rem;">🔒 Samvad</h2>
                         <p style="color: var(--text-sub); margin-top: 8px; font-size: 0.95rem;">Enter private passcode to open our chat space</p>
-                        <input type="password" id="samvadPassword" placeholder="••••"><br>
+                        <input type="password" id="samvadPassword" placeholder="••••" onkeydown="handleSamvadLockKeydown(event)"><br>
                         <button onclick="checkSamvadPassword()">Unlock Samvad</button>
                         <p class="error-msg" id="samvadError">Incorrect Password. Try again.</p>
                     </div>
@@ -820,6 +819,7 @@
         const socket = io("https://sabvas2-o.onrender.com");
         socket.emit('join-room', 'wwt-private-room-2028');
 
+        // 🔥 FIXED MASTER LOCK UNLOCK FUNCTION
         function unlockMasterApp() {
             let val = document.getElementById("masterPassInput").value.trim();
             if (val === "2607") {
@@ -837,9 +837,23 @@
                 loadViewsGallery();
                 initRealtimeTttListener();
                 initSongsManager();
-            } else { document.getElementById("masterErrorMsg").style.display = "block"; }
+            } else { 
+                let err = document.getElementById("masterErrorMsg");
+                err.style.display = "block"; 
+            }
         }
-        function handleMasterKeydown(e) { if (e.key === 'Enter') unlockMasterApp(); }
+        function handleMasterKeydown(e) { 
+            if (e.key === 'Enter') {
+                unlockMasterApp();
+            } 
+        }
+
+        function handleSamvadLockKeydown(e) {
+            if (e.key === 'Enter') {
+                checkSamvadPassword();
+            }
+        }
+
         function closeSectionModal(id) { document.getElementById(id).style.display = "none"; }
 
         // --- LO-FI SONGS FULL SETTINGS MANAGER ---
@@ -1041,21 +1055,6 @@
         }
 
         // --- SPECIAL DAY ZIGZAG TIMELINE FUNCTIONS ---
-        const defaultZigZagMonths = [
-            { id: 1, month: "May", shayari: "Padhai ki shuruat ho gayi hai, par dimaag abhi bhi vacation mode mein hai! 😂", img: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=600&q=80", monthIndex: 4 },
-            { id: 2, month: "June", shayari: "Garmi chahe jitni ho, formulas ratne ka josh thanda nahi hona chahiye bhai! 🧊", img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=600&q=80", monthIndex: 5 },
-            { id: 3, month: "July", shayari: "Barish mein chai piyo aur chupchaap baith kar physics ke numericals solve karo. ☕", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80", monthIndex: 6 },
-            { id: 4, month: "August", shayari: "Mock test mein kam number aaye toh rona mat, agli baar phodenge! 🚀", img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=600&q=80", monthIndex: 7 },
-            { id: 5, month: "September", shayari: "Syllabus itna bada hai ki lagta hai adha janam isi mein nikal jayega! 📚", img: "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80", monthIndex: 8 },
-            { id: 6, month: "October", shayari: "Neend poori ho ya na ho, target pura hona chahiye boss! ⏰", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80", monthIndex: 9 },
-            { id: 7, month: "November", shayari: "Sardiyon ki shuruat aur blanket ke andar baith kar padhne ka alag hi maza hai. 🛌", img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80", monthIndex: 10 },
-            { id: 8, month: "December", shayari: "Saal khatam ho raha hai par hamara backlogs khatam hone ka naam hi nahi le raha! 📉", img: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&w=600&q=80", monthIndex: 11 },
-            { id: 9, month: "January", shayari: "Naya saal, wahi purane dukh... matlab wahi purane hard questions! 😅", img: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80", monthIndex: 0 },
-            { id: 10, month: "February", shayari: "Valentine's day gaya tel lagane, humein toh bas IIT Bombay ka gate chahiye! 🚪", img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80", monthIndex: 1 },
-            { id: 11, month: "March", shayari: "Birthday paas aa raha hai, party ki taiyari shuru karo jaldi se! 🎉", img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80", monthIndex: 2 },
-            { id: 12, month: "April (Birthday 👑)", shayari: "Happy Birthday Bhuvi! Ab jaldi se party do aur IIT Bombay fodte hain! 🎂🔥", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80", monthIndex: 3 }
-        ];
-
         function getZigZagDb() { return JSON.parse(localStorage.getItem("wwtZigZagMonths")) || defaultZigZagMonths; }
         
         function loadZigZagTimeline() {
