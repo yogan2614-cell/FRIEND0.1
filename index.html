@@ -13,19 +13,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
     <style>
-        :root { 
-            --bg-color: #060911; 
-            --card-bg: rgba(13, 19, 33, 0.88); 
-            --text-main: #f8fafc; 
-            --text-sub: #94a3b8; 
-            --accent-color: #f43f5e; 
-            --accent-gradient: linear-gradient(135deg, #1e1b4b, #831843); 
-            --nav-bg: rgba(10, 15, 28, 0.94); 
-            --font-family: 'Poppins', sans-serif; 
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --shadow-pro: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
-        }
-        body.theme-dark { --bg-color: #060911; --card-bg: rgba(13, 19, 33, 0.88); --accent-color: #f43f5e; --accent-gradient: linear-gradient(135deg, #1e1b4b, #831843); --nav-bg: rgba(10, 15, 28, 0.94); }
+        :root { --bg-color: #080c14; --card-bg: rgba(15, 23, 42, 0.85); --text-main: #f1f5f9; --text-sub: #94a3b8; --accent-color: #f43f5e; --accent-gradient: linear-gradient(135deg, #1e1b4b, #831843); --nav-bg: rgba(15, 23, 42, 0.95); --font-family: 'Poppins', sans-serif; }
+        body.theme-dark { --bg-color: #080c14; --card-bg: rgba(15, 23, 42, 0.85); --accent-color: #f43f5e; --accent-gradient: linear-gradient(135deg, #1e1b4b, #831843); --nav-bg: rgba(15, 23, 42, 0.95); }
         body.theme-emerald { --bg-color: #022c22; --card-bg: rgba(6, 78, 59, 0.85); --accent-color: #34d399; --accent-gradient: linear-gradient(135deg, #022c22, #064e3b); --nav-bg: rgba(2, 44, 34, 0.95); }
         body.theme-rosegold { --bg-color: #1c1114; --card-bg: rgba(44, 24, 30, 0.85); --accent-color: #fb7185; --accent-gradient: linear-gradient(135deg, #2c181e, #501d2d); --nav-bg: rgba(28, 17, 20, 0.95); }
         body.theme-latte { --bg-color: #1c1917; --card-bg: rgba(41, 37, 36, 0.85); --accent-color: #fb923c; --accent-gradient: linear-gradient(135deg, #292524, #44403c); --nav-bg: rgba(28, 25, 23, 0.95); }
@@ -35,146 +24,133 @@
         body.theme-amethyst { --bg-color: #1e1b4b; --card-bg: rgba(76, 29, 149, 0.75); --accent-color: #c084fc; --accent-gradient: linear-gradient(135deg, #4c1d95, #7c3aed); --nav-bg: rgba(30, 27, 75, 0.95); }
         body.theme-sunset { --bg-color: #2a0808; --card-bg: rgba(127, 29, 29, 0.75); --accent-color: #f87171; --accent-gradient: linear-gradient(135deg, #7f1d1d, #991b1b); --nav-bg: rgba(42, 8, 8, 0.95); }
         body.theme-ivory { --bg-color: #18181b; --card-bg: rgba(39, 39, 42, 0.85); --accent-color: #facc15; --accent-gradient: linear-gradient(135deg, #3f3f46, #52525b); --nav-bg: rgba(24, 24, 27, 0.95); }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-family); }
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; transition: background 0.4s ease; -webkit-tap-highlight-color: transparent; }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
-
-        #appMasterLockScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #060911; z-index: 999999; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .master-lock-card { background: var(--card-bg); border: 1px solid var(--border-glass); width: 100%; max-width: 380px; border-radius: 24px; padding: 40px 30px; text-align: center; box-shadow: var(--shadow-pro); backdrop-filter: blur(20px); }
+        
+        #appMasterLockScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #080c14; z-index: 999999; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .master-lock-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.15); width: 100%; max-width: 380px; border-radius: 22px; padding: 35px 25px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.9); backdrop-filter: blur(15px); }
         .master-lock-card h2 { color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 8px; }
-        .master-lock-card p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 24px; }
-        .master-lock-card input { width: 100%; padding: 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: white; text-align: center; font-size: 1.2rem; margin-bottom: 20px; outline: none; letter-spacing: 6px; transition: 0.3s; }
-        .master-lock-card input:focus { border-color: var(--accent-color); box-shadow: 0 0 15px rgba(244,63,94,0.2); }
-        .master-lock-card button { background: var(--accent-color); color: #fff; padding: 14px 25px; border-radius: 14px; border: none; font-weight: 600; font-size: 1rem; cursor: pointer; width: 100%; transition: transform 0.2s, opacity 0.2s; }
-        .master-lock-card button:hover { opacity: 0.9; transform: translateY(-1px); }
-        .master-error { color: #f87171; font-size: 0.85rem; display: none; margin-top: 12px; }
+        .master-lock-card p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 20px; }
+        .master-lock-card input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--accent-color); background: rgba(0,0,0,0.5); color: white; text-align: center; font-size: 1.2rem; margin-bottom: 18px; outline: none; letter-spacing: 4px; }
+        .master-lock-card button { background: var(--accent-color); color: #fff; padding: 12px 25px; border-radius: 20px; border: none; font-weight: 600; font-size: 1rem; cursor: pointer; width: 100%; }
+        .master-error { color: #f87171; font-size: 0.85rem; display: none; margin-top: 10px; }
 
-        .section-custom-modal, .settings-modal, .zoom-modal, #birthdayPopupModal, #envelopeModal, #incomingCallModal, #tictactoeModal, #emojiPickerModal, #musicSettingsModal, #editZigZagModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 5, 10, 0.82); z-index: 999998; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(12px); animation: fadeIn 0.3s ease; }
-        .section-modal-card { background: linear-gradient(145deg, rgba(13, 19, 33, 0.95), rgba(20, 16, 45, 0.95)); border: 1px solid var(--border-glass); width: 100%; max-width: 440px; border-radius: 28px; padding: 35px 25px; text-align: center; box-shadow: var(--shadow-pro); }
-        .section-modal-card h2 { color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.7rem; margin-bottom: 12px; }
-        .section-modal-card p { color: #e2e8f0; font-size: 1.05rem; line-height: 1.6; font-family: 'Playfair Display', serif; font-style: italic; margin-bottom: 25px; }
-        .section-modal-card button { background: var(--accent-color); color: #fff; padding: 12px 30px; border-radius: 14px; border: none; font-weight: 600; cursor: pointer; width: 100%; max-width: 200px; transition: 0.2s; }
-        .section-modal-card button:hover { opacity: 0.9; transform: translateY(-1px); }
-
+        .section-custom-modal, .settings-modal, .zoom-modal, #birthdayPopupModal, #envelopeModal, #incomingCallModal, #tictactoeModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999998; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px); }
+        .section-modal-card { background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.95)); border: 1px solid var(--accent-color); width: 100%; max-width: 460px; border-radius: 26px; padding: 35px 20px; text-align: center; box-shadow: 0 25px 60px rgba(244, 63, 94, 0.3); }
+        .section-modal-card h2 { color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 12px; }
+        .section-modal-card p { color: #f8fafc; font-size: 1.05rem; line-height: 1.5; font-family: 'Playfair Display', serif; font-style: italic; margin-bottom: 25px; }
+        .section-modal-card button { background: var(--accent-color); color: #fff; padding: 12px 35px; border-radius: 30px; border: none; font-weight: 600; cursor: pointer; width: 100%; max-width: 200px; }
+        
         #appMainContent { display: none; flex: 1; flex-direction: column; }
-        .navbar { width: 100%; background: var(--nav-bg); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .nav-brand { display: flex; align-items: center; gap: 12px; }
-        .nav-logo { width: 38px; height: 38px; background: var(--accent-color); color: #fff; font-weight: 700; font-size: 0.9rem; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; flex-shrink: 0; box-shadow: 0 4px 12px rgba(244,63,94,0.3); }
-        .navbar h1 { color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .nav-right-area { display: flex; align-items: center; gap: 12px; }
-        .nav-links { display: flex; gap: 6px; }
-        .nav-item { color: var(--text-sub); font-size: 0.85rem; cursor: pointer; font-weight: 500; transition: all 0.25s ease; background: transparent; border: none; padding: 8px 14px; border-radius: 10px; position: relative; }
-        .nav-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
-        .nav-item.active { color: #fff; background: var(--accent-color); box-shadow: 0 4px 15px rgba(244,63,94,0.3); }
-        .notif-badge { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; display: none; }
-        .hamburger-btn { display: none; background: rgba(255,255,255,0.06); border: 1px solid var(--border-glass); color: #fff; width: 38px; height: 38px; border-radius: 10px; font-size: 1.2rem; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        .navbar { width: 100%; background: var(--nav-bg); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; position: sticky; top: 0; z-index: 1000; }
+        .nav-brand { display: flex; align-items: center; gap: 10px; }
+        .nav-logo { width: 34px; height: 34px; background: var(--accent-color); color: #fff; font-weight: 700; font-size: 0.85rem; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; flex-shrink: 0; }
+        .navbar h1 { color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .nav-right-area { display: flex; align-items: center; gap: 10px; }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-item { color: var(--text-sub); font-size: 0.85rem; cursor: pointer; font-weight: 500; transition: 0.3s; background: none; border: none; padding: 8px 12px; border-radius: 8px; position: relative; }
+        .nav-item:hover, .nav-item.active { color: #fff; background: var(--accent-color); }
+        .notif-badge { position: absolute; top: 4px; right: 4px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; display: none; }
+        .hamburger-btn { display: none; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 36px; height: 36px; border-radius: 8px; font-size: 1.2rem; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
         
-        .mobile-drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; display: none; backdrop-filter: blur(4px); }
-        .mobile-drawer { position: fixed; top: 0; left: -300px; width: 290px; height: 100%; background: #0a0f1c; z-index: 3500; box-shadow: 10px 0 30px rgba(0,0,0,0.8); display: flex; flex-direction: column; padding: 25px 20px; transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto; border-right: 1px solid var(--border-glass); }
+        .mobile-drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; display: none; }
+        .mobile-drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #0f172a; z-index: 3500; box-shadow: 5px 0 25px rgba(0,0,0,0.8); display: flex; flex-direction: column; padding: 25px 20px; transition: left 0.3s ease; overflow-y: auto; }
         .mobile-drawer.open { left: 0; }
-        .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px; }
-        .drawer-header h3 { color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.2rem; }
+        .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .drawer-header h3 { color: var(--accent-color); font-family: 'Playfair Display', serif; }
         .drawer-close-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
-        .drawer-links { display: flex; flex-direction: column; gap: 8px; }
-        .drawer-item { background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-glass); color: var(--text-main); padding: 12px 16px; border-radius: 12px; text-align: left; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: 0.2s; }
-        .drawer-item:hover, .drawer-item.active { background: var(--accent-color); color: #fff; border-color: transparent; }
-        @media(max-width: 1080px) { .nav-links { display: none; } .hamburger-btn { display: flex; } }
+        .drawer-links { display: flex; flex-direction: column; gap: 10px; }
+        .drawer-item { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); padding: 12px 16px; border-radius: 10px; text-align: left; font-size: 1rem; font-weight: 500; cursor: pointer; }
+        .drawer-item:hover, .drawer-item.active { background: var(--accent-color); color: #fff; }
+        @media(max-width: 1024px) { .nav-links { display: none; } .hamburger-btn { display: flex; } }
         
-        .global-setting-btn { background: rgba(255, 255, 255, 0.06); color: #fff; border: 1px solid var(--border-glass); width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
-        .global-setting-btn:hover { background: var(--accent-color); border-color: transparent; }
-        .main-container { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 25px 20px; }
-        .section { display: none; animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+        .global-setting-btn { background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        .global-setting-btn:hover { background: var(--accent-color); }
+        .main-container { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px 15px; }
+        .section { display: none; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         
-        .page-header { text-align: center; margin-bottom: 25px; }
-        .page-header h2 { color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 600; letter-spacing: -0.5px; }
-        .page-header p { font-size: 0.95rem; color: var(--text-sub); margin-top: 6px; font-style: italic; }
+        .page-header { text-align: center; margin-bottom: 20px; }
+        .page-header h2 { color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 600; }
+        .page-header p { font-size: 0.9rem; color: var(--text-sub); margin-top: 4px; font-style: italic; }
         
-        .region-chart-hero { width: 100%; height: 350px; border-radius: 24px; position: relative; overflow: hidden; box-shadow: var(--shadow-pro); border: 1px solid var(--border-glass); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 30px; margin-bottom: 25px; cursor: pointer; transition: transform 0.3s ease; }
-        .region-chart-hero:hover { transform: scale(1.005); }
-        @media(min-width: 768px) { .region-chart-hero { height: 420px; padding: 40px; } }
-        .region-chart-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(transparent 30%, rgba(6, 9, 17, 0.94)); z-index: 1; }
+        .region-chart-hero { width: 100%; height: 320px; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 25px; margin-bottom: 25px; cursor: pointer; }
+        @media(min-width: 768px) { .region-chart-hero { height: 400px; padding: 35px; } }
+        .region-chart-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(transparent 30%, rgba(8, 12, 20, 0.92)); z-index: 1; }
         .region-chart-content { position: relative; z-index: 2; text-align: center; }
-        .region-chart-content h2 { font-size: 2.2rem; color: #fff; font-family: 'Playfair Display', serif; margin-bottom: 6px; text-shadow: 2px 2px 10px rgba(0,0,0,0.9); }
-        @media(min-width: 768px) { .region-chart-content h2 { font-size: 3rem; } }
-        .region-chart-content p { font-size: 1.05rem; color: var(--accent-color); font-weight: 600; text-shadow: 1px 1px 6px rgba(0,0,0,0.9); }
-        .region-setting-btn { position: absolute; top: 18px; right: 18px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; backdrop-filter: blur(8px); transition: 0.2s; }
-        .region-setting-btn:hover { background: var(--accent-color); }
+        .region-chart-content h2 { font-size: 2.1rem; color: #fff; font-family: 'Playfair Display', serif; margin-bottom: 6px; text-shadow: 2px 2px 8px rgba(0,0,0,0.9); }
+        @media(min-width: 768px) { .region-chart-content h2 { font-size: 2.8rem; } }
+        .region-chart-content p { font-size: 1rem; color: var(--accent-color); font-weight: 600; text-shadow: 1px 1px 4px rgba(0,0,0,0.9); }
+        .region-setting-btn { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.7); color: #fff; border: 1px solid rgba(255,255,255,0.3); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; backdrop-filter: blur(6px); }
         
-        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 25px; align-items: stretch; }
-        @media(min-width: 768px) { .dashboard-grid { grid-template-columns: 2fr 1fr; } }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 25px; align-items: stretch; }
+        @media(min-width: 768px) { .dashboard-grid { grid-template-columns: 2fr 1fr; gap: 20px; } }
         
-        .countdown-container { background: var(--accent-gradient); border: 1px solid var(--border-glass); padding: 24px 20px; border-radius: 24px; text-align: center; box-shadow: var(--shadow-pro); height: 100%; display: flex; flex-direction: column; justify-content: space-around; align-items: center; }
-        .countdown-container h3 { font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 14px; font-family: 'Playfair Display', serif; }
-        .vertical-time-box { display: flex; flex-direction: row; gap: 10px; width: 100%; justify-content: center; align-items: center; }
-        .v-box { background: rgba(10, 15, 28, 0.55); border: 1px solid rgba(255,255,255,0.12); width: 75px; padding: 10px 6px; border-radius: 14px; text-align: center; flex: 1; max-width: 85px; backdrop-filter: blur(6px); }
-        .v-box p { font-size: 1.3rem; font-weight: 700; color: #fff; font-family: 'Playfair Display', serif; }
-        .v-box span { font-size: 0.6rem; text-transform: uppercase; color: var(--text-sub); display: block; margin-top: 2px; letter-spacing: 0.5px; }
+        .countdown-container { background: var(--accent-gradient); border: 1px solid rgba(255, 255, 255, 0.15); padding: 20px 15px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); height: 100%; display: flex; flex-direction: column; justify-content: space-around; align-items: center; }
+        .countdown-container h3 { font-size: 1rem; color: var(--accent-color); font-weight: 600; margin-bottom: 12px; }
+        .vertical-time-box { display: flex; flex-direction: row; gap: 8px; width: 100%; justify-content: center; align-items: center; flex-wrap: wrap; }
+        .v-box { background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255,255,255,0.1); width: 68px; padding: 6px; border-radius: 10px; text-align: center; flex: 1; min-width: 60px; max-width: 80px; }
+        @media(min-width: 480px) { .v-box { width: 80px; padding: 8px; } }
+        .v-box p { font-size: 1.1rem; font-weight: 700; color: #fff; }
+        .v-box span { font-size: 0.5rem; text-transform: uppercase; color: var(--text-sub); display: block; margin-top: 1px; }
 
-        .roadmap-container { margin-top: 25px; background: var(--card-bg); border-radius: 24px; padding: 25px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-pro); position: relative; backdrop-filter: blur(12px); }
-        .roadmap-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 18px; }
+        .roadmap-container { margin-top: 25px; background: var(--card-bg); border-radius: 20px; padding: 20px 15px; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
+        @media(min-width: 768px) { .roadmap-container { padding: 25px; } }
+        .roadmap-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 15px; }
         @media(min-width: 580px) { .roadmap-grid { grid-template-columns: repeat(2, 1fr); } }
         @media(min-width: 992px) { .roadmap-grid { grid-template-columns: repeat(4, 1fr); } }
-        .roadmap-step { background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-glass); border-radius: 16px; padding: 18px; text-align: left; cursor: pointer; transition: all 0.25s ease; position: relative; }
-        .roadmap-step:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.2); }
-        .roadmap-step.done { border-color: #22c55e; background: rgba(34, 197, 94, 0.08); }
-        .roadmap-step h4 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: #fff; margin-bottom: 6px; }
-        .roadmap-step p { font-size: 0.85rem; color: var(--text-sub); line-height: 1.4; }
+        .roadmap-step { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 15px; text-align: left; cursor: pointer; transition: 0.2s; position: relative; }
+        .roadmap-step.done { border-color: #22c55e; background: rgba(34, 197, 94, 0.1); }
+        .roadmap-step h4 { font-family: 'Playfair Display', serif; font-size: 1rem; color: #fff; margin-bottom: 5px; }
+        .roadmap-step p { font-size: 0.8rem; color: var(--text-sub); }
 
-        /* 🎵 COMPACT & PROFESSIONAL FLOATING MUSIC PLAYER */
-        #floatingMusicPlayer { position: fixed; bottom: 25px; left: 20px; z-index: 5000; background: rgba(10, 15, 28, 0.95); border: 1px solid var(--accent-color); border-radius: 50px; padding: 6px 12px; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(14px); transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); max-width: 48px; overflow: hidden; white-space: nowrap; }
-        #floatingMusicPlayer:hover { max-width: 310px; padding: 8px 14px; border-radius: 30px; }
-        .music-spin { animation: spin 4s linear infinite; display: inline-block; font-size: 1.2rem; cursor: pointer; }
+        #floatingMusicPlayer { position: fixed; bottom: 20px; left: 15px; right: 15px; max-width: 340px; z-index: 5000; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--accent-color); border-radius: 30px; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        @media(min-width: 400px) { #floatingMusicPlayer { left: 20px; right: auto; width: auto; } }
+        .music-spin { animation: spin 4s linear infinite; display: inline-block; font-size: 1.2rem; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        .diary-professional-container { width: 100%; max-width: 1000px; margin: 20px auto; border-radius: 24px; overflow: hidden; position: relative; box-shadow: var(--shadow-pro); border: 1px solid var(--border-glass); background-size: cover; background-position: center; padding: 35px 25px; min-height: 75vh; display: flex; flex-direction: column; }
-        @media(min-width: 768px) { .diary-professional-container { padding: 45px; } }
-        .diary-professional-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(6, 9, 17, 0.84), rgba(6, 9, 17, 0.96)); z-index: 1; }
+        .diary-professional-container { width: 100%; max-width: 950px; margin: 15px auto; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.15); background-size: cover; background-position: center; padding: 25px 15px; min-height: 70vh; display: flex; flex-direction: column; }
+        @media(min-width: 768px) { .diary-professional-container { padding: 40px; } }
+        .diary-professional-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(8, 12, 20, 0.8), rgba(8, 12, 20, 0.94)); z-index: 1; }
         .diary-content-wrapper { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; }
-        .diary-input-card { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 20px; padding: 22px; border: 1px solid var(--border-glass); margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        @media(min-width: 768px) { .diary-input-card { padding: 28px; } }
-        .sticky-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+        .diary-input-card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 16px; padding: 18px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        @media(min-width: 768px) { .diary-input-card { padding: 22px; } }
+        .sticky-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media(min-width: 580px) { .sticky-grid { grid-template-columns: repeat(2, 1fr); } }
         @media(min-width: 900px) { .sticky-grid { grid-template-columns: repeat(3, 1fr); } }
-        .sticky-note { background: #fef08a; color: #1e293b; padding: 20px; border-radius: 16px; box-shadow: 0 12px 25px rgba(0,0,0,0.4); min-height: 180px; display: flex; flex-direction: column; justify-content: space-between; position: relative; transform: rotate(-1deg); font-family: 'Playfair Display', serif; transition: transform 0.25s ease; }
-        .sticky-note:hover { transform: translateY(-4px) rotate(0deg) scale(1.02); }
+        .sticky-note { background: #fef08a; color: #1e293b; padding: 16px; border-radius: 14px; box-shadow: 0 8px 18px rgba(0,0,0,0.4); min-height: 160px; display: flex; flex-direction: column; justify-content: space-between; position: relative; transform: rotate(-1deg); font-family: 'Playfair Display', serif; }
         .sticky-note:nth-child(even) { background: #fed7aa; transform: rotate(1deg); }
         .sticky-note:nth-child(3n) { background: #e9d5ff; transform: rotate(-0.5deg); }
-        .sticky-author { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #475569; letter-spacing: 0.5px; }
-        .sticky-text { font-size: 1.05rem; line-height: 1.5; margin: 10px 0; color: #0f172a; word-wrap: break-word; }
-        .sticky-date { font-size: 0.7rem; color: #64748b; text-align: right; }
+        .sticky-author { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #475569; }
+        .sticky-text { font-size: 1rem; line-height: 1.4; margin: 8px 0; color: #0f172a; word-wrap: break-word; }
+        .sticky-date { font-size: 0.65rem; color: #64748b; text-align: right; }
 
-        .envelope-box-section { background: rgba(13,23,42,0.85); border-radius: 20px; padding: 22px 18px; border: 1px solid rgba(244,63,94,0.25); margin-bottom: 25px; text-align: center; backdrop-filter: blur(10px); }
-        @media(min-width: 768px) { .envelope-box-section { padding: 25px; } }
-        .envelope-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px; }
+        .envelope-box-section { background: rgba(15,23,42,0.85); border-radius: 16px; padding: 18px 12px; border: 1px solid rgba(244,63,94,0.3); margin-bottom: 20px; text-align: center; }
+        @media(min-width: 768px) { .envelope-box-section { padding: 20px; } }
+        .envelope-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px; }
         @media(min-width: 580px) { .envelope-grid { grid-template-columns: repeat(4, 1fr); } }
-        .envelope-item { background: linear-gradient(135deg, #1e1b4b, #831843); border: 1px solid var(--accent-color); padding: 14px 10px; border-radius: 14px; cursor: pointer; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); font-size: 0.85rem; font-weight: 600; color: #fff; box-shadow: 0 6px 20px rgba(0,0,0,0.4); text-align: center; }
-        .envelope-item:hover { transform: translateY(-3px) scale(1.02); background: var(--accent-color); }
+        .envelope-item { background: linear-gradient(135deg, #1e1b4b, #831843); border: 1px solid var(--accent-color); padding: 12px 8px; border-radius: 12px; cursor: pointer; transition: 0.2s; font-size: 0.8rem; font-weight: 600; color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align: center; }
+        .envelope-item:hover { transform: scale(1.03); background: var(--accent-color); }
 
-        .study-timer-pro-container { width: 100%; max-width: 1000px; margin: 20px auto; border-radius: 24px; overflow: hidden; position: relative; box-shadow: var(--shadow-pro); border: 1px solid rgba(56, 189, 248, 0.3); background-size: cover; background-position: center; padding: 35px 20px; min-height: 75vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        @media(min-width: 768px) { .study-timer-pro-container { padding: 60px 40px; } }
-        .study-timer-pro-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(6, 9, 17, 0.85), rgba(6, 9, 17, 0.96)); z-index: 1; }
-        .study-timer-content { position: relative; z-index: 2; width: 100%; max-width: 680px; text-align: center; }
-        .timer-glow-display { font-size: 4.5rem; font-weight: 700; margin: 20px 0; font-family: 'Playfair Display', serif; color: #38bdf8; text-shadow: 0 0 30px rgba(56, 189, 248, 0.8); animation: multiColorGlow 8s infinite linear; }
-        @media(min-width: 768px) { .timer-glow-display { font-size: 7rem; margin: 30px 0; } }
-        @keyframes multiColorGlow { 0% { color: #38bdf8; text-shadow: 0 0 30px #38bdf8; } 14% { color: #f43f5e; text-shadow: 0 0 30px #f43f5e; } 28% { color: #34d399; text-shadow: 0 0 30px #34d399; } 42% { color: #c084fc; text-shadow: 0 0 30px #c084fc; } 57% { color: #fb923c; text-shadow: 0 0 30px #fb923c; } 71% { color: #60a5fa; text-shadow: 0 0 30px #60a5fa; } 85% { color: #facc15; text-shadow: 0 0 30px #facc15; } 100% { color: #38bdf8; text-shadow: 0 0 30px #38bdf8; } }
+        .study-timer-pro-container { width: 100%; max-width: 950px; margin: 15px auto; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.85); border: 1px solid rgba(56, 189, 248, 0.4); background-size: cover; background-position: center; padding: 30px 15px; min-height: 75vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        @media(min-width: 768px) { .study-timer-pro-container { padding: 50px 30px; } }
+        .study-timer-pro-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(8, 12, 20, 0.82), rgba(8, 12, 20, 0.94)); z-index: 1; }
+        .study-timer-content { position: relative; z-index: 2; width: 100%; max-width: 650px; text-align: center; }
+        .timer-glow-display { font-size: 4.2rem; font-weight: 700; margin: 15px 0; font-family: 'Playfair Display', serif; color: #38bdf8; text-shadow: 0 0 25px rgba(56, 189, 248, 0.9); animation: multiColorGlow 7s infinite linear; }
+        @media(min-width: 768px) { .timer-glow-display { font-size: 6.5rem; margin: 25px 0; text-shadow: 0 0 35px rgba(56, 189, 248, 0.9); } }
+        @keyframes multiColorGlow { 0% { color: #38bdf8; text-shadow: 0 0 25px #38bdf8; } 14% { color: #f43f5e; text-shadow: 0 0 25px #f43f5e; } 28% { color: #34d399; text-shadow: 0 0 25px #34d399; } 42% { color: #c084fc; text-shadow: 0 0 25px #c084fc; } 57% { color: #fb923c; text-shadow: 0 0 25px #fb923c; } 71% { color: #60a5fa; text-shadow: 0 0 25px #60a5fa; } 85% { color: #facc15; text-shadow: 0 0 25px #facc15; } 100% { color: #38bdf8; text-shadow: 0 0 25px #38bdf8; } }
 
-        .reason-jar-big-container { width: 100%; max-width: 1000px; margin: 20px auto; border-radius: 24px; overflow: hidden; position: relative; box-shadow: var(--shadow-pro); border: 1px solid rgba(244, 63, 94, 0.3); background-size: cover; background-position: center; padding: 45px 25px; min-height: 75vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        @media(min-width: 768px) { .reason-jar-big-container { padding: 70px 50px; } }
-        .reason-jar-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(6, 9, 17, 0.82), rgba(6, 9, 17, 0.95)); z-index: 1; }
-        .reason-jar-content { position: relative; z-index: 2; width: 100%; max-width: 680px; }
+        .reason-jar-big-container { width: 100%; max-width: 950px; margin: 20px auto; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.85); border: 1px solid rgba(244, 63, 94, 0.4); background-size: cover; background-position: center; padding: 40px 20px; min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        @media(min-width: 768px) { .reason-jar-big-container { padding: 60px 40px; } }
+        .reason-jar-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(8, 12, 20, 0.78), rgba(8, 12, 20, 0.92)); z-index: 1; }
+        .reason-jar-content { position: relative; z-index: 2; width: 100%; max-width: 650px; }
 
-        .special-day-container { max-width: 1000px; margin: 20px auto; background: var(--card-bg); border-radius: 24px; padding: 30px 20px; border: 1px solid rgba(244,63,94,0.4); box-shadow: var(--shadow-pro); position: relative; overflow: hidden; background-image: linear-gradient(rgba(10,15,28,0.92), rgba(10,15,28,0.97)), url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center; text-align: center; backdrop-filter: blur(15px); }
-        @media(min-width: 768px) { .special-day-container { padding: 50px; } }
-        .special-day-container h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--accent-color); margin-bottom: 10px; text-shadow: 0 0 25px rgba(244,63,94,0.5); }
-        @media(min-width: 768px) { .special-day-container h2 { font-size: 3rem; } }
-        .special-day-container p { font-size: 1.05rem; color: #fecdd3; font-style: italic; margin-bottom: 30px; }
+        .special-day-container { max-width: 950px; margin: 20px auto; background: var(--card-bg); border-radius: 22px; padding: 25px 15px; border: 1px solid rgba(244,63,94,0.5); box-shadow: 0 25px 60px rgba(244,63,94,0.25); position: relative; overflow: hidden; background-image: linear-gradient(rgba(15,23,42,0.9), rgba(15,23,42,0.96)), url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center; text-align: center; }
+        @media(min-width: 768px) { .special-day-container { padding: 45px; } }
+        .special-day-container h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent-color); margin-bottom: 10px; text-shadow: 0 0 20px rgba(244,63,94,0.6); }
+        @media(min-width: 768px) { .special-day-container h2 { font-size: 2.8rem; } }
+        .special-day-container p { font-size: 1rem; color: #fecdd3; font-style: italic; margin-bottom: 25px; }
 
         .zigzag-timeline { position: relative; margin: 30px auto; padding: 10px 0; max-width: 750px; }
         .zigzag-timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 20px; width: 4px; background: linear-gradient(180deg, #38bdf8, #c084fc, #f43f5e, #facc15, #34d399); transform: none; z-index: 1; box-shadow: 0 0 15px rgba(244,63,94,0.8); border-radius: 4px; }
@@ -192,110 +168,87 @@
         .zigzag-shayari { font-family: 'Playfair Display', serif; font-size: 0.9rem; color: #fecdd3; font-style: italic; line-height: 1.5; margin-bottom: 10px; border-left: 3px solid var(--accent-color); padding-left: 10px; }
         .zigzag-img { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; }
 
-        .scratch-card-box { margin-top: 25px; background: var(--card-bg); border-radius: 24px; padding: 25px 20px; text-align: center; border: 1px solid var(--border-glass); box-shadow: var(--shadow-pro); position: relative; overflow: hidden; backdrop-filter: blur(12px); }
-        .scratch-container { width: 100%; max-width: 460px; height: 140px; margin: 15px auto 0 auto; position: relative; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #4c1d95, #831843); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.6); }
-        .hidden-message { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: #fecdd3; font-style: italic; padding: 15px; text-align: center; }
+        .scratch-card-box { margin-top: 25px; background: var(--card-bg); border-radius: 20px; padding: 20px 15px; text-align: center; border: 1px solid rgba(255,255,255,0.12); position: relative; overflow: hidden; }
+        .scratch-container { width: 100%; max-width: 450px; height: 130px; margin: 12px auto 0 auto; position: relative; border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, #4c1d95, #831843); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+        .hidden-message { font-family: 'Playfair Display', serif; font-size: 1rem; color: #fecdd3; font-style: italic; padding: 10px; text-align: center; }
         .scratch-overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
-        
-        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; cursor: pointer; background: rgba(30, 41, 59, 0.5); border: 1px dashed var(--accent-color); padding: 12px 18px; border-radius: 12px; color: var(--text-main); font-size: 0.9rem; text-align: center; width: 100%; transition: 0.2s; }
-        .file-upload-wrapper:hover { background: rgba(30, 41, 59, 0.8); }
+        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; cursor: pointer; background: rgba(30, 41, 59, 0.6); border: 1px dashed var(--accent-color); padding: 10px 16px; border-radius: 10px; color: var(--text-main); font-size: 0.85rem; text-align: center; width: 100%; }
         @media(min-width: 480px) { .file-upload-wrapper { width: auto; } }
         .file-upload-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
         
-        .settings-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 5, 10, 0.82); z-index: 999998; display: none; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(14px); }
-        .settings-content { background: #0a0f1c; border: 1px solid var(--border-glass); width: 100%; max-width: 540px; border-radius: 24px; padding: 30px 25px; box-shadow: var(--shadow-pro); max-height: 90vh; overflow-y: auto; color: #fff; }
-        .settings-content h3 { font-family: 'Playfair Display', serif; color: var(--accent-color); font-size: 1.4rem; margin-bottom: 16px; }
-        .tab-menu-bar { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border-glass); padding-bottom: 12px; overflow-x: auto; }
-        .tab-menu-btn { background: none; border: none; color: var(--text-sub); font-weight: 600; font-size: 0.9rem; cursor: pointer; padding: 8px 16px; border-radius: 10px; white-space: nowrap; flex-shrink: 0; transition: 0.2s; }
-        .tab-menu-btn.active-tab { background: var(--accent-color); color: #fff; box-shadow: 0 4px 15px rgba(244,63,94,0.3); }
-        .theme-picker-grid, .font-picker-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
-        @media(min-width: 480px) { .theme-picker-grid, .font-picker-grid { grid-template-columns: repeat(2, 1fr); } }
-        .picker-option-btn { background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-glass); padding: 14px; border-radius: 12px; color: #fff; cursor: pointer; text-align: left; font-size: 0.95rem; transition: 0.2s; }
-        .picker-option-btn:hover { background: var(--accent-color); border-color: transparent; }
+        .settings-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999998; display: none; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(10px); }
+        .settings-content { background: #0f172a; border: 1px solid rgba(255,255,255,0.15); width: 100%; max-width: 540px; border-radius: 20px; padding: 25px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto; color: #fff; }
+        .tab-menu-bar { display: flex; gap: 6px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; overflow-x: auto; }
+        .tab-menu-btn { background: none; border: none; color: var(--text-sub); font-weight: 600; font-size: 0.9rem; cursor: pointer; padding: 6px 12px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+        .tab-menu-btn.active-tab { background: var(--accent-color); color: #fff; }
+        .theme-picker-grid, .font-picker-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 18px; }
+        @media(min-width: 480px) { .theme-picker-grid, .font-picker-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+        .picker-option-btn { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; color: #fff; cursor: pointer; text-align: left; font-size: 0.9rem; }
+        .manage-item { display: flex; justify-content: space-between; align-items: center; background: rgba(30, 41, 59, 0.7); padding: 10px; border-radius: 10px; margin-bottom: 10px; gap: 10px; }
+        .manage-item img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+        .btn-delete-item { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 4px 8px; font-size: 0.75rem; border-radius: 6px; cursor: pointer; flex-shrink: 0; }
+        .btn-close-modal { background: #334155; color: #fff; border: none; padding: 12px; border-radius: 10px; cursor: pointer; margin-top: 15px; width: 100%; font-weight: 600; }
         
-        .manage-item { display: flex; justify-content: space-between; align-items: center; background: rgba(30, 41, 59, 0.4); padding: 12px; border-radius: 12px; margin-bottom: 10px; gap: 12px; border: 1px solid var(--border-glass); }
-        .manage-item img { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
-        .btn-delete-item { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
-        .btn-delete-item:hover { background: #ef4444; color: #fff; }
-        .btn-close-modal { background: #334155; color: #fff; border: none; padding: 14px; border-radius: 12px; cursor: pointer; margin-top: 15px; width: 100%; font-weight: 600; transition: 0.2s; }
-        .btn-close-modal:hover { background: #475569; }
-        
-        .dynamic-hero-section { width: 100%; border-radius: 24px; padding: 35px 25px; margin: 25px 0; box-shadow: var(--shadow-pro); border: 1px solid var(--border-glass); text-align: center; position: relative; overflow: hidden; background-size: cover; background-position: center; backdrop-filter: blur(12px); }
-        @media(min-width: 768px) { .dynamic-hero-section { padding: 50px; } }
-        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 9, 17, 0.85); z-index: 1; }
+        .dynamic-hero-section { width: 100%; border-radius: 20px; padding: 30px 20px; margin: 25px 0; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); text-align: center; position: relative; overflow: hidden; background-size: cover; background-position: center; }
+        @media(min-width: 768px) { .dynamic-hero-section { padding: 45px; } }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 12, 20, 0.82); z-index: 1; }
         .hero-content { position: relative; z-index: 2; }
-        .quote-slider-text { font-size: 1.15rem; color: #fecdd3; font-style: italic; max-width: 800px; margin: 0 auto; line-height: 1.6; }
-        @media(min-width: 768px) { .quote-slider-text { font-size: 1.35rem; } }
-        .quote-author { margin-top: 14px; font-weight: 600; color: #38bdf8; font-size: 1rem; }
+        .quote-slider-text { font-size: 1.1rem; color: #fecdd3; font-style: italic; max-width: 800px; margin: 0 auto; line-height: 1.5; }
+        @media(min-width: 768px) { .quote-slider-text { font-size: 1.3rem; } }
+        .quote-author { margin-top: 12px; font-weight: 600; color: #38bdf8; font-size: 0.95rem; }
         
-        .samvad-bg-container { max-width: 1000px; margin: 20px auto; border-radius: 24px; overflow: hidden; position: relative; background: linear-gradient(rgba(6, 9, 17, 0.88), rgba(6, 9, 17, 0.96)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80') center/cover; padding: 20px; min-height: 82vh; display: flex; flex-direction: column; box-shadow: var(--shadow-pro); border: 1px solid var(--border-glass); }
+        .samvad-bg-container { max-width: 1000px; margin: 15px auto; border-radius: 20px; overflow: hidden; position: relative; background: linear-gradient(rgba(8, 12, 20, 0.85), rgba(8, 12, 20, 0.95)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80') center/cover; padding: 15px; min-height: 80vh; display: flex; flex-direction: column; }
         @media(min-width: 768px) { .samvad-bg-container { padding: 35px; } }
-        #samvadLockScreen { background: var(--card-bg); border-radius: 22px; padding: 45px 25px; text-align: center; margin: auto; max-width: 420px; width: 100%; border: 1px solid var(--border-glass); box-shadow: var(--shadow-pro); }
-        #samvadLockScreen input { padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: white; text-align: center; font-size: 1.1rem; margin: 18px 0; width: 100%; outline: none; }
-        #samvadLockScreen button { background: var(--accent-color); color: #fff; padding: 14px 30px; border-radius: 14px; border: none; font-weight: 600; cursor: pointer; width: 100%; }
+        #samvadLockScreen { background: var(--card-bg); border-radius: 20px; padding: 40px 20px; text-align: center; margin: auto; max-width: 420px; width: 100%; }
+        #samvadLockScreen input { padding: 12px; border-radius: 12px; border: 1px solid var(--accent-color); background: rgba(0,0,0,0.4); color: white; text-align: center; font-size: 1.1rem; margin: 15px 0; width: 100%; outline: none; }
+        #samvadLockScreen button { background: var(--accent-color); color: #fff; padding: 12px 30px; border-radius: 25px; border: none; font-weight: 600; cursor: pointer; width: 100%; }
         .error-msg { color: #f87171; font-size: 0.85rem; display: none; margin-top: 10px; }
         #samvadContentScreen { display: none; flex: 1; flex-direction: column; }
         
-        .samvad-chat-header { background: rgba(13, 19, 33, 0.95); padding: 14px 20px; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); margin-bottom: 15px; backdrop-filter: blur(10px); }
-        .samvad-chat-header-left { display: flex; align-items: center; gap: 12px; }
-        .samvad-avatar { width: 40px; height: 40px; background: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Playfair Display', serif; color: #fff; flex-shrink: 0; box-shadow: 0 4px 12px rgba(244,63,94,0.4); }
-        .btn-chat-call { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; transition: 0.2s; flex-shrink: 0; }
-        .btn-chat-call:hover { background: #38bdf8; color: #060911; }
+        .samvad-chat-header { background: rgba(15, 23, 42, 0.95); padding: 10px 15px; border-radius: 14px 14px 0 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 12px; }
+        .samvad-chat-header-left { display: flex; align-items: center; gap: 10px; }
+        .samvad-avatar { width: 36px; height: 36px; background: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Playfair Display', serif; color: #fff; flex-shrink: 0; }
+        .btn-chat-call { background: rgba(56, 189, 248, 0.2); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; transition: 0.2s; flex-shrink: 0; }
+        .btn-chat-call:hover { background: #38bdf8; color: #0f172a; }
 
-        #webrtcCallModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(6, 9, 17, 0.95); z-index: 999999; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(20px); }
-        .webrtc-call-card { background: var(--card-bg); border: 1px solid var(--accent-color); width: 100%; max-width: 380px; border-radius: 28px; padding: 40px 25px; text-align: center; box-shadow: var(--shadow-pro); }
-        .call-pulsing-avatar { width: 85px; height: 85px; background: var(--accent-gradient); border: 2px solid var(--accent-color); border-radius: 50%; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; animation: pulseGlow 1.6s infinite; }
-        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7); } 70% { box-shadow: 0 0 0 25px rgba(244, 63, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); } }
-        .btn-hangup { background: #ef4444; color: #fff; border: none; padding: 14px 30px; border-radius: 14px; font-weight: 600; cursor: pointer; margin-top: 22px; font-size: 1rem; width: 100%; transition: 0.2s; }
-        .btn-hangup:hover { background: #dc2626; }
+        #webrtcCallModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(8, 12, 20, 0.95); z-index: 999999; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(15px); }
+        .webrtc-call-card { background: var(--card-bg); border: 1px solid var(--accent-color); width: 100%; max-width: 360px; border-radius: 26px; padding: 35px 20px; text-align: center; box-shadow: 0 25px 60px rgba(244, 63, 94, 0.4); }
+        .call-pulsing-avatar { width: 80px; height: 80px; background: var(--accent-gradient); border: 2px solid var(--accent-color); border-radius: 50%; margin: 0 auto 18px auto; display: flex; align-items: center; justify-content: center; font-size: 2rem; animation: pulseGlow 1.5s infinite; }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.6); } 70% { box-shadow: 0 0 0 20px rgba(244, 63, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); } }
+        .btn-hangup { background: #ef4444; color: #fff; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 600; cursor: pointer; margin-top: 20px; font-size: 1rem; width: 100%; }
 
-        #imageZoomModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.96); z-index: 9999999; display: none; justify-content: center; align-items: center; padding: 20px; }
-        #imageZoomModal img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 16px; box-shadow: 0 0 40px rgba(0,0,0,0.9); }
-        .close-zoom-btn { position: absolute; top: 25px; right: 25px; background: rgba(255,255,255,0.15); color: #fff; border: none; width: 42px; height: 42px; border-radius: 50%; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .close-zoom-btn:hover { background: rgba(255,255,255,0.3); }
+        #imageZoomModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 9999999; display: none; justify-content: center; align-items: center; padding: 15px; }
+        #imageZoomModal img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .close-zoom-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); color: #fff; border: none; width: 38px; height: 38px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        .urgent-email-banner { background: linear-gradient(135deg, #e11d48, #9f1239); padding: 12px 18px; border-radius: 14px; margin-bottom: 18px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; box-shadow: 0 8px 20px rgba(225, 29, 72, 0.3); }
+        .urgent-email-banner { background: linear-gradient(135deg, #e11d48, #9f1239); padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
         @media(min-width: 540px) { .urgent-email-banner { flex-direction: row; justify-content: space-between; align-items: center; } }
-        .urgent-email-banner span { font-size: 0.9rem; font-weight: 600; color: #fff; }
-        .btn-urgent-open { background: #fff; color: #e11d48; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.85rem; white-space: nowrap; transition: 0.2s; }
-        .btn-urgent-open:hover { transform: scale(1.03); }
+        .urgent-email-banner span { font-size: 0.85rem; font-weight: 600; color: #fff; }
+        .btn-urgent-open { background: #fff; color: #e11d48; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.8rem; white-space: nowrap; }
         
-        .samvad-filter-bar { background: rgba(13, 19, 33, 0.85); padding: 12px 18px; border-radius: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-glass); flex-wrap: wrap; gap: 10px; }
-        .btn-clear-date { background: #334155; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
-        .btn-clear-date:hover { background: #475569; }
+        .samvad-filter-bar { background: rgba(15, 23, 42, 0.8); padding: 10px 15px; border-radius: 14px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; gap: 10px; }
+        .btn-clear-date { background: #334155; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; }
         
-        .samvad-stream { flex: 1; background: rgba(13, 19, 33, 0.7); border-radius: 20px; padding: 18px; border: 1px solid var(--border-glass); margin-bottom: 18px; max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; backdrop-filter: blur(10px); }
-        @media(min-width: 768px) { .samvad-stream { padding: 24px; } }
+        .samvad-stream { flex: 1; background: rgba(15, 23, 42, 0.65); border-radius: 18px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        @media(min-width: 768px) { .samvad-stream { padding: 20px; } }
+        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 14px; position: relative; word-wrap: break-word; line-height: 1.4; }
+        @media(min-width: 580px) { .chat-bubble { max-width: 65%; } }
+        .chat-left { align-self: flex-start; background: rgba(30, 41, 59, 0.92); border-left: 4px solid #38bdf8; }
+        .chat-right { align-self: flex-end; background: rgba(131, 24, 67, 0.9); border-right: 4px solid var(--accent-color); }
+        .chat-sender { font-size: 0.7rem; font-weight: 700; color: #38bdf8; margin-bottom: 2px; text-transform: uppercase; }
+        .chat-right .chat-sender { color: #fecdd3; }
+        .chat-text { font-size: 0.9rem; color: #f8fafc; }
+        .chat-bubble img { width: 100%; max-height: 120px; object-fit: cover; border-radius: 8px; margin-top: 6px; cursor: pointer; transition: 0.2s; }
+        .chat-bubble img:hover { opacity: 0.85; }
         
-        .chat-bubble { max-width: 65%; padding: 8px 12px; border-radius: 12px; position: relative; word-wrap: break-word; font-size: 0.9rem; line-height: 1.4; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .chat-left { background: rgba(30, 41, 59, 0.85); border-left: 3px solid #38bdf8; color: #f8fafc; align-self: flex-start; border-top-left-radius: 3px; }
-        .chat-right { background: linear-gradient(135deg, #831843, #4c1d95); border-right: 3px solid var(--accent-color); color: #f8fafc; align-self: flex-end; border-top-right-radius: 3px; }
-        .chat-sender { font-size: 0.7rem; font-weight: 700; margin-bottom: 2px; opacity: 0.85; }
-        .chat-bubble img { width: 100%; max-height: 150px; object-fit: cover; border-radius: 8px; margin-top: 6px; cursor: pointer; }
-
-        .samvad-input-box { background: rgba(13, 19, 33, 0.92); padding: 18px; border-radius: 20px; border: 1px solid var(--border-glass); display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(12px); box-shadow: var(--shadow-pro); }
-        .samvad-input-box textarea { width: 100%; padding: 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #fff; resize: none; outline: none; min-height: 75px; font-size: 0.95rem; transition: 0.2s; }
-        .samvad-input-box textarea:focus { border-color: var(--accent-color); }
-        .btn-tiny-delete { position: absolute; top: 6px; right: 6px; background: none; border: none; color: #94a3b8; font-size: 0.8rem; cursor: pointer; padding: 2px 4px; transition: 0.2s; }
+        .samvad-input-box { background: rgba(15, 23, 42, 0.9); padding: 15px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 10px; }
+        .samvad-input-box textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #fff; resize: none; outline: none; min-height: 70px; font-size: 0.95rem; }
+        .btn-tiny-delete { position: absolute; top: 6px; right: 6px; background: none; border: none; color: #94a3b8; font-size: 0.8rem; cursor: pointer; padding: 2px 6px; }
         .btn-tiny-delete:hover { color: #ef4444; }
         
-        .sender-options-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        .sender-btn { background: rgba(30,41,59,0.7); border: 1px solid var(--border-glass); color: #fff; padding: 8px 14px; border-radius: 10px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
-        .sender-btn:hover { background: rgba(51, 65, 85, 0.9); }
-        .sender-btn.selected-sender { background: var(--accent-color); border-color: var(--accent-color); font-weight: 600; box-shadow: 0 4px 12px rgba(244,63,94,0.3); }
-
-        .mentor-container { display: flex; flex-direction: column; height: 72vh; background: rgba(13, 19, 33, 0.88); border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.3); overflow: hidden; box-shadow: var(--shadow-pro); backdrop-filter: blur(12px); }
-        .mentor-header { background: rgba(20, 30, 48, 0.9); padding: 14px 20px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border-glass); }
-        .mentor-avatar { width: 42px; height: 42px; background: linear-gradient(135deg, #38bdf8, #0284c7); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; box-shadow: 0 4px 12px rgba(56,189,248,0.3); }
-        .mentor-stream { flex: 1; padding: 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
-        .mentor-bubble { max-width: 80%; padding: 14px 18px; border-radius: 16px; word-wrap: break-word; line-height: 1.6; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .mentor-bubble.ai { background: rgba(56, 189, 248, 0.12); border-left: 4px solid #38bdf8; color: #f8fafc; align-self: flex-start; border-top-left-radius: 4px; }
-        .mentor-bubble.user { background: rgba(244, 63, 94, 0.18); border-right: 4px solid var(--accent-color); color: #f8fafc; align-self: flex-end; border-top-right-radius: 4px; }
-        .mentor-input-area { padding: 14px 18px; background: rgba(13, 19, 33, 0.95); border-top: 1px solid var(--border-glass); display: flex; gap: 12px; align-items: center; }
-        .mentor-input-area textarea { flex: 1; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.5); color: #fff; resize: none; outline: none; height: 48px; font-size: 0.95rem; transition: 0.2s; }
-        .mentor-input-area textarea:focus { border-color: #38bdf8; }
-        .mentor-send-btn { background: #38bdf8; color: #060911; border: none; padding: 0 24px; height: 48px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(56,189,248,0.3); }
-        .mentor-send-btn:hover { background: #0ea5e9; transform: translateY(-1px); }
+        .sender-options-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .sender-btn { background: rgba(30,41,59,0.8); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; }
+        .sender-btn.selected-sender { background: var(--accent-color); border-color: var(--accent-color); font-weight: 600; }
     </style>
 </head>
 <body class="theme-dark">
@@ -304,92 +257,45 @@
         <div class="master-lock-card">
             <h2>WWT ✦ Secure App</h2>
             <p>Enter our private entry passcode to unlock</p>
-            <input type="password" id="masterPassInput" placeholder="••••" onkeydown="handleMasterKeydown(event)">
+            <input type="password" id="masterPassInput" placeholder="Enter Passcode..." onkeydown="handleMasterKeydown(event)">
             <button onclick="unlockMasterApp()">Unlock App 🚀</button>
             <p class="master-error" id="masterErrorMsg">Incorrect Passcode. Try again!</p>
         </div>
     </div>
 
-    <!-- Emoji Picker Modal on Double Tap -->
-    <div id="emojiPickerModal">
-        <div class="section-modal-card" style="max-width:320px;">
-            <h2>Add Emoji Reaction</h2>
-            <div style="display:flex; justify-content:center; gap:12px; font-size:2rem; margin:20px 0; flex-wrap:wrap;">
-                <span style="cursor:pointer;" onclick="selectEmojiReaction('❤️')">❤️</span>
-                <span style="cursor:pointer;" onclick="selectEmojiReaction('😂')">😂</span>
-                <span style="cursor:pointer;" onclick="selectEmojiReaction('🔥')">🔥</span>
-                <span style="cursor:pointer;" onclick="selectEmojiReaction('👍')">👍</span>
-                <span style="cursor:pointer;" onclick="selectEmojiReaction('🥺')">🥺</span>
-                <span style="cursor:pointer;" onclick="selectEmojiReaction('🚀')">🚀</span>
-            </div>
-            <button onclick="document.getElementById('emojiPickerModal').style.display='none'">Cancel</button>
-        </div>
-    </div>
-
-    <!-- Music Settings Modal -->
-    <div id="musicSettingsModal">
-        <div class="settings-content" style="max-width:480px;">
-            <h3>⚙ Lo-Fi Songs Manager</h3>
-            <p style="font-size:0.85rem; color:var(--text-sub); margin-bottom:15px;">Add, edit, delete, or set songs as default:</p>
-            <div style="background:rgba(30,41,59,0.5); padding:14px; border-radius:12px; margin-bottom:15px; border:1px solid var(--border-glass);">
-                <label style="font-size:0.85rem; color:var(--accent-color); font-weight:600;">Add New Song:</label>
-                <input type="text" id="newSongNameInput" placeholder="Song Title" style="width:100%; padding:8px; margin-top:6px; margin-bottom:8px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:6px; outline:none; font-size:0.9rem;">
-                <div class="file-upload-wrapper" style="width:100%; margin-bottom:8px;">📁 Choose Audio File <input type="file" id="newSongAudioInput" accept="audio/*"></div>
-                <button onclick="addNewCustomSong()" style="background:var(--accent-color); color:#fff; border:none; padding:8px; border-radius:6px; font-weight:600; cursor:pointer; width:100%; font-size:0.85rem;">Save & Add Song ✦</button>
-            </div>
-            <div id="customSongsListContainer" style="max-height:200px; overflow-y:auto; margin-bottom:15px;"></div>
-            <button class="btn-close-modal" onclick="closeMusicSettingsModal()">Close Manager</button>
-        </div>
-    </div>
-
-    <!-- Edit ZigZag Month Memory Modal -->
-    <div class="settings-modal" id="editZigZagModal">
-        <div class="settings-content">
-            <h3>⚙ Edit Month Memory & Note</h3>
-            <input type="hidden" id="editZigZagMonthId">
-            <div style="margin-bottom:15px;"><label style="font-size:0.9rem; display:block; margin-bottom:6px; color:var(--text-sub);">Fun Note / Quote:</label><textarea id="editZigZagShayari" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; min-height:85px; outline:none; font-size:0.95rem;"></textarea></div>
-            <div style="margin-bottom:18px;"><label style="font-size:0.9rem; display:block; margin-bottom:6px; color:var(--text-sub);">Memory Photo:</label><div class="file-upload-wrapper" style="width:100%;">📁 Choose Photo <input type="file" id="editZigZagImgInput" accept="image/*"></div></div>
-            <button onclick="saveZigZagEdit()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer;">Save Changes ✦</button>
-            <button class="btn-close-modal" onclick="closeEditZigZagModal()">Cancel</button>
-        </div>
-    </div>
-
-    <!-- 📞 INCOMING CALL NOTIFICATION MODAL -->
     <div id="incomingCallModal">
         <div class="webrtc-call-card" style="border-color: #38bdf8;">
             <div class="call-pulsing-avatar" style="background: linear-gradient(135deg, #0369a1, #0284c7);">📞</div>
             <h3 style="color:#38bdf8; font-family:'Playfair Display',serif; font-size:1.4rem; margin-bottom:8px;">Incoming Voice Call</h3>
-            <p style="color:var(--text-sub); font-size:0.95rem; margin-bottom:22px;"><b id="incomingCallerName">Partner</b> is calling you...</p>
-            <div style="display: flex; gap: 12px;">
-                <button onclick="declineIncomingCall()" style="background:#ef4444; color:#fff; border:none; padding:12px; border-radius:14px; font-weight:600; cursor:pointer; flex:1; font-size:0.95rem;">Decline ❌</button>
-                <button onclick="acceptIncomingCall()" style="background:#22c55e; color:#fff; border:none; padding:12px; border-radius:14px; font-weight:600; cursor:pointer; flex:1; font-size:0.95rem;">Accept 📞</button>
+            <p style="color:var(--text-sub); font-size:0.95rem; margin-bottom:18px;"><b id="incomingCallerName">Partner</b> is calling you...</p>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="declineIncomingCall()" style="background:#ef4444; color:#fff; border:none; padding:10px; border-radius:20px; font-weight:600; cursor:pointer; flex:1; font-size:0.9rem;">Decline ❌</button>
+                <button onclick="acceptIncomingCall()" style="background:#22c55e; color:#fff; border:none; padding:10px; border-radius:20px; font-weight:600; cursor:pointer; flex:1; font-size:0.9rem;">Accept 📞</button>
             </div>
         </div>
     </div>
 
-    <!-- 📞 ACTIVE WEBRTC NATIVE AUDIO CALL OVERLAY -->
     <div id="webrtcCallModal">
         <div class="webrtc-call-card">
             <div class="call-pulsing-avatar">🎙️</div>
             <h3 style="color:var(--accent-color); font-family:'Playfair Display',serif; font-size:1.4rem; margin-bottom:8px;">Live Voice Call</h3>
-            <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:18px;" id="callStatusText">Connecting direct audio channel...</p>
-            <audio id="remoteAudioStream" autoplay controls playsinline style="width: 100%; margin-bottom: 15px; border-radius: 8px;"></audio>
+            <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:15px;" id="callStatusText">Connecting direct audio channel...</p>
+            <audio id="remoteAudioStream" autoplay controls playsinline style="width: 100%; margin-bottom: 12px;"></audio>
             <button class="btn-hangup" onclick="endWebRtcCall()">End Call ❌</button>
         </div>
     </div>
 
-    <!-- 🔍 FULLSCREEN IMAGE ZOOM MODAL -->
     <div id="imageZoomModal" onclick="closeImageZoom()">
         <button class="close-zoom-btn" onclick="closeImageZoom()">×</button>
         <img id="zoomedImageElement" src="" alt="Zoomed View">
     </div>
 
     <div id="birthdayPopupModal">
-        <div class="section-modal-card" style="border-color:#facc15; box-shadow:0 0 50px rgba(250,204,21,0.5);">
-            <div style="font-size:3.2rem; margin-bottom:10px;">👑🎉</div>
+        <div class="section-modal-card" style="border-color:#facc15; box-shadow:0 0 40px rgba(250,204,21,0.6);">
+            <div style="font-size:3rem; margin-bottom:8px;">👑🎉</div>
             <h2 style="color:#facc15;">Happy Birthday Bhuvi!</h2>
-            <p style="font-style:normal; font-size:1.05rem; line-height:1.6;">"May your special day bring you as much joy, success, and love as you bring into our lives. Let's make this year our biggest victory! 💖🎂"</p>
-            <button onclick="closeBirthdayPopup()" style="background:#facc15; color:#0f172a; font-weight:700; margin:0 auto; display:block;">Celebrate 🎊</button>
+            <p style="font-style:normal; font-size:1rem; line-height:1.6;">"May your special day bring you as much joy, success, and love as you bring into our lives. Let's make this year our biggest victory! 💖🎂"</p>
+            <button onclick="closeBirthdayPopup()" style="background:#facc15; color:#0f172a; font-weight:750; margin:0 auto; display:block;">Celebrate 🎊</button>
         </div>
     </div>
 
@@ -399,18 +305,18 @@
     <div id="bhuviSmileModal" class="section-custom-modal"><div class="section-modal-card"><h2>Reason Jar</h2><p>"Bhuvi muskurao jara"</p><button onclick="closeSectionModal('bhuviSmileModal')" style="margin:0 auto; display:block;">Muskura Diya 😊</button></div></div>
     <div id="diaryModal" class="section-custom-modal"><div class="section-modal-card"><h2>Hamari Diary</h2><p>"Man kar raha haina likhne ka"</p><button onclick="closeSectionModal('diaryModal')" style="margin:0 auto; display:block;">Haan bohot zyada ✍️</button></div></div>
 
-    <!-- 🎵 COMPACT FLOATING MUSIC PLAYER WITH SETTINGS GEAR -->
     <div id="floatingMusicPlayer">
-        <span class="music-spin" id="musicIcon" onclick="toggleFloatingMusic()" title="Play / Pause">💿</span>
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%; overflow:hidden;">
+        <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
+            <span class="music-spin" id="musicIcon">💿</span>
             <div style="font-size: 0.75rem; overflow:hidden;">
-                <div style="font-weight: 600; color: var(--accent-color); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="currentTrackTitle">Lights Lofi</div>
+                <div style="font-weight: 600; color: var(--accent-color); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="currentTrackTitle">Gentle Rain Lofi</div>
                 <div style="font-size: 0.65rem; color: var(--text-sub);" id="trackStatus">Paused</div>
             </div>
-            <div style="display:flex; gap:4px; flex-shrink:0;">
-                <button onclick="toggleFloatingMusic()" id="floatingPlayBtn" style="background:var(--accent-color); border:none; color:#fff; width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:0.7rem;">▶</button>
-                <button onclick="openMusicSettingsModal()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:0.7rem;" title="Song Settings">⚙</button>
-            </div>
+        </div>
+        <div style="display:flex; gap:6px; flex-shrink:0;">
+            <button onclick="toggleFloatingMusic()" id="floatingPlayBtn" style="background:var(--accent-color); border:none; color:#fff; width:26px; height:26px; border-radius:50%; cursor:pointer; font-size:0.75rem;">▶</button>
+            <button onclick="playNextSong()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:26px; height:26px; border-radius:50%; cursor:pointer; font-size:0.75rem;" title="Next Song">⏭</button>
+            <button onclick="openMusicManagerModal()" style="background:rgba(255,255,255,0.1); border:none; color:#fff; width:26px; height:26px; border-radius:50%; cursor:pointer; font-size:0.75rem;" title="Upload or Change Song">⚙</button>
         </div>
     </div>
 
@@ -423,11 +329,10 @@
                 <button class="drawer-item" onclick="switchTabMobile('sec-specialday', this)">👑 A Special Day</button>
                 <button class="drawer-item" onclick="switchTabMobile('sec-views', this, false, 'najriyaModal')">👁️ Najriya</button>
                 <button class="drawer-item" onclick="switchTabMobile('sec-samvad', this, true)">💬 Samvad <span class="notif-badge" id="drawerNotifBadge" style="position:static; display:inline-block; margin-left:6px;"></span></button>
-                <button class="drawer-item" onclick="switchTabMobile('sec-mentor', this)">🤖 JEE Mentor</button>
                 <button class="drawer-item" onclick="switchTabMobile('sec-timer', this, false, 'timerModal')">⏳ Study Timer</button>
                 <button class="drawer-item" onclick="switchTabMobile('sec-jar', this, false, 'bhuviSmileModal')">🫙 Reason Jar</button>
                 <button class="drawer-item" onclick="switchTabMobile('sec-diary', this, false, 'diaryModal')">📔 Hamari Diary</button>
-                <button class="drawer-item" onclick="openGlobalSettings(); toggleMobileMenu();" style="margin-top:15px; background:rgba(56,189,248,0.15); color:#38bdf8; border-color:rgba(56,189,248,0.3);">⚙ Settings & Themes</button>
+                <button class="drawer-item" onclick="openGlobalSettings(); toggleMobileMenu();" style="margin-top:15px; background:rgba(56,189,248,0.2); color:#38bdf8;">⚙ Settings & Themes</button>
             </div>
         </div>
 
@@ -440,7 +345,6 @@
                     <button class="nav-item" onclick="switchTab('sec-specialday', this)">A Special Day</button>
                     <button class="nav-item" onclick="switchTab('sec-views', this, false, 'najriyaModal')">Najriya</button>
                     <button class="nav-item" onclick="switchTab('sec-samvad', this, true, '', 'samvadMsgModal')" id="navSamvadBtn">Samvad <span class="notif-badge" id="samvadNotifBadge"></span></button>
-                    <button class="nav-item" onclick="switchTab('sec-mentor', this)">🤖 JEE Mentor</button>
                     <button class="nav-item" onclick="switchTab('sec-timer', this, false, 'timerModal')">Study Timer</button>
                     <button class="nav-item" onclick="switchTab('sec-jar', this, false, 'bhuviSmileModal')">Reason Jar</button>
                     <button class="nav-item" onclick="switchTab('sec-diary', this, false, 'diaryModal')">Hamari Diary</button>
@@ -451,10 +355,10 @@
 
         <div class="main-container">
             <div id="sec-dashboard" class="section active">
-                <div class="page-header"><h2>Mission IIT Bombay 2028</h2><p id="dynamicGreetingSub" style="font-size:1.05rem; color:var(--accent-color); font-weight:600; margin-top:6px;">Good Morning, Bhuvi ☀️</p></div>
-                <div style="background: var(--card-bg); border: 1px solid var(--border-glass); border-radius: 16px; padding: 14px 20px; margin-bottom: 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; backdrop-filter: blur(10px);">
-                    <div style="display: flex; align-items: center; gap: 10px;"><span style="font-size: 1.2rem;">✨</span><span style="font-size: 0.9rem; color: #cbd5e1;">Manu & Bhuvi focused on IIT Bombay prep 🎯</span></div>
-                    <div style="display: flex; align-items: center; gap: 8px; background: rgba(244,63,94,0.15); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(244,63,94,0.3);"><span>🔥</span><span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-color);">Study Streak: 5 Days</span></div>
+                <div class="page-header"><h2>Mission IIT Bombay 2028</h2><p id="dynamicGreetingSub" style="font-size:1rem; color:var(--accent-color); font-weight:600; margin-top:4px;">Good Morning, Bhuvi ☀️</p></div>
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 1.1rem;">✨</span><span style="font-size: 0.85rem; color: #cbd5e1;">Manu & Bhuvi focused on IIT Bombay prep 🎯</span></div>
+                    <div style="display: flex; align-items: center; gap: 6px; background: rgba(244,63,94,0.15); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(244,63,94,0.3);"><span>🔥</span><span style="font-size: 0.82rem; font-weight: 600; color: var(--accent-color);">Study Streak: 5 Days</span></div>
                 </div>
                 <div class="region-chart-hero" id="regionChartHeroBg" style="background-image: url('https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1400&q=80');">
                     <div class="region-chart-overlay"></div>
@@ -463,28 +367,27 @@
                 </div>
                 <div class="dashboard-grid">
                     <div class="countdown-container"><h3>JEE 2028 Countdown</h3><div class="vertical-time-box"><div class="v-box"><p id="advDays">00</p><span>Days</span></div><div class="v-box"><p id="advHours">00</p><span>Hrs</span></div><div class="v-box"><p id="advMins">00</p><span>Mins</span></div><div class="v-box"><p id="advSecs">00</p><span>Secs</span></div></div></div>
-                    <div style="background:var(--card-bg); border-radius:24px; padding:22px; border:1px solid var(--border-glass); display:flex; flex-direction:column; justify-content:center; text-align:center; backdrop-filter:blur(12px); box-shadow:var(--shadow-pro);"><h4 style="color:var(--accent-color); font-family:'Playfair Display',serif; margin-bottom:8px; font-size:1.1rem;">Quick Note 📌</h4><p style="font-size:0.9rem; color:var(--text-sub); font-style:italic; line-height:1.5;">"Consistent effort beats talent when talent doesn't work hard."</p></div>
+                    <div style="background:var(--card-bg); border-radius:20px; padding:18px; border:1px solid rgba(255,255,255,0.1); display:flex; flex-direction:column; justify-content:center; text-align:center;"><h4 style="color:var(--accent-color); font-family:'Playfair Display',serif; margin-bottom:6px;">Quick Note 📌</h4><p style="font-size:0.85rem; color:var(--text-sub); font-style:italic;">"Consistent effort beats talent when talent doesn't work hard."</p></div>
                 </div>
                 <div class="roadmap-container">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;"><h3 style="font-family:'Playfair Display', serif; color:var(--accent-color); font-size:1.25rem;">🎯 IIT Bombay Milestone Roadmap</h3><button onclick="openRoadmapEditor()" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:6px 14px; border-radius:15px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:0.2s;">⚙ Edit Steps</button></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;"><h3 style="font-family:'Playfair Display', serif; color:var(--accent-color); font-size:1.2rem;">🎯 IIT Bombay Milestone Roadmap</h3><button onclick="openRoadmapEditor()" style="background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:5px 12px; border-radius:15px; font-size:0.75rem; cursor:pointer; font-weight:600;">⚙ Edit Steps</button></div>
                     <div class="roadmap-grid" id="roadmapGridContainer"></div>
                 </div>
                 <div class="scratch-card-box">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
-                        <div><h3 style="font-family:'Playfair Display', serif; color:var(--accent-color); font-size:1.25rem;">💌 Secret Scratch Note</h3><p style="font-size:0.8rem; color:var(--text-sub);">Scratch below with your mouse or finger!</p></div>
-                        <button onclick="openScratchNotesManager()" style="background:rgba(244,63,94,0.15); color:var(--accent-color); border:1px solid rgba(244,63,94,0.3); padding:6px 14px; border-radius:15px; font-size:0.8rem; cursor:pointer; font-weight:600; transition:0.2s;">⚙ Manage 30+</button>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                        <div><h3 style="font-family:'Playfair Display', serif; color:var(--accent-color); font-size:1.2rem;">💌 Secret Scratch Note</h3><p style="font-size:0.75rem; color:var(--text-sub);">Scratch below with your mouse or finger!</p></div>
+                        <button onclick="openScratchNotesManager()" style="background:rgba(244,63,94,0.2); color:var(--accent-color); border:1px solid rgba(244,63,94,0.4); padding:5px 12px; border-radius:15px; font-size:0.75rem; cursor:pointer; font-weight:600;">⚙ Manage 30+</button>
                     </div>
                     <div class="scratch-container"><div class="hidden-message" id="scratchMessageText">"Loading secret note..."</div><canvas class="scratch-overlay-canvas" id="scratchCanvas"></canvas></div>
-                    <button onclick="resetScratchCard()" style="margin-top:12px; background:none; border:none; color:var(--accent-color); font-size:0.85rem; cursor:pointer; text-decoration:underline;">New Scratch Note ↺</button>
+                    <button onclick="resetScratchCard()" style="margin-top:10px; background:none; border:none; color:var(--accent-color); font-size:0.8rem; cursor:pointer; text-decoration:underline;">New Scratch Note ↺</button>
                 </div>
                 <div class="dynamic-hero-section" id="dailyHeroBg" style="margin-top:25px; cursor:pointer;" onclick="handleDailyQuoteClick()" title="Click to Change Quote & Background">
-                    <div style="position:absolute; top:15px; right:15px; background:rgba(0,0,0,0.6); color:#fff; border:1px solid rgba(255,255,255,0.2); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:10; backdrop-filter:blur(6px);" onclick="event.stopPropagation(); openHeroSettingModal()" title="Manage Quotes & Photos">⚙</div>
+                    <div style="position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.7); color:#fff; border:1px solid rgba(255,255,255,0.3); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:10;" onclick="event.stopPropagation(); openHeroSettingModal()" title="Manage Quotes & Photos">⚙</div>
                     <div class="hero-overlay"></div>
-                    <div class="hero-content"><h3 style="font-size:1.15rem; margin-bottom:8px; color:#fff; font-family:'Playfair Display',serif;">✨ Daily Wisdom & Quotes</h3><p class="quote-slider-text" id="dailyQuoteText">Loading quote...</p><div class="quote-author" id="dailyQuoteAuthor">Loading author...</div></div>
+                    <div class="hero-content"><h3 style="font-size:1.1rem; margin-bottom:6px;">✨ Daily Wisdom & Quotes</h3><p class="quote-slider-text" id="dailyQuoteText">Loading quote...</p><div class="quote-author" id="dailyQuoteAuthor">Loading author...</div></div>
                 </div>
             </div>
 
-            <!-- Special Day Section -->
             <div id="sec-specialday" class="section">
                 <div class="special-day-container">
                     <h2>👑 A Special Day — Bhuvi's Birthday Journey</h2>
@@ -496,30 +399,29 @@
             <div id="sec-views" class="section">
                 <div class="diary-professional-container" id="najriyaBgContainer" style="background-image: url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1200&q=80');">
                     <div class="diary-professional-overlay"></div>
-                    <div style="position:absolute; top:18px; right:18px; background:rgba(0,0,0,0.6); color:#fff; padding:6px 14px; border-radius:20px; font-size:0.8rem; cursor:pointer; z-index:10; backdrop-filter:blur(6px);" onclick="openNajriyaBgModal()">⚙ Change BG</div>
+                    <div style="position:absolute; top:15px; right:15px; background:rgba(0,0,0,0.7); color:#fff; padding:6px 12px; border-radius:20px; font-size:0.75rem; cursor:pointer; z-index:10;" onclick="openNajriyaBgModal()">⚙ Change BG</div>
                     <div class="diary-content-wrapper">
                         <div class="page-header"><h2>Apna Najriya / Perspectives</h2><p>Share your views, notes, photographs or voice notes</p></div>
                         <div class="diary-input-card">
-                            <h3 style="color:var(--accent-color); font-family:'Playfair Display',serif; margin-bottom:12px;">Add Your Perspective</h3>
-                            <div class="sender-options-row" style="margin-bottom:12px;"><span style="font-size: 0.85rem; color: var(--text-sub);">Posting as:</span><button type="button" class="sender-btn selected-sender" id="btnViewManu" onclick="setViewSender('Manu')">Manu ✦</button><button type="button" class="sender-btn" id="btnViewBhumi" onclick="setViewSender('Bhuvi')">Bhuvi ✦</button></div>
-                            <div style="margin-bottom:12px;"><label style="font-size:0.85rem; display:block; margin-bottom:6px; color:var(--text-sub);">Topic / Subject:</label><input type="text" id="viewTopic" placeholder="e.g., Physics Mechanics..." style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.15); background:rgba(0,0,0,0.4); color:#fff; outline:none; font-size:0.95rem;"></div>
-                            <div style="margin-bottom:12px;"><label style="font-size:0.85rem; display:block; margin-bottom:6px; color:var(--text-sub);">Your Thoughts:</label><textarea id="viewText" placeholder="Write your thoughts..." style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.15); background:rgba(0,0,0,0.4); color:#fff; min-height:75px; outline:none; font-size:0.95rem;"></textarea></div>
-                            <div style="margin-bottom:15px;"><div class="file-upload-wrapper">📁 Choose Image <input type="file" id="viewImageInput" accept="image/*"></div></div>
-                            <button onclick="submitView()" style="background:var(--accent-color); color:#fff; border:none; padding:12px 20px; border-radius:12px; font-weight:600; cursor:pointer; width:100%; transition:0.2s;">Publish Perspective ✦</button>
+                            <h3>Add Your Perspective</h3>
+                            <div class="sender-options-row" style="margin-bottom:10px;"><span style="font-size: 0.8rem; color: var(--text-sub);">Posting as:</span><button type="button" class="sender-btn selected-sender" id="btnViewManu" onclick="setViewSender('Manu')">Manu ✦</button><button type="button" class="sender-btn" id="btnViewBhumi" onclick="setViewSender('Bhuvi')">Bhuvi ✦</button></div>
+                            <div style="margin-bottom:10px;"><label style="font-size:0.8rem; display:block; margin-bottom:4px;">Topic / Subject:</label><input type="text" id="viewTopic" placeholder="e.g., Physics Mechanics..." style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; outline:none; font-size:0.9rem;"></div>
+                            <div style="margin-bottom:10px;"><label style="font-size:0.8rem; display:block; margin-bottom:4px;">Your Thoughts:</label><textarea id="viewText" placeholder="Write your thoughts..." style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; min-height:65px; outline:none; font-size:0.9rem;"></textarea></div>
+                            <div style="margin-bottom:12px;"><div class="file-upload-wrapper">📁 Choose Image <input type="file" id="viewImageInput" accept="image/*"></div></div>
+                            <button onclick="submitView()" style="background:var(--accent-color); color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:600; cursor:pointer; width:100%;">Publish Perspective ✦</button>
                         </div>
-                        <h3 style="color: var(--accent-color); font-family: 'Playfair Display', serif; margin-bottom: 18px; font-size: 1.3rem;">Saved Perspectives</h3>
+                        <h3 style="color: var(--accent-color); font-family: 'Playfair Display', serif; margin-bottom: 15px; font-size: 1.2rem;">Saved Perspectives</h3>
                         <div class="sticky-grid" id="viewsGalleryContainer"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Samvad Section -->
             <div id="sec-samvad" class="section">
                 <div class="samvad-bg-container">
                     <div id="samvadLockScreen">
-                        <h2 style="color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.8rem;">🔒 Samvad</h2>
-                        <p style="color: var(--text-sub); margin-top: 8px; font-size: 0.95rem;">Enter private passcode to open our chat space</p>
-                        <input type="password" id="samvadPassword" placeholder="••••" onkeydown="handleSamvadLockKeydown(event)"><br>
+                        <h2 style="color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.6rem;">🔒 Samvad</h2>
+                        <p style="color: var(--text-sub); margin-top: 8px; font-size: 0.9rem;">Enter private passcode to open our chat space</p>
+                        <input type="password" id="samvadPassword" placeholder="Enter Password..."><br>
                         <button onclick="checkSamvadPassword()">Unlock Samvad</button>
                         <p class="error-msg" id="samvadError">Incorrect Password. Try again.</p>
                     </div>
@@ -528,96 +430,75 @@
                             <div class="samvad-chat-header-left">
                                 <div class="samvad-avatar">MB</div>
                                 <div>
-                                    <h4 style="color: #fff; font-size: 1rem; font-family: 'Playfair Display', serif;">Manu & Bhuvi 💖</h4>
-                                    <span style="font-size: 0.75rem; color: #34d399;" id="typingStatusIndicator">● Online & Secured</span>
+                                    <h4 style="color: #fff; font-size: 0.95rem; font-family: 'Playfair Display', serif;">Manu & Bhuvi 💖</h4>
+                                    <span style="font-size: 0.7rem; color: #34d399;" id="typingStatusIndicator">● Online & Secured</span>
                                 </div>
                             </div>
-                            <div class="samvad-call-actions" style="display:flex; gap:10px; align-items:center;">
-                                <button class="btn-chat-call" onclick="openTicTacToeModal()" title="Play Tic-Tac-Toe Game" style="font-size:1rem;">🎮</button>
+                            <div class="samvad-call-actions" style="display:flex; gap:8px; align-items:center;">
+                                <button class="btn-chat-call" onclick="openTicTacToeModal()" title="Play Tic-Tac-Toe Game" style="font-size:0.9rem;">🎮</button>
                                 <button class="btn-chat-call" onclick="initiateVoiceCall()" title="Start Voice Call">📞</button>
                             </div>
                         </div>
 
                         <div class="urgent-email-banner"><span>⚡ Send Urgent Message directly to Manu's Email</span><button class="btn-urgent-open" onclick="openUrgentEmailModal()">Send Urgent Email ✉</button></div>
-                        <div class="samvad-filter-bar"><div style="display: flex; align-items: center; gap: 10px; font-size:0.9rem;"><label style="color:var(--text-sub);">📅 Date:</label><input type="date" id="calendarFilter" onchange="loadSamvadMessagesFromFirebase()" style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:6px 10px; border-radius:8px; outline:none;"></div><button class="btn-clear-date" onclick="clearDateFilter()">Show All</button></div>
+                        <div class="samvad-filter-bar"><div style="display: flex; align-items: center; gap: 8px; font-size:0.85rem;"><label>📅 Date:</label><input type="date" id="calendarFilter" onchange="loadSamvadMessagesFromFirebase()" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:4px 8px; border-radius:6px; outline:none;"></div><button class="btn-clear-date" onclick="clearDateFilter()">Show All</button></div>
                         <div class="samvad-stream" id="samvadMessagesList"></div>
                         <div class="samvad-input-box">
-                            <div class="sender-options-row"><span style="font-size: 0.85rem; color: var(--text-sub);">Posting as:</span><button type="button" class="sender-btn selected-sender" id="btnSenderManu" onclick="setSender('Manu')">Manu ✦</button><button type="button" class="sender-btn" id="btnSenderBhumi" onclick="setSender('Bhuvi')">Bhuvi ✦</button></div>
-                            <textarea id="samvadMsgInput" rows="2" placeholder="Type message... (Double tap messages for emojis)" oninput="emitTypingStatus()" onkeydown="handleSamvadKeydown(event)"></textarea>
-                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                                <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                                    <div class="file-upload-wrapper" style="width:auto; padding:8px 14px; font-size:0.85rem;">📁 Image <input type="file" id="samvadImageInput" accept="image/*"></div>
-                                    <button type="button" id="recordVoiceBtn" onclick="toggleVoiceRecording()" class="sender-btn" style="background:rgba(56,189,248,0.15); border-color:rgba(56,189,248,0.3); color:#38bdf8;">🎙️ Record Voice</button>
+                            <div class="sender-options-row"><span style="font-size: 0.8rem; color: var(--text-sub);">Posting as:</span><button type="button" class="sender-btn selected-sender" id="btnSenderManu" onclick="setSender('Manu')">Manu ✦</button><button type="button" class="sender-btn" id="btnSenderBhumi" onclick="setSender('Bhuvi')">Bhuvi ✦</button></div>
+                            <textarea id="samvadMsgInput" rows="2" placeholder="Type message... (Press Enter to send)" oninput="emitTypingStatus()" onkeydown="handleSamvadKeydown(event)"></textarea>
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                                    <div class="file-upload-wrapper" style="width:auto; padding:6px 12px; font-size:0.8rem;">📁 Image <input type="file" id="samvadImageInput" accept="image/*"></div>
+                                    <button type="button" id="recordVoiceBtn" onclick="toggleVoiceRecording()" class="sender-btn" style="background:rgba(56,189,248,0.2); border-color:rgba(56,189,248,0.4); color:#38bdf8;">🎙️ Record Voice</button>
                                 </div>
-                                <button onclick="dropSamvadMessage()" style="background: var(--accent-color); padding: 10px 22px; border-radius: 12px; border:none; color:#fff; font-weight:600; cursor:pointer; font-size:0.9rem; transition:0.2s;">Send 💌</button>
+                                <button onclick="dropSamvadMessage()" style="background: var(--accent-color); padding: 8px 18px; border-radius: 10px; border:none; color:#fff; font-weight:600; cursor:pointer; font-size:0.85rem;">Send 💌</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 🤖 JEE MENTOR AI SECTION -->
-            <div id="sec-mentor" class="section">
-                <div class="main-container" style="max-width: 950px; padding: 10px 0;">
-                    <div class="page-header">
-                        <h2>🤖 JEE Mentor AI</h2>
-                        <p>"Tumhare har JEE doubt aur life stress ka personal AI solution"</p>
-                    </div>
-                    <div class="mentor-container">
-                        <div class="mentor-header">
-                            <div class="mentor-avatar">🧠</div>
-                            <div>
-                                <h4 style="color: #fff; font-size: 1.05rem; font-family: 'Playfair Display',serif;">JEE & Life Guide AI</h4>
-                                <span style="font-size: 0.78rem; color: #38bdf8;">● Ready to help Manu & Bhuvi</span>
-                            </div>
-                        </div>
-                        <div class="mentor-stream" id="mentorChatStream">
-                            <div class="mentor-bubble ai">Hello Manu & Bhuvi! Main aapka personal JEE Mentor aur AI Friend hoon. Physics, Chemistry, Maths ka koi bhi sawal ho ya life mein koi stress chal raha ho, mujhse बेझिझक पूछो! 🚀💖</div>
-                        </div>
-                        <div class="mentor-input-area">
-                            <textarea id="mentorInputText" placeholder="Ask your JEE doubt or share your problem..." onkeydown="handleMentorKeydown(event)"></textarea>
-                            <button class="mentor-send-btn" onclick="sendToMentorAi()">Ask AI ✦</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 🎮 REAL-TIME TIC-TAC-TOE MINI GAME MODAL -->
             <div id="tictactoeModal">
-                <div class="section-modal-card" style="max-width:360px;">
-                    <h2>🎮 Tic-Tac-Toe</h2>
-                    <p id="tttStatusText" style="font-size:1rem; font-style:normal; margin-bottom:18px;">Turn: Player (X)</p>
-                    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:22px;">
-                        <button onclick="makeTttMove(0)" id="ttt-0" style="height:75px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.15); font-size:2.2rem; color:#fff; border-radius:12px; cursor:pointer; transition:0.2s;"></button>
-                        <button onclick="makeTttMove(1)" id="ttt-1" style="height:75px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.15); font-size:2.2rem; color:#fff; border-radius:12px; cursor:pointer; transition:0.2s;"></button>
-                        <button onclick="makeTttMove(2)" id="ttt-2" style="height:75px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.15); font-size:2.2rem; color:#fff; border-radius:12px; cursor:pointer; transition:0.2s;"></button>
-                        <button onclick="makeTttMove(3)" id="ttt-3" style="height:75px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.15); font-size:2.2rem; color:#fff; border-radius:12px; cursor:pointer; transition:0.2s;"></button>
-                        <button onclick="makeTttMove(4)" id="ttt-4" style="height:75px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.15); font-size:2.2rem; color:#fff; border-radius:12px; cursor:pointer; transition:0.2s;"></button>
-                        <button onclick="makeTttMove(5)" id="ttt-5" style="height:75px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.15); font-size:2.2rem; color:#fff; border-radius:12px; cursor:pointer; transition:0.2s;"></button>
-                        <button onclick="makeTttMove(6)" id="ttt-6" style="height:75px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.15); font-size:2.2rem; color:#fff; border-radius:12px; cursor:pointer; transition:0.2s;"></button>
-                        <button onclick="makeTttMove(7)" id="ttt-7" style="height:75px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.15); font-size:2.2rem; color:#fff; border-radius:12px; cursor:pointer; transition:0.2s;"></button>
-                        <button onclick="makeTttMove(8)" id="ttt-8" style="height:75px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.15); font-size:2.2rem; color:#fff; border-radius:12px; cursor:pointer; transition:0.2s;"></button>
+                <div class="section-modal-card" style="max-width:340px;">
+                    <h2>🎮 Live Tic-Tac-Toe</h2>
+                    <p id="tttStatusText" style="font-size:0.95rem; font-style:normal; margin-bottom:15px;">Connecting...</p>
+                    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:20px;">
+                        <button onclick="makeTttMove(0)" id="ttt-0" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
+                        <button onclick="makeTttMove(1)" id="ttt-1" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
+                        <button onclick="makeTttMove(2)" id="ttt-2" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
+                        <button onclick="makeTttMove(3)" id="ttt-3" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
+                        <button onclick="makeTttMove(4)" id="ttt-4" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
+                        <button onclick="makeTttMove(5)" id="ttt-5" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
+                        <button onclick="makeTttMove(6)" id="ttt-6" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
+                        <button onclick="makeTttMove(7)" id="ttt-7" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
+                        <button onclick="makeTttMove(8)" id="ttt-8" style="height:70px; background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.2); font-size:2rem; color:#fff; border-radius:10px; cursor:pointer;"></button>
                     </div>
-                    <button onclick="resetTttGame()" style="background:#334155; color:#fff; border:none; padding:12px; border-radius:14px; font-weight:600; cursor:pointer; width:100%; margin-bottom:10px;">Restart Game 🔄</button>
-                    <button onclick="closeTicTacToeModal()" style="background:var(--accent-color); color:#fff; border:none; padding:12px; border-radius:14px; font-weight:600; cursor:pointer; width:100%;">Close ❌</button>
+                    <button onclick="resetTttGame()" style="background:#334155; color:#fff; border:none; padding:10px; border-radius:20px; font-weight:600; cursor:pointer; width:100%; margin-bottom:8px;">New Game 🔄</button>
+                    <button onclick="closeTicTacToeModal()" style="background:var(--accent-color); color:#fff; border:none; padding:10px; border-radius:20px; font-weight:600; cursor:pointer; width:100%;">Close ❌</button>
                 </div>
             </div>
 
             <div id="sec-timer" class="section">
                 <div class="study-timer-pro-container" id="studyTimerProBgContainer" style="background-image: url('https://images.unsplash.com/photo-1432405972618-fb60b0ceb055?auto=format&fit=crop&w=1400&q=80');">
                     <div class="study-timer-pro-overlay"></div>
-                    <div style="position:absolute; top:18px; right:18px; background:rgba(0,0,0,0.6); color:#fff; padding:6px 14px; border-radius:20px; font-size:0.8rem; cursor:pointer; z-index:10; backdrop-filter:blur(6px);" onclick="openStudyTimerBgModal()">⚙ Change BG</div>
+                    <div style="position:absolute; top:15px; right:15px; background:rgba(0,0,0,0.7); color:#fff; padding:6px 12px; border-radius:20px; font-size:0.75rem; cursor:pointer; z-index:10;" onclick="openStudyTimerBgModal()">⚙ Change BG</div>
                     <div class="study-timer-content">
-                        <h2 style="font-size: 2.3rem; color:var(--accent-color); font-family:'Playfair Display',serif; margin-bottom:6px;">Focus Study Sanctuary</h2>
-                        <p style="font-size: 1.05rem; color:#fecdd3; font-style:italic; margin-bottom:18px;">"Yeh samay tumhara hai, champ"</p>
+                        <h2 style="font-size: 2.1rem; color:var(--accent-color); font-family:'Playfair Display',serif; margin-bottom:4px;">Focus Study Sanctuary</h2>
+                        <p style="font-size: 1rem; color:#fecdd3; font-style:italic; margin-bottom:15px;">"Yeh samay tumhara hai, champ"</p>
                         <div class="timer-glow-display" id="timeDisplay">00:00</div>
-                        <div style="display:flex; flex-direction:column; gap:12px; max-width:400px; margin:0 auto 25px auto;"><input type="number" id="timeInput" placeholder="Enter minutes (e.g. 25)" style="padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.5); color:#fff; text-align:center; font-size:1.05rem; outline:none;"><button onclick="startTimer()" style="background:var(--accent-color); color:#fff; border:none; padding:14px; border-radius:14px; font-weight:600; cursor:pointer; font-size:1.05rem; transition:0.2s;">Start Focus Session 🚀</button><button onclick="resetTimer()" style="background:#334155; color:#fff; border:none; padding:10px; border-radius:12px; cursor:pointer; font-size:0.95rem;">Reset</button></div>
-                        <div class="ambient-box" style="background:rgba(13,19,33,0.9); border-radius:20px; padding:20px; text-align:left; border:1px solid var(--border-glass); backdrop-filter:blur(10px);">
-                            <h4 style="color:var(--accent-color); font-family:'Playfair Display',serif; margin-bottom:12px; font-size:1.1rem;">🎧 Lofi & Natural Study Sounds</h4>
-                            <div class="ambient-buttons" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:15px;" id="ambientPresetsContainer">
-                                <!-- Loaded dynamically -->
+                        <div style="display:flex; flex-direction:column; gap:10px; max-width:380px; margin:0 auto 20px auto;"><input type="number" id="timeInput" placeholder="Enter minutes (e.g. 25)" style="padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.25); background:rgba(0,0,0,0.5); color:#fff; text-align:center; font-size:1rem; outline:none;"><button onclick="startTimer()" style="background:var(--accent-color); color:#fff; border:none; padding:12px; border-radius:12px; font-weight:600; cursor:pointer; font-size:1rem;">Start Focus Session 🚀</button><button onclick="resetTimer()" style="background:#334155; color:#fff; border:none; padding:8px; border-radius:10px; cursor:pointer; font-size:0.9rem;">Reset</button></div>
+                        <div class="ambient-box" style="background:rgba(15,23,42,0.85); border-radius:16px; padding:15px; text-align:left; border:1px solid rgba(255,255,255,0.12);">
+                            <h4 style="color:var(--accent-color); font-family:'Playfair Display',serif; margin-bottom:10px; font-size:1rem;">🎧 Lofi & Natural Study Sounds</h4>
+                            <div class="ambient-buttons" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
+                                <button class="sender-btn btn-ambient" onclick="playPresetSong('https://assets.mixkit.co/active_storage/sfx/1255/1255-preview.mp3', 'Gentle Rain Lofi', this)">🌧️ Rain</button>
+                                <button class="sender-btn btn-ambient" onclick="playPresetSong('https://assets.mixkit.co/active_storage/sfx/2653/2653-preview.mp3', 'Forest Wind', this)">🍃 Wind</button>
+                                <button class="sender-btn btn-ambient" onclick="playPresetSong('https://assets.mixkit.co/active_storage/sfx/1188/1188-preview.mp3', 'Cozy Fireplace', this)">🔥 Fire</button>
+                                <button class="sender-btn btn-ambient" onclick="playPresetSong('https://assets.mixkit.co/active_storage/sfx/350/350-preview.mp3', 'Coffee Shop', this)">☕ Cafe</button>
+                                <button class="sender-btn btn-ambient" onclick="playPresetSong('https://assets.mixkit.co/active_storage/sfx/1192/1192-preview.mp3', 'Ocean Waves', this)">🌊 Waves</button>
+                                <button class="sender-btn btn-ambient" onclick="stopAmbientSound()" style="background:#334155;">⏹ Stop</button>
                             </div>
-                            <button class="sender-btn btn-ambient" onclick="stopAmbientSound()" style="background:#334155; margin-top:5px;">⏹ Stop Audio</button>
+                            <h4 style="margin-top:10px; font-size:0.85rem; color:var(--text-sub);">🎵 Upload Custom Study Song / Audio</h4>
+                            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:6px;"><div class="file-upload-wrapper" style="padding:6px 10px; font-size:0.8rem; width:auto;">📁 Choose Audio <input type="file" id="studyAudioInput" accept="audio/*" onchange="uploadStudyAudioFile(event)"></div><span style="font-size:0.75rem; color:var(--text-sub);" id="customAudioFileName">No custom song</span></div>
                         </div>
                     </div>
                 </div>
@@ -627,10 +508,10 @@
                 <div class="reason-jar-big-container" style="background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80');">
                     <div class="reason-jar-overlay"></div>
                     <div class="reason-jar-content">
-                        <h2 style="font-family:'Playfair Display', serif; color:var(--accent-color); font-size:2.3rem; margin-bottom:12px;">🫙 The Reason Jar</h2>
-                        <p style="color:#fecdd3; font-style:italic; font-size:1.05rem; margin-bottom:24px;">Click to pick a fun reason why we will crush JEE & rock IIT Bombay</p>
-                        <div class="jar-display-box" id="jarReasonBox" style="font-size:1.2rem; padding:24px; margin-bottom:28px; background:rgba(13,19,33,0.85); border-radius:18px; border:1px solid var(--border-glass); backdrop-filter:blur(10px);">"Tap button below to draw a special reason..."</div>
-                        <button onclick="drawReasonFromJar()" style="background:var(--accent-color); color:#fff; padding: 14px 38px; font-size: 1.1rem; border-radius: 35px; border:none; cursor:pointer; font-weight:600; box-shadow:0 0 25px rgba(244,63,94,0.6); transition:0.2s;">Draw a Reason ✦</button>
+                        <h2 style="font-family:'Playfair Display', serif; color:var(--accent-color); font-size:2.1rem; margin-bottom:10px;">🫙 The Reason Jar</h2>
+                        <p style="color:#fecdd3; font-style:italic; font-size:1rem; margin-bottom:20px;">Click to pick a fun reason why we will crush JEE & rock IIT Bombay</p>
+                        <div class="jar-display-box" id="jarReasonBox" style="font-size:1.15rem; padding:20px; margin-bottom:25px; background:rgba(15,23,42,0.8); border-radius:16px; border:1px solid rgba(255,255,255,0.15);">"Tap button below to draw a special reason..."</div>
+                        <button onclick="drawReasonFromJar()" style="background:var(--accent-color); color:#fff; padding: 14px 35px; font-size: 1.05rem; border-radius: 35px; border:none; cursor:pointer; font-weight:600; box-shadow:0 0 20px rgba(244,63,94,0.6);">Draw a Reason ✦</button>
                     </div>
                 </div>
             </div>
@@ -638,7 +519,7 @@
             <div id="sec-diary" class="section">
                 <div class="diary-professional-container" id="diaryProBgContainer" style="background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80');">
                     <div class="diary-professional-overlay"></div>
-                    <div style="position:absolute; top:18px; right:18px; background:rgba(0,0,0,0.6); color:#fff; padding:6px 14px; border-radius:20px; font-size:0.8rem; cursor:pointer; z-index:10; backdrop-filter:blur(6px);" onclick="openDiaryBgModal()">⚙ Change BG</div>
+                    <div style="position:absolute; top:15px; right:15px; background:rgba(0,0,0,0.7); color:#fff; padding:6px 12px; border-radius:20px; font-size:0.75rem; cursor:pointer; z-index:10;" onclick="openDiaryBgModal()">⚙ Change BG</div>
                     
                     <div class="diary-content-wrapper">
                         <div class="page-header">
@@ -647,8 +528,8 @@
                         </div>
 
                         <div class="envelope-box-section">
-                            <h3 style="color:var(--accent-color); font-family:'Playfair Display',serif; margin-bottom:6px; font-size:1.2rem;">💌 "Open When..." Virtual Envelopes</h3>
-                            <p style="font-size:0.85rem; color:var(--text-sub);">Tap any envelope for a fun or motivating surprise!</p>
+                            <h3 style="color:var(--accent-color); font-family:'Playfair Display',serif; margin-bottom:4px; font-size:1.1rem;">💌 "Open When..." Virtual Envelopes</h3>
+                            <p style="font-size:0.8rem; color:var(--text-sub);">Tap any envelope for a fun or motivating surprise!</p>
                             <div class="envelope-grid">
                                 <div class="envelope-item" onclick="openEnvelope('Angry 😤', 'Gussa thook do yaar, warna saare notes jala dunga! 😂 🔥')">📩 Angry</div>
                                 <div class="envelope-item" onclick="openEnvelope('Miss Me 🥺', 'Itna miss mat karo, chupchaap aake physics ke numericals solve karo! 🤓')">📩 Miss Me</div>
@@ -658,14 +539,14 @@
                         </div>
 
                         <div class="diary-input-card">
-                            <h3 style="color:var(--accent-color); font-family:'Playfair Display',serif; margin-bottom:12px;">Pin Diary 📌</h3>
-                            <div class="sender-options-row" style="margin-bottom: 12px;">
-                                <span style="font-size: 0.85rem; color: var(--text-sub);">From:</span>
+                            <h3>Pin Diary 📌</h3>
+                            <div class="sender-options-row" style="margin-bottom: 10px;">
+                                <span style="font-size: 0.8rem; color: var(--text-sub);">From:</span>
                                 <button type="button" class="sender-btn selected-sender" id="btnDiaryManu" onclick="setDiarySender('Manu')">Manu ✦</button>
                                 <button type="button" class="sender-btn" id="btnDiaryBhumi" onclick="setDiarySender('Bhuvi')">Bhuvi ✦</button>
                             </div>
-                            <div style="margin-bottom:12px;"><textarea id="diaryMsgInput" placeholder="Write a fun note..." style="width:100%; padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.15); background:rgba(0,0,0,0.4); color:#fff; min-height:80px; outline:none; font-size:0.95rem;"></textarea></div>
-                            <button onclick="addDiaryNote()" style="background:var(--accent-color); color:#fff; width:100%; padding:12px; border-radius:12px; border:none; font-weight:600; cursor:pointer; transition:0.2s;">Pin Diary 📌</button>
+                            <div style="margin-bottom:10px;"><textarea id="diaryMsgInput" placeholder="Write a fun note..." style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; min-height:75px; outline:none; font-size:0.95rem;"></textarea></div>
+                            <button onclick="addDiaryNote()" style="background:var(--accent-color); color:#fff; width:100%; padding:11px; border-radius:10px; border:none; font-weight:600; cursor:pointer;">Pin Diary 📌</button>
                         </div>
                         <div class="sticky-grid" id="stickyNotesGrid"></div>
                     </div>
@@ -676,9 +557,9 @@
 
         <div id="envelopeModal" onclick="closeEnvelopeModal()">
             <div class="section-modal-card" onclick="event.stopPropagation()">
-                <div style="font-size:2.8rem; margin-bottom:10px;" id="envModalIcon">💌</div>
+                <div style="font-size:2.5rem; margin-bottom:8px;" id="envModalIcon">💌</div>
                 <h2 id="envModalTitle" style="color:var(--accent-color);">Surprise Note</h2>
-                <p id="envModalText" style="font-style:normal; font-size:1.05rem; line-height:1.6;"></p>
+                <p id="envModalText" style="font-style:normal; font-size:1rem; line-height:1.5;"></p>
                 <button onclick="closeEnvelopeModal()" style="margin:0 auto; display:block;">Got it! 🚀</button>
             </div>
         </div>
@@ -692,7 +573,7 @@
                     <button class="tab-menu-btn" onclick="switchSettingTab('backup', this)">💾 Backup</button>
                 </div>
                 <div id="settingTabThemes">
-                    <p style="font-size:0.85rem; color:var(--text-sub); margin-bottom:14px;">Select from 10 gorgeous themes:</p>
+                    <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:10px;">Select from 10 gorgeous themes:</p>
                     <div class="theme-picker-grid">
                         <button class="picker-option-btn" onclick="setTheme('theme-dark')">🌌 Midnight Dark</button>
                         <button class="picker-option-btn" onclick="setTheme('theme-emerald')">🌲 Royal Emerald</button>
@@ -707,7 +588,7 @@
                     </div>
                 </div>
                 <div id="settingTabFonts" style="display: none;">
-                    <p style="font-size:0.85rem; color:var(--text-sub); margin-bottom:14px;">Select from 10 typography fonts:</p>
+                    <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:10px;">Select from 10 typography fonts:</p>
                     <div class="font-picker-grid">
                         <button class="picker-option-btn" onclick="setFont('Poppins, sans-serif')" style="font-family:'Poppins'">1. Poppins</button>
                         <button class="picker-option-btn" onclick="setFont('Playfair Display, serif')" style="font-family:'Playfair Display'">2. Playfair Display</button>
@@ -722,7 +603,7 @@
                     </div>
                 </div>
                 <div id="settingTabBackup" style="display: none;">
-                    <button onclick="exportWorkspaceData()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; margin-bottom:12px; font-weight:600; cursor:pointer;">📥 Export Backup (JSON)</button>
+                    <button onclick="exportWorkspaceData()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:12px; border-radius:10px; margin-bottom:12px; font-weight:600; cursor:pointer;">📥 Export Backup (JSON)</button>
                 </div>
                 <button class="btn-close-modal" onclick="closeGlobalSettings()">Close Settings</button>
             </div>
@@ -731,13 +612,13 @@
         <div class="settings-modal" id="regionChartSettingModal">
             <div class="settings-content">
                 <h3>⚙ Manage IIT Bombay Banner Images</h3>
-                <div style="background:rgba(30,41,59,0.5); padding:15px; border-radius:14px; margin-bottom:18px; border:1px solid var(--border-glass);">
-                    <label style="font-size:0.9rem; color:var(--accent-color); font-weight:600;">Add New IIT Bombay Image:</label>
-                    <input type="text" id="newIitTitleInput" placeholder="Title (e.g. Main Gate)" style="width:100%; padding:10px; margin-top:8px; margin-bottom:10px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px; outline:none; font-size:0.95rem;">
-                    <div class="file-upload-wrapper" style="width:100%; margin-bottom:10px;">📁 Choose Image <input type="file" id="newIitImgInput" accept="image/*"></div>
-                    <button onclick="addNewIitBombayImage()" style="background:var(--accent-color); color:#fff; border:none; padding:10px; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.9rem; width:100%;">Save & Add Image ✦</button>
+                <div style="background:rgba(30,41,59,0.5); padding:12px; border-radius:10px; margin-bottom:15px;">
+                    <label style="font-size:0.85rem; color:var(--accent-color);">Add New IIT Bombay Image:</label>
+                    <input type="text" id="newIitTitleInput" placeholder="Title (e.g. Main Gate)" style="width:100%; padding:8px; margin-top:6px; margin-bottom:6px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:6px; outline:none; font-size:0.9rem;">
+                    <div class="file-upload-wrapper" style="width:100%; margin-bottom:8px;">📁 Choose Image <input type="file" id="newIitImgInput" accept="image/*"></div>
+                    <button onclick="addNewIitBombayImage()" style="background:var(--accent-color); color:#fff; border:none; padding:8px 16px; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.85rem; width:100%;">Save & Add Image ✦</button>
                 </div>
-                <div id="iitImagesListContainer" style="max-height:240px; overflow-y:auto;"></div>
+                <div id="iitImagesListContainer" style="max-height:220px; overflow-y:auto;"></div>
                 <button class="btn-close-modal" onclick="closeRegionChartSetting()">Close Manager</button>
             </div>
         </div>
@@ -746,7 +627,7 @@
             <div class="settings-content">
                 <h3>⚙ Edit Roadmap Steps</h3>
                 <div id="roadmapEditorInputsContainer"></div>
-                <button onclick="saveRoadmapSteps()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer; margin-top:15px;">Save Roadmap ✦</button>
+                <button onclick="saveRoadmapSteps()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:12px; border-radius:10px; font-weight:600; cursor:pointer; margin-top:15px;">Save Roadmap ✦</button>
                 <button class="btn-close-modal" onclick="closeRoadmapEditor()">Cancel</button>
             </div>
         </div>
@@ -754,33 +635,53 @@
         <div class="settings-modal" id="scratchNotesManagerModal">
             <div class="settings-content">
                 <h3>⚙ Manage Secret Scratch Notes</h3>
-                <div style="background:rgba(30,41,59,0.5); padding:15px; border-radius:14px; margin-bottom:18px; border:1px solid var(--border-glass);">
-                    <label style="font-size:0.9rem; color:var(--accent-color); font-weight:600;">Add New Scratch Note:</label>
-                    <input type="text" id="newScratchNoteInput" placeholder="Type funny note..." style="width:100%; padding:10px; margin-top:8px; margin-bottom:10px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:8px; outline:none; font-size:0.95rem;">
-                    <button onclick="addNewScratchNote()" style="background:var(--accent-color); color:#fff; border:none; padding:10px; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.9rem; width:100%;">Add Note ✦</button>
+                <div style="background:rgba(30,41,59,0.5); padding:12px; border-radius:10px; margin-bottom:15px;">
+                    <label style="font-size:0.85rem; color:var(--accent-color);">Add New Scratch Note:</label>
+                    <input type="text" id="newScratchNoteInput" placeholder="Type funny note..." style="width:100%; padding:8px; margin-top:6px; margin-bottom:8px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:6px; outline:none; font-size:0.9rem;">
+                    <button onclick="addNewScratchNote()" style="background:var(--accent-color); color:#fff; border:none; padding:8px 16px; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.85rem; width:100%;">Add Note ✦</button>
                 </div>
-                <div id="scratchNotesListContainer" style="max-height:260px; overflow-y:auto;"></div>
+                <div id="scratchNotesListContainer" style="max-height:250px; overflow-y:auto;"></div>
                 <button class="btn-close-modal" onclick="closeScratchNotesManager()">Close Manager</button>
             </div>
         </div>
 
-        <div class="settings-modal" id="studyTimerBgModal"><div class="settings-content"><h3>⚙ Change Study Timer Background</h3><div style="margin-bottom:15px;"><div class="file-upload-wrapper" style="width:100%;">📁 Choose Image <input type="file" id="studyTimerBgImgInput" accept="image/*"></div></div><button onclick="saveStudyTimerBackground()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer; margin-bottom:10px;">Save</button><button class="btn-close-modal" onclick="closeStudyTimerBgModal()" style="margin-top:0;">Cancel</button></div></div>
-        <div class="settings-modal" id="diaryBgModal"><div class="settings-content"><h3>⚙ Change Diary Background</h3><div style="margin-bottom:15px;"><div class="file-upload-wrapper" style="width:100%;">📁 Choose Image <input type="file" id="diaryBgImgInput" accept="image/*"></div></div><button onclick="saveDiaryBackground()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer; margin-bottom:10px;">Save</button><button class="btn-close-modal" onclick="closeDiaryBgModal()" style="margin-top:0;">Cancel</button></div></div>
-        <div class="settings-modal" id="najriyaBgModal"><div class="settings-content"><h3>⚙ Change Najriya BG</h3><div style="margin-bottom:15px;"><div class="file-upload-wrapper" style="width:100%;">📁 Choose Image <input type="file" id="najriyaBgImgInput" accept="image/*"></div></div><button onclick="saveNajriyaBackground()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer; margin-bottom:10px;">Save</button><button class="btn-close-modal" onclick="closeNajriyaBgModal()" style="margin-top:0;">Cancel</button></div></div>
+        <div class="settings-modal" id="musicManagerModal">
+            <div class="settings-content">
+                <h3>⚙ Lo-Fi Songs & Custom Audio</h3>
+                <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:12px;">Upload your favorite song to play during study sessions:</p>
+                <div class="form-group"><div class="file-upload-wrapper" style="width:100%;">📁 Upload Custom Song <input type="file" id="modalAudioUploadInput" accept="audio/*" onchange="uploadStudyAudioFile(event)"></div></div>
+                <div style="margin-top:15px; font-size:0.85rem;" id="customAudioFileName">No custom song loaded</div>
+                <button class="btn-close-modal" onclick="closeMusicManagerModal()">Close Manager</button>
+            </div>
+        </div>
+
+        <div class="settings-modal" id="editZigZagModal">
+            <div class="settings-content">
+                <h3>⚙ Edit Month Memory & Note</h3>
+                <input type="hidden" id="editZigZagMonthId">
+                <div style="margin-bottom:12px;"><label style="font-size:0.85rem; display:block; margin-bottom:4px;">Fun Note / Quote:</label><textarea id="editZigZagShayari" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; min-height:80px; outline:none; font-size:0.9rem;"></textarea></div>
+                <div style="margin-bottom:12px;"><label style="font-size:0.85rem; display:block; margin-bottom:4px;">Memory Photo:</label><div class="file-upload-wrapper" style="width:100%;">📁 Choose Photo <input type="file" id="editZigZagImgInput" accept="image/*"></div></div>
+                <button onclick="saveZigZagEdit()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:12px; border-radius:10px; font-weight:600; cursor:pointer;">Save Changes ✦</button>
+                <button class="btn-close-modal" onclick="closeEditZigZagModal()">Cancel</button>
+            </div>
+        </div>
+
+        <div class="settings-modal" id="studyTimerBgModal"><div class="settings-content"><h3>⚙ Change Study Timer Background</h3><div style="margin-bottom:12px;"><div class="file-upload-wrapper" style="width:100%;">📁 Choose Image <input type="file" id="studyTimerBgImgInput" accept="image/*"></div></div><button onclick="saveStudyTimerBackground()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:12px; border-radius:10px; font-weight:600; cursor:pointer; margin-bottom:10px;">Save</button><button class="btn-close-modal" onclick="closeStudyTimerBgModal()" style="margin-top:0;">Cancel</button></div></div>
+        <div class="settings-modal" id="diaryBgModal"><div class="settings-content"><h3>⚙ Change Diary Background</h3><div style="margin-bottom:12px;"><div class="file-upload-wrapper" style="width:100%;">📁 Choose Image <input type="file" id="diaryBgImgInput" accept="image/*"></div></div><button onclick="saveDiaryBackground()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:12px; border-radius:10px; font-weight:600; cursor:pointer; margin-bottom:10px;">Save</button><button class="btn-close-modal" onclick="closeDiaryBgModal()" style="margin-top:0;">Cancel</button></div></div>
+        <div class="settings-modal" id="najriyaBgModal"><div class="settings-content"><h3>⚙ Change Najriya BG</h3><div style="margin-bottom:12px;"><div class="file-upload-wrapper" style="width:100%;">📁 Choose Image <input type="file" id="najriyaBgImgInput" accept="image/*"></div></div><button onclick="saveNajriyaBackground()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:12px; border-radius:10px; font-weight:600; cursor:pointer; margin-bottom:10px;">Save</button><button class="btn-close-modal" onclick="closeNajriyaBgModal()" style="margin-top:0;">Cancel</button></div></div>
         <div class="settings-modal" id="heroSettingModal">
             <div class="settings-content">
                 <h3>⚙ Edit Daily Wisdom & Quotes</h3>
-                <div style="margin-bottom:15px;"><label style="font-size:0.9rem; display:block; margin-bottom:6px; color:var(--text-sub);">Quote:</label><textarea id="editHeroText" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; min-height:85px; outline:none; font-size:0.95rem;"></textarea></div>
-                <div style="margin-bottom:15px;"><label style="font-size:0.9rem; display:block; margin-bottom:6px; color:var(--text-sub);">Author:</label><input type="text" id="editHeroAuthor" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; outline:none; font-size:0.95rem;"></div>
-                <div style="margin-bottom:18px;"><label style="font-size:0.9rem; display:block; margin-bottom:6px; color:var(--text-sub);">Background Photo:</label><div class="file-upload-wrapper" style="width:100%;">📁 Choose Photo <input type="file" id="editHeroImgInput" accept="image/*"></div></div>
-                <button onclick="saveHeroQuote()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer;">Save Changes ✦</button>
+                <div style="margin-bottom:12px;"><label style="font-size:0.85rem; display:block; margin-bottom:4px;">Quote:</label><textarea id="editHeroText" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; min-height:80px; outline:none; font-size:0.9rem;"></textarea></div>
+                <div style="margin-bottom:12px;"><label style="font-size:0.85rem; display:block; margin-bottom:4px;">Author:</label><input type="text" id="editHeroAuthor" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; outline:none; font-size:0.9rem;"></div>
+                <div style="margin-bottom:12px;"><label style="font-size:0.85rem; display:block; margin-bottom:4px;">Background Photo:</label><div class="file-upload-wrapper" style="width:100%;">📁 Choose Photo <input type="file" id="editHeroImgInput" accept="image/*"></div></div>
+                <button onclick="saveHeroQuote()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:12px; border-radius:10px; font-weight:600; cursor:pointer;">Save Changes ✦</button>
                 <button class="btn-close-modal" onclick="closeHeroSettingModal()">Cancel</button>
             </div>
         </div>
-        <div class="settings-modal" id="urgentEmailModal"><div class="settings-content"><h3>⚡ Send Urgent Email</h3><div style="margin-bottom:15px;"><textarea id="urgentEmailText" placeholder="Type urgent note..." style="width:100%; padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; min-height:95px; outline:none; font-size:0.95rem;"></textarea></div><button onclick="sendUrgentEmailToManu()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:14px; border-radius:12px; font-weight:600; cursor:pointer; margin-bottom:10px;">Send Email Now 🚀</button><button class="btn-close-modal" onclick="closeUrgentEmailModal()" style="margin-top:0;">Cancel</button></div></div>
+        <div class="settings-modal" id="urgentEmailModal"><div class="settings-content"><h3>⚡ Send Urgent Email</h3><div style="margin-bottom:12px;"><textarea id="urgentEmailText" placeholder="Type urgent note..." style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:#fff; min-height:85px; outline:none; font-size:0.95rem;"></textarea></div><button onclick="sendUrgentEmailToManu()" style="background:var(--accent-color); color:#fff; border:none; width:100%; padding:12px; border-radius:10px; font-weight:600; cursor:pointer; margin-bottom:10px;">Send Email Now 🚀</button><button class="btn-close-modal" onclick="closeUrgentEmailModal()" style="margin-top:0;">Cancel</button></div></div>
 
-        <!-- 🎵 PRE-LOADED AUDIO ELEMENT -->
-        <audio id="globalAmbientAudio" loop src="data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA..." style="display:none;"></audio>
+        <audio id="globalAmbientAudio" loop style="display:none;"></audio>
     </div>
 
     <script>
@@ -819,7 +720,6 @@
         const socket = io("https://sabvas2-o.onrender.com");
         socket.emit('join-room', 'wwt-private-room-2028');
 
-        // 🔥 FIXED MASTER LOCK UNLOCK FUNCTION
         function unlockMasterApp() {
             let val = document.getElementById("masterPassInput").value.trim();
             if (val === "2607") {
@@ -834,305 +734,20 @@
                 checkAndTriggerBirthdayPopup();
                 initFirebaseSamvadListener();
                 initSocketCallSignaling();
+                initFirebaseTttListener();
                 loadViewsGallery();
-                initRealtimeTttListener();
-                initSongsManager();
-            } else { 
-                let err = document.getElementById("masterErrorMsg");
-                err.style.display = "block"; 
-            }
+            } else { document.getElementById("masterErrorMsg").style.display = "block"; }
         }
-        function handleMasterKeydown(e) { 
-            if (e.key === 'Enter') {
-                unlockMasterApp();
-            } 
-        }
-
-        function handleSamvadLockKeydown(e) {
-            if (e.key === 'Enter') {
-                checkSamvadPassword();
-            }
-        }
-
+        function handleMasterKeydown(e) { if (e.key === 'Enter') unlockMasterApp(); }
         function closeSectionModal(id) { document.getElementById(id).style.display = "none"; }
 
-        // --- LO-FI SONGS FULL SETTINGS MANAGER ---
-        const defaultStudySongs = [
-            { id: 1, name: "Lights Lofi", src: "https://assets.mixkit.co/active_storage/sfx/1255/1255-preview.mp3", isDefault: true },
-            { id: 2, name: "Magical Moments", src: "https://assets.mixkit.co/active_storage/sfx/2653/2653-preview.mp3", isDefault: false },
-            { id: 3, name: "Adrift Among Stars", src: "https://assets.mixkit.co/active_storage/sfx/1188/1188-preview.mp3", isDefault: false },
-            { id: 4, name: "Snowfall Chill", src: "https://assets.mixkit.co/active_storage/sfx/350/350-preview.mp3", isDefault: false },
-            { id: 5, name: "Moonlight Lofi", src: "https://assets.mixkit.co/active_storage/sfx/1192/1192-preview.mp3", isDefault: false }
-        ];
-
-        function getSongsDb() {
-            return JSON.parse(localStorage.getItem("wwtCustomSongsDb")) || defaultStudySongs;
-        }
-
-        function initSongsManager() {
-            let list = getSongsDb();
-            let presetsContainer = document.getElementById("ambientPresetsContainer");
-            if (presetsContainer) {
-                presetsContainer.innerHTML = "";
-                list.forEach(song => {
-                    presetsContainer.innerHTML += `<button class="sender-btn btn-ambient" onclick="playPresetSong('${song.src}', '${song.name}', this)">🎵 ${song.name} ${song.isDefault ? '⭐' : ''}</button>`;
-                });
-            }
-        }
-
-        function openMusicSettingsModal() {
-            let list = getSongsDb(), container = document.getElementById("customSongsListContainer");
-            container.innerHTML = "";
-            list.forEach(song => {
-                container.innerHTML += `
-                    <div class="manage-item">
-                        <div style="font-size:0.85rem; overflow:hidden;">
-                            <b>${song.name}</b><br>
-                            <span style="color:${song.isDefault?'#22c55e':'var(--text-sub)'}">${song.isDefault ? '⭐ Default Track' : 'Custom Track'}</span>
-                        </div>
-                        <div style="display:flex; gap:6px; flex-shrink:0;">
-                            <button onclick="setSongDefault(${song.id})" style="background:rgba(34,197,94,0.2); color:#22c55e; border:1px solid rgba(34,197,94,0.4); padding:4px 8px; font-size:0.7rem; border-radius:6px; cursor:pointer;">${song.isDefault?'Active':'Default'}</button>
-                            <button class="btn-delete-item" onclick="deleteSongItem(${song.id})">Delete</button>
-                        </div>
-                    </div>`;
-            });
-            document.getElementById("musicSettingsModal").style.display = "flex";
-        }
-
-        function closeMusicSettingsModal() {
-            document.getElementById("musicSettingsModal").style.display = "none";
-            initSongsManager();
-        }
-
-        function addNewCustomSong() {
-            let title = document.getElementById("newSongNameInput").value.trim(), fileInp = document.getElementById("newSongAudioInput");
-            if (fileInp.files && fileInp.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    let list = getSongsDb();
-                    list.push({ id: Date.now(), name: title || "Custom Song", src: e.target.result, isDefault: false });
-                    localStorage.setItem("wwtCustomSongsDb", JSON.stringify(list));
-                    document.getElementById("newSongNameInput").value = "";
-                    fileInp.value = "";
-                    openMusicSettingsModal();
-                    alert("Song added successfully! ✦");
-                };
-                reader.readAsDataURL(fileInp.files[0]);
-            } else { alert("Please select an audio file!"); }
-        }
-
-        function setSongDefault(id) {
-            let list = getSongsDb().map(s => { s.isDefault = (s.id === id); return s; });
-            localStorage.setItem("wwtCustomSongsDb", JSON.stringify(list));
-            openMusicSettingsModal();
-        }
-
-        function deleteSongItem(id) {
-            let list = getSongsDb();
-            if (list.length <= 1) { alert("At least one song must remain!"); return; }
-            list = list.filter(s => s.id !== id);
-            if (!list.some(s => s.isDefault)) list[0].isDefault = true;
-            localStorage.setItem("wwtCustomSongsDb", JSON.stringify(list));
-            openMusicSettingsModal();
-        }
-
-        let isMusicPlaying = false;
-        function playPresetSong(src, name, btn) {
-            let audio = document.getElementById("globalAmbientAudio");
-            audio.src = src; audio.play().catch(e => console.log(e));
-            document.getElementById("currentTrackTitle").innerText = name;
-            document.getElementById("trackStatus").innerText = "Playing 🎵";
-            document.getElementById("floatingPlayBtn").innerText = "❚❚";
-            isMusicPlaying = true;
-        }
-
-        function playNextSong() {
-            let list = getSongsDb();
-            let currentTitle = document.getElementById("currentTrackTitle").innerText;
-            let idx = list.findIndex(s => s.name === currentTitle);
-            let nextIdx = (idx + 1) % list.length;
-            playPresetSong(list[nextIdx].src, list[nextIdx].name);
-        }
-
-        function toggleFloatingMusic() {
-            let audio = document.getElementById("globalAmbientAudio"), btn = document.getElementById("floatingPlayBtn"), status = document.getElementById("trackStatus");
-            let list = getSongsDb();
-            let defSong = list.find(s => s.isDefault) || list[0];
-            if (!isMusicPlaying) {
-                if (!audio.src || audio.src === window.location.href) audio.src = defSong.src;
-                audio.play().catch(e => console.log(e));
-                btn.innerText = "❚❚"; status.innerText = "Playing 🎵"; isMusicPlaying = true;
-            } else { audio.pause(); btn.innerText = "▶"; status.innerText = "Paused"; isMusicPlaying = false; }
-        }
-
-        function stopAmbientSound() {
-            let audio = document.getElementById("globalAmbientAudio");
-            audio.pause();
-            document.getElementById("trackStatus").innerText = "Paused";
-            document.getElementById("floatingPlayBtn").innerText = "▶";
-            isMusicPlaying = false;
-        }
-
-        // --- DOUBLE TAP EMOJI FEATURE ---
-        let selectedMsgKeyForReaction = null;
-        function triggerEmojiPicker(msgKey) {
-            selectedMsgKeyForReaction = msgKey;
-            document.getElementById("emojiPickerModal").style.display = "flex";
-        }
-
-        function selectEmojiReaction(emoji) {
-            if (selectedMsgKeyForReaction) {
-                db.ref(`samvadMessages/${selectedMsgKeyForReaction}/reactions`).set(emoji);
-                document.getElementById("emojiPickerModal").style.display = "none";
-                selectedMsgKeyForReaction = null;
-            }
-        }
-
-        // --- STRICT DATE-WISE CHAT FILTERING ---
-        function initFirebaseSamvadListener() {
-            db.ref('samvadMessages').on('value', (snapshot) => {
-                renderSamvadStream(snapshot.val());
-            });
-        }
-
-        function renderSamvadStream(data) {
-            let stream = document.getElementById("samvadMessagesList");
-            if (!stream) return;
-            stream.innerHTML = "";
-            if (!data) {
-                stream.innerHTML = '<div style="color:var(--text-sub); text-align:center; margin:auto;">No chats yet. Say hello! 💌</div>';
-                return;
-            }
-
-            let selectedDateValue = document.getElementById("calendarFilter").value;
-
-            Object.entries(data).forEach(([key, m]) => {
-                if (selectedDateValue) {
-                    let msgDateObj = new Date(m.id);
-                    let msgDateFormatted = msgDateObj.toISOString().split('T')[0];
-                    if (msgDateFormatted !== selectedDateValue) {
-                        return;
-                    }
-                }
-
-                let isRight = m.sender.toLowerCase().includes('bhuvi') || m.sender.toLowerCase().includes('bhumi');
-                let contentHtml = '';
-                if (m.text) contentHtml += `<div class="chat-text">${m.text}</div>`;
-                if (m.img) contentHtml += `<img src="${m.img}" onclick="openImageZoom('${m.img}')" title="Click to view full screen">`;
-                if (m.audioUrl) contentHtml += `<audio controls src="${m.audioUrl}" style="width:100%; max-height:40px; margin-top:6px;"></audio>`;
-                
-                let reactionsHtml = m.reactions ? `<span style="font-size:0.8rem; background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:10px; margin-top:4px; display:inline-block;">${m.reactions}</span>` : '';
-                
-                stream.innerHTML += `
-                    <div class="chat-bubble ${isRight ? 'chat-right' : 'chat-left'}" ondblclick="triggerEmojiPicker('${key}')" title="Double tap to add emoji">
-                        <button class="btn-tiny-delete" onclick="deleteFirebaseMsg('${key}')">×</button>
-                        <div class="chat-sender">${m.sender}</div>
-                        ${contentHtml}
-                        ${reactionsHtml}
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
-                            <div class="chat-footer" style="font-size:0.65rem; color:var(--text-sub);">${m.timeDisplay}</div>
-                        </div>
-                    </div>`;
-            });
-            stream.scrollTop = stream.scrollHeight;
-        }
-
-        function loadSamvadMessagesFromFirebase() {
-            db.ref('samvadMessages').once('value', (snapshot) => {
-                renderSamvadStream(snapshot.val());
-            });
-        }
-
-        function clearDateFilter() {
-            document.getElementById("calendarFilter").value = "";
-            db.ref('samvadMessages').once('value', (snapshot) => {
-                renderSamvadStream(snapshot.val());
-            });
-        }
-
-        function deleteFirebaseMsg(firebaseKey) {
-            db.ref(`samvadMessages/${firebaseKey}`).remove();
-        }
-
-        // --- SPECIAL DAY ZIGZAG TIMELINE FUNCTIONS ---
-        function getZigZagDb() { return JSON.parse(localStorage.getItem("wwtZigZagMonths")) || defaultZigZagMonths; }
-        
-        function loadZigZagTimeline() {
-            let container = document.getElementById("zigzagTimelineContainer");
-            if (!container) return;
-            let list = getZigZagDb();
-            container.innerHTML = "";
-            let now = new Date(), curMonth = now.getMonth(); 
-            
-            list.forEach((item) => {
-                let isPassed = false, isBlinking = false;
-                if (curMonth >= 4) {
-                    if (item.monthIndex >= 4 && item.monthIndex < curMonth) isPassed = true;
-                    if (item.monthIndex === curMonth) isBlinking = true;
-                    if (item.monthIndex < 4) isPassed = true;
-                } else {
-                    if (item.monthIndex >= 4 || item.monthIndex < curMonth) isPassed = true;
-                    if (item.monthIndex === curMonth) isBlinking = true;
-                }
-                let dotClass = "zigzag-dot";
-                if (isBlinking) dotClass = "zigzag-dot blinking";
-                else if (isPassed) dotClass = "zigzag-dot filled";
-
-                let box = document.createElement("div");
-                box.className = "zigzag-item";
-                box.innerHTML = `
-                    <div class="zigzag-box">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <b style="color:var(--accent-color); font-family:'Playfair Display',serif; font-size:1rem;">${item.month}</b>
-                            <button onclick="openEditZigZag(${item.id})" style="background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:3px 8px; border-radius:10px; font-size:0.7rem; cursor:pointer;">⚙ Edit</button>
-                        </div>
-                        <div class="zigzag-shayari">"${item.shayari}"</div>
-                        ${item.img ? `<img src="${item.img}" class="zigzag-img" onclick="openImageZoom('${item.img}')" alt="Memory">` : ''}
-                    </div>
-                    <div class="${dotClass}"></div>
-                `;
-                container.appendChild(box);
-            });
-        }
-
-        let editingZigZagId = null;
-        function openEditZigZag(id) {
-            let list = getZigZagDb(), item = list.find(i => i.id === id);
-            if (!item) return;
-            editingZigZagId = id;
-            document.getElementById("editZigZagMonthId").value = id;
-            document.getElementById("editZigZagShayari").value = item.shayari;
-            document.getElementById("editZigZagModal").style.display = "flex";
-        }
-        function closeEditZigZagModal() { document.getElementById("editZigZagModal").style.display = "none"; }
-        function saveZigZagEdit() {
-            let list = getZigZagDb(), item = list.find(i => i.id == editingZigZagId);
-            if (!item) return;
-            let newShayari = document.getElementById("editZigZagShayari").value.trim(), inp = document.getElementById("editZigZagImgInput");
-            if (newShayari) item.shayari = newShayari;
-            if (inp.files && inp.files[0]) {
-                let r = new FileReader();
-                r.onload = function(e) {
-                    item.img = e.target.result;
-                    localStorage.setItem("wwtZigZagMonths", JSON.stringify(list));
-                    closeEditZigZagModal(); loadZigZagTimeline(); alert("Month memory updated successfully! ✦");
-                };
-                r.readAsDataURL(inp.files[0]);
-            } else {
-                localStorage.setItem("wwtZigZagMonths", JSON.stringify(list));
-                closeEditZigZagModal(); loadZigZagTimeline(); alert("Month memory updated successfully! ✦");
-            }
-        }
-
-        // Standard WebRTC & Utility bindings
+        // --- ROBUST WEBRTC AUDIO CALL FIX (APP TO BROWSER / BROWSER TO APP) ---
         let localAudioStream = null;
         let peerConnection = null;
         const rtcConfig = { 
             iceServers: [
                 { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' },
-                { urls: 'stun:stun2.l.google.com:19302' },
-                { urls: 'stun:openrelay.metered.ca:80' }
+                { urls: 'stun:stun1.l.google.com:19302' }
             ] 
         };
 
@@ -1142,18 +757,24 @@
                 document.getElementById("incomingCallModal").style.display = "flex";
                 window.pendingOffer = offer;
             });
+
             socket.on('call-answered', async ({ answer }) => {
                 if (peerConnection) {
                     await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
                     document.getElementById("callStatusText").innerText = "Connected! Live Voice Channel Active 🎙️";
                 }
             });
+
             socket.on('ice-candidate', async ({ candidate }) => {
                 if (peerConnection && candidate) {
                     try { await peerConnection.addIceCandidate(new RTCIceCandidate(candidate)); } catch(e){}
                 }
             });
-            socket.on('call-ended', () => { endWebRtcCall(false); });
+
+            socket.on('call-ended', () => {
+                endWebRtcCall(false);
+            });
+
             socket.on('typing-status', ({ sender }) => {
                 let indicator = document.getElementById("typingStatusIndicator");
                 if (indicator && sender !== currentSelectedSender) {
@@ -1167,57 +788,75 @@
             socket.emit('typing-status', { toRoom: 'wwt-private-room-2028', sender: currentSelectedSender });
         }
 
+        async function createPeerConnection() {
+            if (peerConnection) return peerConnection;
+            peerConnection = new RTCPeerConnection(rtcConfig);
+
+            try {
+                // Audio constraints optimize kiye hain taaki mobile aur laptop ke mic properly stream catch karein
+                localAudioStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    }, 
+                    video: false 
+                });
+                
+                localAudioStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localAudioStream);
+                });
+            } catch (err) {
+                console.error("Mic access error:", err);
+                document.getElementById("callStatusText").innerText = "Microphone permission denied.";
+            }
+
+            peerConnection.ontrack = (event) => {
+                let remoteAudio = document.getElementById("remoteAudioStream");
+                if (event.streams && event.streams[0]) {
+                    remoteAudio.srcObject = event.streams[0];
+                } else {
+                    let inboundStream = new MediaStream();
+                    inboundStream.addTrack(event.track);
+                    remoteAudio.srcObject = inboundStream;
+                }
+                remoteAudio.play().then(() => {
+                    console.log("Remote audio playing successfully");
+                }).catch(e => {
+                    console.log("Audio autoplay restricted, user interaction needed", e);
+                });
+            };
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.emit('ice-candidate', { toRoom: 'wwt-private-room-2028', candidate: event.candidate });
+                }
+            };
+
+            return peerConnection;
+        }
+
         async function initiateVoiceCall() {
             document.getElementById("webrtcCallModal").style.display = "flex";
             document.getElementById("callStatusText").innerText = "Calling partner... Ringing 📞";
-            try {
-                localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                peerConnection = new RTCPeerConnection(rtcConfig);
-                localAudioStream.getTracks().forEach(track => peerConnection.addTrack(track, localAudioStream));
-                peerConnection.ontrack = (event) => {
-                    let remoteAudio = document.getElementById("remoteAudioStream");
-                    if (remoteAudio.srcObject !== event.streams[0]) {
-                        remoteAudio.srcObject = event.streams[0];
-                        remoteAudio.play().catch(e => console.log(e));
-                    }
-                };
-                peerConnection.onicecandidate = (event) => {
-                    if (event.candidate) socket.emit('ice-candidate', { toRoom: 'wwt-private-room-2028', candidate: event.candidate });
-                };
-                let offer = await peerConnection.createOffer();
-                await peerConnection.setLocalDescription(offer);
-                socket.emit('call-user', { toRoom: 'wwt-private-room-2028', offer: offer, caller: currentSelectedSender });
-            } catch (err) {
-                document.getElementById("callStatusText").innerText = "Microphone permission denied.";
-            }
+
+            let pc = await createPeerConnection();
+            let offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            socket.emit('call-user', { toRoom: 'wwt-private-room-2028', offer: offer, caller: currentSelectedSender });
         }
 
         async function acceptIncomingCall() {
             document.getElementById("incomingCallModal").style.display = "none";
             document.getElementById("webrtcCallModal").style.display = "flex";
             document.getElementById("callStatusText").innerText = "Connecting call...";
-            try {
-                localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                peerConnection = new RTCPeerConnection(rtcConfig);
-                localAudioStream.getTracks().forEach(track => peerConnection.addTrack(track, localAudioStream));
-                peerConnection.ontrack = (event) => {
-                    let remoteAudio = document.getElementById("remoteAudioStream");
-                    if (remoteAudio.srcObject !== event.streams[0]) {
-                        remoteAudio.srcObject = event.streams[0];
-                        remoteAudio.play().catch(e => console.log(e));
-                    }
-                };
-                peerConnection.onicecandidate = (event) => {
-                    if (event.candidate) socket.emit('ice-candidate', { toRoom: 'wwt-private-room-2028', candidate: event.candidate });
-                };
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(window.pendingOffer));
-                let answer = await peerConnection.createAnswer();
-                await peerConnection.setLocalDescription(answer);
-                socket.emit('make-answer', { toRoom: 'wwt-private-room-2028', answer: answer });
-                document.getElementById("callStatusText").innerText = "Connected! Live Voice Channel Active 🎙️";
-            } catch (err) {
-                document.getElementById("callStatusText").innerText = "Microphone permission denied.";
-            }
+
+            let pc = await createPeerConnection();
+            await pc.setRemoteDescription(new RTCSessionDescription(window.pendingOffer));
+            let answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            socket.emit('make-answer', { toRoom: 'wwt-private-room-2028', answer: answer });
+            document.getElementById("callStatusText").innerText = "Connected! Live Voice Channel Active 🎙️";
         }
 
         function declineIncomingCall() {
@@ -1226,45 +865,22 @@
         }
 
         function endWebRtcCall(notifyRemote = true) {
-            if (localAudioStream) localAudioStream.getTracks().forEach(t => t.stop());
-            if (peerConnection) { peerConnection.close(); peerConnection = null; }
-            if (notifyRemote) socket.emit('end-call', { toRoom: 'wwt-private-room-2028' });
+            if (localAudioStream) { 
+                localAudioStream.getTracks().forEach(track => track.stop()); 
+                localAudioStream = null;
+            }
+            if (peerConnection) { 
+                peerConnection.close(); 
+                peerConnection = null; 
+            }
+            if (notifyRemote) { 
+                socket.emit('end-call', { toRoom: 'wwt-private-room-2028' }); 
+            }
             document.getElementById("webrtcCallModal").style.display = "none";
             document.getElementById("incomingCallModal").style.display = "none";
         }
 
-        // AI Mentor Agent
-        function handleMentorKeydown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendToMentorAi(); } }
-        async function sendToMentorAi() {
-            let inputField = document.getElementById("mentorInputText");
-            let streamBox = document.getElementById("mentorChatStream");
-            let userText = inputField.value.trim();
-            if (!userText) return;
-            streamBox.innerHTML += `<div class="mentor-bubble user">${userText}</div>`;
-            inputField.value = "";
-            streamBox.scrollTop = streamBox.scrollHeight;
-            let loadingId = "loading_" + Date.now();
-            streamBox.innerHTML += `<div class="mentor-bubble ai" id="${loadingId}">JEE Mentor is thinking... 🤖</div>`;
-            streamBox.scrollTop = streamBox.scrollHeight;
-            try {
-                let response = await fetch('https://weworktogether.app.n8n.cloud/webhook/jee-tutor', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: userText, sessionID: "user-123" })
-                });
-                let data = await response.json();
-                let aiReply = data.reply || data.output || "Mujhe samajh nahi aaya, thoda aur clearly batao!";
-                document.getElementById(loadingId).remove();
-                streamBox.innerHTML += `<div class="mentor-bubble ai">${aiReply}</div>`;
-                streamBox.scrollTop = streamBox.scrollHeight;
-            } catch (error) {
-                document.getElementById(loadingId).remove();
-                streamBox.innerHTML += `<div class="mentor-bubble ai">Server error! Thodi der baad try karo. 😅</div>`;
-                streamBox.scrollTop = streamBox.scrollHeight;
-            }
-        }
-
-        // Voice Recording in Samvad
+        // --- VOICE NOTE RECORDING FEATURE ---
         let mediaRecorder = null, audioChunks = [];
         async function toggleVoiceRecording() {
             let btn = document.getElementById("recordVoiceBtn");
@@ -1283,57 +899,80 @@
                         };
                         reader.readAsDataURL(blob);
                         btn.innerText = "🎙️ Record Voice";
-                        btn.style.background = "rgba(56,189,248,0.15)";
+                        btn.style.background = "rgba(56,189,248,0.2)";
                     };
                     mediaRecorder.start();
-                    btn.innerText = "🔴 Recording...";
+                    btn.innerText = "🔴 Recording... (Tap to Stop)";
                     btn.style.background = "#ef4444";
-                } catch(err) { alert("Microphone permission needed!"); }
-            } else { mediaRecorder.stop(); }
+                } catch(err) {
+                    alert("Microphone permission needed!");
+                }
+            } else {
+                mediaRecorder.stop();
+            }
         }
 
-        // Tic-Tac-Toe Game
+        // --- MESSAGE REACTIONS FEATURE ---
+        function addReaction(msgFirebaseKey, emoji) {
+            db.ref(`samvadMessages/${msgFirebaseKey}/reactions`).set(emoji);
+        }
+
+        // --- REAL-TIME MULTIPLAYER TIC-TAC-TOE GAME ---
         function openTicTacToeModal() { document.getElementById("tictactoeModal").style.display = "flex"; }
         function closeTicTacToeModal() { document.getElementById("tictactoeModal").style.display = "none"; }
+
         function makeTttMove(idx) {
-            db.ref('wwtTttGame').once('value', (snapshot) => {
-                let gameState = snapshot.val() || { board: ['', '', '', '', '', '', '', '', ''], turn: 'X' };
-                if (gameState.board[idx] !== '' || checkWinnerState(gameState.board)) return;
-                gameState.board[idx] = gameState.turn;
-                gameState.turn = gameState.turn === 'X' ? 'O' : 'X';
-                db.ref('wwtTttGame').set(gameState);
+            db.ref('tictactoeGame').once('value', (snapshot) => {
+                let game = snapshot.val() || { board: ['', '', '', '', '', '', '', '', ''], turn: 'X' };
+                if (game.board[idx] === '' && !game.winner) {
+                    game.board[idx] = game.turn;
+                    game.turn = game.turn === 'X' ? 'O' : 'X';
+                    
+                    const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+                    for (let w of wins) {
+                        let [a,b,c] = w;
+                        if (game.board[a] && game.board[a] === game.board[b] && game.board[a] === game.board[c]) {
+                            game.winner = game.board[a];
+                            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                        }
+                    }
+                    if (!game.board.includes('') && !game.winner) game.winner = 'Draw';
+
+                    db.ref('tictactoeGame').set(game);
+                }
             });
         }
-        function initRealtimeTttListener() {
-            db.ref('wwtTttGame').on('value', (snapshot) => {
-                let gameState = snapshot.val();
-                if (!gameState) return;
+
+        function resetTttGame() {
+            let newGame = { board: ['', '', '', '', '', '', '', '', ''], turn: 'X', winner: null };
+            db.ref('tictactoeGame').set(newGame);
+        }
+
+        function initFirebaseTttListener() {
+            db.ref('tictactoeGame').on('value', (snapshot) => {
+                let game = snapshot.val();
+                if (!game) return;
                 for (let i = 0; i < 9; i++) {
                     let btn = document.getElementById(`ttt-${i}`);
-                    if (btn) btn.innerText = gameState.board[i] || '';
+                    if (btn) btn.innerText = game.board[i] || '';
                 }
-                let winner = checkWinnerState(gameState.board);
-                if (winner) document.getElementById("tttStatusText").innerText = `🎉 Player ${winner} Wins!`;
-                else if (!gameState.board.includes('')) document.getElementById("tttStatusText").innerText = `🤝 It's a Draw!`;
-                else document.getElementById("tttStatusText").innerText = `Turn: Player (${gameState.turn})`;
+                let status = document.getElementById("tttStatusText");
+                if (status) {
+                    if (game.winner) {
+                        status.innerText = game.winner === 'Draw' ? "🤝 It's a Draw!" : `🎉 Winner: ${game.winner}!`;
+                    } else {
+                        status.innerText = `Turn: Player (${game.turn})`;
+                    }
+                }
             });
         }
-        function checkWinnerState(board) {
-            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            for (let w of wins) {
-                let [a,b,c] = w;
-                if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a];
-            }
-            return null;
-        }
-        function resetTttGame() { db.ref('wwtTttGame').set({ board: ['', '', '', '', '', '', '', '', ''], turn: 'X' }); }
 
-        // General Navigation & UI helpers
         function openImageZoom(imgSrc) {
             document.getElementById("zoomedImageElement").src = imgSrc;
             document.getElementById("imageZoomModal").style.display = "flex";
         }
         function closeImageZoom() { document.getElementById("imageZoomModal").style.display = "none"; }
+
         function checkAndTriggerBirthdayPopup() {
             let now = new Date();
             if (now.getMonth() === 3 && now.getDate() === 26) {
@@ -1342,12 +981,14 @@
             }
         }
         function closeBirthdayPopup() { document.getElementById("birthdayPopupModal").style.display = "none"; }
+
         function openEnvelope(title, text) {
             document.getElementById("envModalTitle").innerText = title;
             document.getElementById("envModalText").innerText = `"${text}"`;
             document.getElementById("envelopeModal").style.display = "flex";
         }
         function closeEnvelopeModal() { document.getElementById("envelopeModal").style.display = "none"; }
+
         function toggleMobileMenu() {
             let d = document.getElementById("mobileDrawer"), o = document.getElementById("mobileDrawerOverlay");
             if (d.classList.contains("open")) { d.classList.remove("open"); o.style.display = "none"; }
@@ -1366,7 +1007,10 @@
             if (modalToShow) document.getElementById(modalToShow).style.display = "flex";
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        function switchTabMobile(tabId, element, isSamvad = false, modalToShow = null) { switchTab(tabId, element, isSamvad, modalToShow); toggleMobileMenu(); }
+        function switchTabMobile(tabId, element, isSamvad = false, modalToShow = null) {
+            switchTab(tabId, element, isSamvad, modalToShow); toggleMobileMenu();
+        }
+
         function setTheme(t) { document.body.className = t; localStorage.setItem("savedWebsiteTheme", t); closeGlobalSettings(); }
         function setFont(f) { document.documentElement.style.setProperty('--font-family', f); localStorage.setItem("savedWebsiteFont", f); closeGlobalSettings(); }
         function loadSavedAppearance() {
@@ -1384,300 +1028,9 @@
             document.getElementById('settingTabBackup').style.display = (n === 'backup') ? 'block' : 'none';
         }
 
-        // IIT Bombay banner state
         const defaultIitImages = [
             { id: 1, title: "IIT Bombay 2028", subtitle: "Main Gate & Administrative Building", bg: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1400&q=80", isDefault: true },
-            { id: 2, title: "IIT Bombay Campus", subtitle: "Powai Lake View & Greenery", bg: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80", isDefault: false }
-        ];
-        function getIitImagesDb() { return JSON.parse(localStorage.getItem("wwtIitImagesDb")) || defaultIitImages; }
-        function loadRegionChartState() {
-            let list = getIitImagesDb(), def = list.find(i => i.isDefault) || list[0];
-            if (def) {
-                document.getElementById("regionChartTitle").innerText = def.title;
-                document.getElementById("regionChartSubtitle").innerText = def.subtitle;
-                document.getElementById("regionChartHeroBg").style.backgroundImage = `url('${def.bg}')`;
-            }
-        }
-        function handleRegionChartClick() {
-            let list = getIitImagesDb(), nonDefaults = list.filter(i => !i.isDefault);
-            if (nonDefaults.length > 0) {
-                let currentBg = document.getElementById("regionChartHeroBg").style.backgroundImage.slice(5, -2);
-                let currIdx = nonDefaults.findIndex(i => i.bg === currentBg), next = nonDefaults[(currIdx + 1) % nonDefaults.length];
-                document.getElementById("regionChartTitle").innerText = next.title;
-                document.getElementById("regionChartSubtitle").innerText = next.subtitle;
-                document.getElementById("regionChartHeroBg").style.backgroundImage = `url('${next.bg}')`;
-            }
-        }
-        function openRegionChartSetting() {
-            let list = getIitImagesDb(), container = document.getElementById("iitImagesListContainer");
-            container.innerHTML = "";
-            list.forEach(item => {
-                container.innerHTML += `<div class="manage-item"><img src="${item.bg}"><div class="manage-info" style="font-size:0.85rem; overflow:hidden;"><b>${item.title}</b></div><button class="btn-delete-item" onclick="deleteIitImage(${item.id})">Delete</button></div>`;
-            });
-            document.getElementById("regionChartSettingModal").style.display = "flex";
-        }
-        function closeRegionChartSetting() { document.getElementById("regionChartSettingModal").style.display = "none"; loadRegionChartState(); }
-        function deleteIitImage(id) {
-            let list = getIitImagesDb();
-            if (list.length <= 1) { alert("At least one image must remain!"); return; }
-            list = list.filter(i => i.id !== id);
-            localStorage.setItem("wwtIitImagesDb", JSON.stringify(list)); openRegionChartSetting();
-        }
-        function addNewIitBombayImage() {
-            let title = document.getElementById("newIitTitleInput").value.trim(), inp = document.getElementById("newIitImgInput");
-            if (inp.files && inp.files[0]) {
-                let r = new FileReader();
-                r.onload = function(e) {
-                    let list = getIitImagesDb(); list.push({ id: Date.now(), title: title || "Memory", subtitle: "Custom", bg: e.target.result, isDefault: false });
-                    localStorage.setItem("wwtIitImagesDb", JSON.stringify(list)); document.getElementById("newIitTitleInput").value = ""; inp.value = "";
-                    openRegionChartSetting(); alert("Image added! ✦");
-                };
-                r.readAsDataURL(inp.files[0]);
-            } else { alert("Select an image!"); }
-        }
-
-        // Roadmap & Timer
-        let timerInt = null, secLeft = 0;
-        function startTimer() {
-            if (timerInt) clearInterval(timerInt);
-            let mins = parseInt(document.getElementById("timeInput").value);
-            if (isNaN(mins) || mins <= 0) { alert("Enter valid minutes!"); return; }
-            secLeft = mins * 60;
-            timerInt = setInterval(() => {
-                if (secLeft > 0) {
-                    secLeft--;
-                    let m = String(Math.floor(secLeft / 60)).padStart(2, '0'), s = String(secLeft % 60).padStart(2, '0');
-                    document.getElementById("timeDisplay").innerText = `${m}:${s}`;
-                } else { clearInterval(timerInt); alert("Focus session completed! 🎯"); }
-            }, 1000);
-        }
-        function resetTimer() { if (timerInt) clearInterval(timerInt); secLeft = 0; document.getElementById("timeDisplay").innerText = "00:00"; }
-        function loadRoadmap() {
-            let container = document.getElementById("roadmapGridContainer"), milestones = JSON.parse(localStorage.getItem("wwtRoadmapSteps") || JSON.stringify(defaultMilestones));
-            container.innerHTML = "";
-            milestones.forEach(m => {
-                let div = document.createElement("div"); div.className = `roadmap-step ${m.done ? 'done' : ''}`;
-                div.onclick = () => toggleRoadmapStep(m.id);
-                div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><h4>${m.title}</h4><span>${m.done ? '✅' : '⏳'}</span></div><p>${m.desc}</p>`;
-                container.appendChild(div);
-            });
-        }
-        function toggleRoadmapStep(id) {
-            let milestones = JSON.parse(localStorage.getItem("wwtRoadmapSteps") || JSON.stringify(defaultMilestones));
-            milestones = milestones.map(m => { if (m.id === id) m.done = !m.done; return m; });
-            localStorage.setItem("wwtRoadmapSteps", JSON.stringify(milestones)); loadRoadmap();
-        }
-        function openRoadmapEditor() {
-            let milestones = JSON.parse(localStorage.getItem("wwtRoadmapSteps") || JSON.stringify(defaultMilestones)), box = document.getElementById("roadmapEditorInputsContainer");
-            box.innerHTML = "";
-            milestones.forEach((m, idx) => {
-                box.innerHTML += `<div style="margin-bottom:14px; background:rgba(30,41,59,0.5); padding:12px; border-radius:10px;"><input type="text" id="rmTitle_${idx}" value="${m.title}" style="width:100%; padding:8px; margin-bottom:6px; background:rgba(0,0,0,0.4); color:#fff; border-radius:6px; border:none; outline:none;"></div>`;
-            });
-            document.getElementById("roadmapEditorModal").style.display = "flex";
-        }
-        function closeRoadmapEditor() { document.getElementById("roadmapEditorModal").style.display = "none"; }
-        function saveRoadmapSteps() {
-            let milestones = JSON.parse(localStorage.getItem("wwtRoadmapSteps") || JSON.stringify(defaultMilestones));
-            for (let i = 0; i < milestones.length; i++) {
-                let t = document.getElementById(`rmTitle_${i}`).value.trim();
-                if (t) milestones[i].title = t;
-            }
-            localStorage.setItem("wwtRoadmapSteps", JSON.stringify(milestones)); loadRoadmap(); closeRoadmapEditor(); alert("Roadmap updated! ✦");
-        }
-
-        // Scratch Notes & Quotes
-        function getScratchNotesDb() { return JSON.parse(localStorage.getItem("wwtCustomScratchNotes")) || defaultScratchNotes; }
-        function initScratchCard() {
-            const canvas = document.getElementById("scratchCanvas"); const ctx = canvas.getContext("2d");
-            canvas.width = canvas.parentElement.offsetWidth; canvas.height = 140;
-            ctx.fillStyle = "#334155"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#f8fafc"; ctx.font = "bold 15px Poppins"; ctx.textAlign = "center";
-            ctx.fillText("✨ Scratch Here to Reveal Note ✨", canvas.width / 2, 75);
-            let notesList = getScratchNotesDb();
-            document.getElementById("scratchMessageText").innerText = `"${notesList[Math.floor(Math.random() * notesList.length)]}"`;
-            let isDrawing = false, scratch = (e) => {
-                if (!isDrawing) return;
-                const rect = canvas.getBoundingClientRect(), x = (e.clientX || e.touches[0].clientX) - rect.left, y = (e.clientY || e.touches[0].clientY) - rect.top;
-                ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(x, y, 24, 0, Math.PI * 2, false); ctx.fill();
-            };
-            canvas.onmousedown = () => isDrawing = true; canvas.onmouseup = () => isDrawing = false; canvas.onmousemove = scratch;
-            canvas.ontouchstart = () => isDrawing = true; canvas.ontouchend = () => isDrawing = false; canvas.ontouchmove = scratch;
-        }
-        function resetScratchCard() { initScratchCard(); }
-        function openScratchNotesManager() {
-            let modal = document.getElementById("scratchNotesManagerModal"), container = document.getElementById("scratchNotesListContainer"), notes = getScratchNotesDb();
-            container.innerHTML = "";
-            notes.forEach((note, idx) => {
-                container.innerHTML += `<div class="manage-item"><input type="text" id="scratchEdit_${idx}" value="${note}" style="width:100%; padding:6px; background:rgba(0,0,0,0.4); color:#fff; border-radius:4px; border:none; outline:none;"><button class="btn-delete-item" onclick="deleteScratchNote(${idx})">Delete</button></div>`;
-            });
-            modal.style.display = "flex";
-        }
-        function closeScratchNotesManager() {
-            let notes = [], list = getScratchNotesDb();
-            for (let i = 0; i < list.length; i++) { let el = document.getElementById(`scratchEdit_${i}`); if (el && el.value.trim()) notes.push(el.value.trim()); }
-            localStorage.setItem("wwtCustomScratchNotes", JSON.stringify(notes));
-            document.getElementById("scratchNotesManagerModal").style.display = "none"; initScratchCard(); alert("Updated! ✦");
-        }
-        function addNewScratchNote() {
-            let inp = document.getElementById("newScratchNoteInput"), val = inp.value.trim();
-            if (val) { let notes = getScratchNotesDb(); notes.push(val); localStorage.setItem("wwtCustomScratchNotes", JSON.stringify(notes)); inp.value = ""; openScratchNotesManager(); }
-        }
-        function deleteScratchNote(idx) { let notes = getScratchNotesDb(); notes.splice(idx, 1); localStorage.setItem("wwtCustomScratchNotes", JSON.stringify(notes)); openScratchNotesManager(); }
-
-        const quotesDb = [{ text: "If you want to shine like a sun, first burn like a sun.", author: "— Dr. A.P.J. Abdul Kalam", bg: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=80" }];
-        let quoteClickIdx = 0;
-        function loadDailyQuoteFromDb() {
-            let q = quotesDb[quoteClickIdx % quotesDb.length];
-            document.getElementById("dailyQuoteText").innerText = `"${q.text}"`;
-            document.getElementById("dailyQuoteAuthor").innerText = q.author;
-            document.getElementById("dailyHeroBg").style.backgroundImage = `url('${q.bg}')`;
-        }
-        function handleDailyQuoteClick() { quoteClickIdx++; loadDailyQuoteFromDb(); }
-        function openHeroSettingModal() { document.getElementById("heroSettingModal").style.display = "flex"; }
-        function closeHeroSettingModal() { document.getElementById("heroSettingModal").style.display = "none"; }
-        function saveHeroQuote() { closeHeroSettingModal(); alert("Updated! ✦"); }
-
-        function initDynamicGreeting() {
-            let hour = new Date().getHours(), sub = document.getElementById("dynamicGreetingSub");
-            if (hour >= 4 && hour < 12) sub.innerText = "Good Morning, Bhuvi ☀️"; else if (hour >= 12 && hour < 17) sub.innerText = "Good Afternoon, Bhuvi ☀️"; else sub.innerText = "Good Evening, Bhuvi 🌙";
-        }
-
-        const targetDate = new Date("May 25, 2028 00:00:00").getTime();
-        setInterval(() => {
-            let d = targetDate - new Date().getTime();
-            if (d > 0) {
-                document.getElementById("advDays").innerText = Math.floor(d / (1000 * 60 * 60 * 24));
-                document.getElementById("advHours").innerText = String(Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
-                document.getElementById("advMins").innerText = String(Math.floor((d % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-                document.getElementById("advSecs").innerText = String(Math.floor((d % (1000 * 60)) / 1000)).padStart(2, '0');
-            }
-        }, 1000);
-
-        function drawReasonFromJar() {
-            let r = ["Tumhari hard work aur focus mujhe inspire karti hai.", "IIT Bombay 2028 hum dono ka sapna hai.", "Tumhara sath hone se har tough problem aasan lagti hai."];
-            document.getElementById("jarReasonBox").innerText = `"${r[Math.floor(Math.random() * r.length)]}"`;
-        }
-
-        let currentDiarySender = "Manu";
-        function setDiarySender(n) {
-            currentDiarySender = n;
-            document.getElementById("btnDiaryManu").className = n === 'Manu' ? "sender-btn selected-sender" : "sender-btn";
-            document.getElementById("btnDiaryBhumi").className = n === 'Bhuvi' ? "sender-btn selected-sender" : "sender-btn";
-        }
-        function addDiaryNote() {
-            let t = document.getElementById("diaryMsgInput").value.trim(); if (!t) return;
-            let notes = JSON.parse(localStorage.getItem("wwtDiaryNotes") || "[]");
-            notes.unshift({ id: Date.now(), author: currentDiarySender, text: t, date: new Date().toLocaleDateString() });
-            localStorage.setItem("wwtDiaryNotes", JSON.stringify(notes)); document.getElementById("diaryMsgInput").value = ""; loadDiaryNotes();
-        }
-        function loadDiaryNotes() {
-            let grid = document.getElementById("stickyNotesGrid"), notes = JSON.parse(localStorage.getItem("wwtDiaryNotes") || "[]");
-            grid.innerHTML = notes.length === 0 ? '<div style="color:var(--text-sub); grid-column:1/-1; text-align:center;">No notes pinned yet.</div>' : '';
-            notes.forEach((n) => {
-                grid.innerHTML += `<div class="sticky-note"><div><div style="display:flex; justify-content:space-between;"><span class="sticky-author">${n.author} ✦</span><button class="btn-delete-item" onclick="deleteDiaryNote(${n.id})">×</button></div><div class="sticky-text">${n.text}</div></div><div class="sticky-date">${n.date}</div></div>`;
-            });
-        }
-        loadDiaryNotes();
-        function deleteDiaryNote(id) {
-            let notes = JSON.parse(localStorage.getItem("wwtDiaryNotes") || "[]").filter(n => n.id !== id);
-            localStorage.setItem("wwtDiaryNotes", JSON.stringify(notes)); loadDiaryNotes();
-        }
-
-        let currentViewSender = "Manu";
-        function setViewSender(n) {
-            currentViewSender = n;
-            document.getElementById("btnViewManu").className = n === 'Manu' ? "sender-btn selected-sender" : "sender-btn";
-            document.getElementById("btnViewBhumi").className = n === 'Bhuvi' ? "sender-btn selected-sender" : "sender-btn";
-        }
-        function submitView() {
-            let top = document.getElementById("viewTopic").value.trim(), txt = document.getElementById("viewText").value.trim(), imgInp = document.getElementById("viewImageInput");
-            if (!top && !txt && imgInp.files.length === 0) return;
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                let views = JSON.parse(localStorage.getItem("wwtViewsData") || "[]");
-                views.unshift({ id: Date.now(), sender: currentViewSender, topic: top, text: txt, img: imgInp.files.length > 0 ? e.target.result : null, date: new Date().toLocaleDateString() });
-                localStorage.setItem("wwtViewsData", JSON.stringify(views));
-                document.getElementById("viewTopic").value = ""; document.getElementById("viewText").value = ""; imgInp.value = "";
-                loadViewsGallery(); alert("Perspective published! ✦");
-            };
-            if (imgInp.files.length > 0) reader.readAsDataURL(imgInp.files[0]); else reader.onload();
-        }
-        function loadViewsGallery() {
-            let grid = document.getElementById("viewsGalleryContainer"), views = JSON.parse(localStorage.getItem("wwtViewsData") || "[]");
-            if (!grid) return;
-            grid.innerHTML = views.length === 0 ? '<div style="color:var(--text-sub); grid-column:1/-1; text-align:center;">No perspectives added yet.</div>' : '';
-            views.forEach(v => {
-                grid.innerHTML += `<div class="sticky-note" style="background:rgba(13,19,33,0.92); color:#fff; transform:none;"><div><div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span class="sticky-author" style="color:var(--accent-color);">${v.sender} ✦</span><button class="btn-delete-item" onclick="deleteViewItem(${v.id})">×</button></div>${v.topic ? `<b style="font-size:1.05rem; display:block; margin-bottom:6px; color:#38bdf8;">${v.topic}</b>` : ''}${v.text ? `<div class="sticky-text" style="color:#f8fafc;">${v.text}</div>` : ''}${v.img ? `<img src="${v.img}" onclick="openImageZoom('${v.img}')" style="width:100%; max-height:120px; object-fit:cover; border-radius:10px; margin-top:8px; cursor:pointer;">` : ''}</div><div class="sticky-date" style="color:var(--text-sub);">${v.date}</div></div>`;
-            });
-        }
-        function deleteViewItem(id) {
-            let views = JSON.parse(localStorage.getItem("wwtViewsData") || "[]").filter(v => v.id !== id);
-            localStorage.setItem("wwtViewsData", JSON.stringify(views)); loadViewsGallery();
-        }
-
-        function checkSamvadPassword() {
-            if (document.getElementById("samvadPassword").value.trim().toLowerCase() === "jee 2028") {
-                document.getElementById("samvadLockScreen").style.display = "none";
-                document.getElementById("samvadContentScreen").style.display = "flex";
-            } else { document.getElementById("samvadError").style.display = "block"; }
-        }
-        let currentSelectedSender = "Manu";
-        function setSender(n) {
-            currentSelectedSender = n;
-            document.getElementById("btnSenderManu").className = n === 'Manu' ? "sender-btn selected-sender" : "sender-btn";
-            document.getElementById("btnSenderBhumi").className = n === 'Bhuvi' ? "sender-btn selected-sender" : "sender-btn";
-        }
-        function handleSamvadKeydown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); dropSamvadMessage(); } }
-
-        function dropSamvadMessage() {
-            let txt = document.getElementById("samvadMsgInput").value.trim(), imgInp = document.getElementById("samvadImageInput");
-            if (!txt && imgInp.files.length === 0) return;
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                let now = new Date(), item = { id: Date.now(), sender: currentSelectedSender, text: txt, img: imgInp.files.length > 0 ? e.target.result : null, timeDisplay: now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
-                db.ref('samvadMessages').push(item);
-                document.getElementById("samvadMsgInput").value = ""; imgInp.value = "";
-            };
-            if (imgInp.files.length > 0) reader.readAsDataURL(imgInp.files[0]); else reader.onload();
-        }
-
-        function openStudyTimerBgModal() { document.getElementById("studyTimerBgModal").style.display = "flex"; }
-        function closeStudyTimerBgModal() { document.getElementById("studyTimerBgModal").style.display = "none"; }
-        function saveStudyTimerBackground() {
-            let inp = document.getElementById("studyTimerBgImgInput");
-            if (inp.files && inp.files[0]) {
-                let r = new FileReader();
-                r.onload = function(e) { document.getElementById("studyTimerProBgContainer").style.backgroundImage = `url('${e.target.result}')`; closeStudyTimerBgModal(); alert("Updated! ✦"); };
-                r.readAsDataURL(inp.files[0]);
-            }
-        }
-        function openDiaryBgModal() { document.getElementById("diaryBgModal").style.display = "flex"; }
-        function closeDiaryBgModal() { document.getElementById("diaryBgModal").style.display = "none"; }
-        function saveDiaryBackground() {
-            let inp = document.getElementById("diaryBgImgInput");
-            if (inp.files && inp.files[0]) {
-                let r = new FileReader();
-                r.onload = function(e) { document.getElementById("diaryProBgContainer").style.backgroundImage = `url('${e.target.result}')`; closeDiaryBgModal(); alert("Updated! ✦"); };
-                r.readAsDataURL(inp.files[0]);
-            }
-        }
-        function openNajriyaBgModal() { document.getElementById("najriyaBgModal").style.display = "flex"; }
-        function closeNajriyaBgModal() { document.getElementById("najriyaBgModal").style.display = "none"; }
-        function saveNajriyaBackground() {
-            let inp = document.getElementById("najriyaBgImgInput");
-            if (inp.files && inp.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) { document.getElementById("najriyaBgContainer").style.backgroundImage = `url('${e.target.result}')`; closeNajriyaBgModal(); alert("Updated! ✦"); };
-                reader.readAsDataURL(inp.files[0]);
-            }
-        }
-        function openUrgentEmailModal() { document.getElementById("urgentEmailModal").style.display = "flex"; }
-        function closeUrgentEmailModal() { document.getElementById("urgentEmailModal").style.display = "none"; }
-        function sendUrgentEmailToManu() {
-            let msg = document.getElementById("urgentEmailText").value.trim(); if (!msg) return;
-            emailjs.send('service_2cpo2rl', 'template_7mzxxft', { sender_name: 'WWT User', message: msg, to_email: 'achievetogether2030@gmail.com' })
-                .then(() => { alert("Email sent successfully! 🚀"); closeUrgentEmailModal(); });
-        }
-    </script>
-</body>
-</html>
+            { id: 2, title: "IIT Bombay Campus", subtitle: "Powai Lake View & Greenery", bg: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80", isDefault: false },
+            { id: 3, title: "IIT Bombay Academic Area", subtitle: "Lecture Hall Complex (LHC)", bg: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1400&q=80", isDefault: false },
+            { id: 4, title: "IIT Bombay Hostel Life", subtitle: "The Ultimate Student Hub", bg: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1400&q=80", isDefault: false },
+            { id: 5, title: "IIT Bombay Convocation Hall",
