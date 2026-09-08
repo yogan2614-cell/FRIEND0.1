@@ -736,20 +736,18 @@
                 initSocketCallSignaling();
                 initFirebaseTttListener();
                 loadViewsGallery();
-            } else { document.getElementById("masterErrorMsg").style.display = "block"; }
+            } else { 
+                let err = document.getElementById("masterErrorMsg");
+                if (err) err.style.display = "block"; 
+            }
         }
         function handleMasterKeydown(e) { if (e.key === 'Enter') unlockMasterApp(); }
         function closeSectionModal(id) { document.getElementById(id).style.display = "none"; }
 
-        // --- ROBUST WEBRTC AUDIO CALL FIX (APP TO BROWSER / BROWSER TO APP) ---
+        // --- REAL-TIME WEBRTC & SOCKET.IO CALL SIGNALING SYSTEM ---
         let localAudioStream = null;
         let peerConnection = null;
-        const rtcConfig = { 
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' }
-            ] 
-        };
+        const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
         function initSocketCallSignaling() {
             socket.on('incoming-call', async ({ offer, caller }) => {
@@ -793,16 +791,7 @@
             peerConnection = new RTCPeerConnection(rtcConfig);
 
             try {
-                // Audio constraints optimize kiye hain taaki mobile aur laptop ke mic properly stream catch karein
-                localAudioStream = await navigator.mediaDevices.getUserMedia({ 
-                    audio: {
-                        echoCancellation: true,
-                        noiseSuppression: true,
-                        autoGainControl: true
-                    }, 
-                    video: false 
-                });
-                
+                localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
                 localAudioStream.getTracks().forEach(track => {
                     peerConnection.addTrack(track, localAudioStream);
                 });
@@ -820,11 +809,7 @@
                     inboundStream.addTrack(event.track);
                     remoteAudio.srcObject = inboundStream;
                 }
-                remoteAudio.play().then(() => {
-                    console.log("Remote audio playing successfully");
-                }).catch(e => {
-                    console.log("Audio autoplay restricted, user interaction needed", e);
-                });
+                remoteAudio.play().catch(e => console.log("Audio play error", e));
             };
 
             peerConnection.onicecandidate = (event) => {
@@ -1004,33 +989,4 @@
                 document.getElementById("samvadNotifBadge").style.display = "none";
                 let b2 = document.getElementById("drawerNotifBadge"); if(b2) b2.style.display = "none";
             }
-            if (modalToShow) document.getElementById(modalToShow).style.display = "flex";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        function switchTabMobile(tabId, element, isSamvad = false, modalToShow = null) {
-            switchTab(tabId, element, isSamvad, modalToShow); toggleMobileMenu();
-        }
-
-        function setTheme(t) { document.body.className = t; localStorage.setItem("savedWebsiteTheme", t); closeGlobalSettings(); }
-        function setFont(f) { document.documentElement.style.setProperty('--font-family', f); localStorage.setItem("savedWebsiteFont", f); closeGlobalSettings(); }
-        function loadSavedAppearance() {
-            let st = localStorage.getItem("savedWebsiteTheme"); if (st) document.body.className = st;
-            let sf = localStorage.getItem("savedWebsiteFont"); if (sf) document.documentElement.style.setProperty('--font-family', sf);
-        }
-        loadSavedAppearance();
-        function openGlobalSettings() { document.getElementById("globalSettingsModal").style.display = "flex"; }
-        function closeGlobalSettings() { document.getElementById("globalSettingsModal").style.display = "none"; }
-        function switchSettingTab(n, b) {
-            document.querySelectorAll('.tab-menu-btn').forEach(btn => btn.classList.remove('active-tab'));
-            b.classList.add('active-tab');
-            document.getElementById('settingTabThemes').style.display = (n === 'themes') ? 'block' : 'none';
-            document.getElementById('settingTabFonts').style.display = (n === 'fonts') ? 'block' : 'none';
-            document.getElementById('settingTabBackup').style.display = (n === 'backup') ? 'block' : 'none';
-        }
-
-        const defaultIitImages = [
-            { id: 1, title: "IIT Bombay 2028", subtitle: "Main Gate & Administrative Building", bg: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1400&q=80", isDefault: true },
-            { id: 2, title: "IIT Bombay Campus", subtitle: "Powai Lake View & Greenery", bg: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80", isDefault: false },
-            { id: 3, title: "IIT Bombay Academic Area", subtitle: "Lecture Hall Complex (LHC)", bg: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1400&q=80", isDefault: false },
-            { id: 4, title: "IIT Bombay Hostel Life", subtitle: "The Ultimate Student Hub", bg: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1400&q=80", isDefault: false },
-            { id: 5, title: "IIT Bombay Convocation Hall",
+            if (modalToShow) document.getElementById(modalToShow).
