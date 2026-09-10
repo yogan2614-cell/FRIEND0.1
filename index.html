@@ -12,7 +12,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    
     <style>
+        /* ==========================================================
+           CHUNK 01: CSS VARIABLES, THEMES & GLOBAL RESETS
+           ========================================================== */
         :root { --bg-color: #080c14; --card-bg: rgba(15, 23, 42, 0.85); --text-main: #f1f5f9; --text-sub: #94a3b8; --accent-color: #f43f5e; --accent-gradient: linear-gradient(135deg, #1e1b4b, #831843); --nav-bg: rgba(15, 23, 42, 0.95); --font-family: 'Poppins', sans-serif; }
         body.theme-dark { --bg-color: #080c14; --card-bg: rgba(15, 23, 42, 0.85); --accent-color: #f43f5e; --accent-gradient: linear-gradient(135deg, #1e1b4b, #831843); --nav-bg: rgba(15, 23, 42, 0.95); }
         body.theme-emerald { --bg-color: #022c22; --card-bg: rgba(6, 78, 59, 0.85); --accent-color: #34d399; --accent-gradient: linear-gradient(135deg, #022c22, #064e3b); --nav-bg: rgba(2, 44, 34, 0.95); }
@@ -27,6 +31,9 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-family); }
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; transition: background 0.4s ease; -webkit-tap-highlight-color: transparent; }
         
+        /* ==========================================================
+           CHUNK 02: LOCK SCREENS, MODALS & OVERLAYS STYLES
+           ========================================================== */
         #appMasterLockScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #080c14; z-index: 999999; display: flex; justify-content: center; align-items: center; padding: 20px; }
         .master-lock-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.15); width: 100%; max-width: 380px; border-radius: 22px; padding: 35px 25px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.9); backdrop-filter: blur(15px); }
         .master-lock-card h2 { color: var(--accent-color); font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 8px; }
@@ -41,6 +48,9 @@
         .section-modal-card p { color: #f8fafc; font-size: 1.05rem; line-height: 1.5; font-family: 'Playfair Display', serif; font-style: italic; margin-bottom: 25px; }
         .section-modal-card button { background: var(--accent-color); color: #fff; padding: 12px 35px; border-radius: 30px; border: none; font-weight: 600; cursor: pointer; width: 100%; max-width: 200px; }
         
+        /* ==========================================================
+           CHUNK 03: NAVBAR, NAVIGATION & MOBILE DRAWER STYLES
+           ========================================================== */
         #appMainContent { display: none; flex: 1; flex-direction: column; }
         .navbar { width: 100%; background: var(--nav-bg); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; position: sticky; top: 0; z-index: 1000; }
         .nav-brand { display: flex; align-items: center; gap: 10px; }
@@ -64,6 +74,9 @@
         .drawer-item:hover, .drawer-item.active { background: var(--accent-color); color: #fff; }
         @media(max-width: 1024px) { .nav-links { display: none; } .hamburger-btn { display: flex; } }
         
+        /* ==========================================================
+           CHUNK 04: DASHBOARD, ROADMAP & SCRATCHPAD STYLES
+           ========================================================== */
         .global-setting-btn { background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
         .global-setting-btn:hover { background: var(--accent-color); }
         .main-container { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px 15px; }
@@ -105,47 +118,14 @@
         .roadmap-step h4 { font-family: 'Playfair Display', serif; font-size: 1rem; color: #fff; margin-bottom: 5px; }
         .roadmap-step p { font-size: 0.8rem; color: var(--text-sub); }
 
-        #floatingMusicPlayer { position: fixed; bottom: 20px; left: 15px; right: 15px; max-width: 340px; z-index: 5000; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--accent-color); border-radius: 30px; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
-        @media(min-width: 400px) { #floatingMusicPlayer { left: 20px; right: auto; width: auto; } }
-        .music-spin { animation: spin 4s linear infinite; display: inline-block; font-size: 1.2rem; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .diary-professional-container { width: 100%; max-width: 950px; margin: 15px auto; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.15); background-size: cover; background-position: center; padding: 25px 15px; min-height: 70vh; display: flex; flex-direction: column; }
-        @media(min-width: 768px) { .diary-professional-container { padding: 40px; } }
-        .diary-professional-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(8, 12, 20, 0.8), rgba(8, 12, 20, 0.94)); z-index: 1; }
-        .diary-content-wrapper { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; }
-        .diary-input-card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 16px; padding: 18px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        @media(min-width: 768px) { .diary-input-card { padding: 22px; } }
-        .sticky-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media(min-width: 580px) { .sticky-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media(min-width: 900px) { .sticky-grid { grid-template-columns: repeat(3, 1fr); } }
-        .sticky-note { background: #fef08a; color: #1e293b; padding: 16px; border-radius: 14px; box-shadow: 0 8px 18px rgba(0,0,0,0.4); min-height: 160px; display: flex; flex-direction: column; justify-content: space-between; position: relative; transform: rotate(-1deg); font-family: 'Playfair Display', serif; }
-        .sticky-note:nth-child(even) { background: #fed7aa; transform: rotate(1deg); }
-        .sticky-note:nth-child(3n) { background: #e9d5ff; transform: rotate(-0.5deg); }
-        .sticky-author { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #475569; }
-        .sticky-text { font-size: 1rem; line-height: 1.4; margin: 8px 0; color: #0f172a; word-wrap: break-word; }
-        .sticky-date { font-size: 0.65rem; color: #64748b; text-align: right; }
-
-        .envelope-box-section { background: rgba(15,23,42,0.85); border-radius: 16px; padding: 18px 12px; border: 1px solid rgba(244,63,94,0.3); margin-bottom: 20px; text-align: center; }
-        @media(min-width: 768px) { .envelope-box-section { padding: 20px; } }
-        .envelope-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px; }
-        @media(min-width: 580px) { .envelope-grid { grid-template-columns: repeat(4, 1fr); } }
-        .envelope-item { background: linear-gradient(135deg, #1e1b4b, #831843); border: 1px solid var(--accent-color); padding: 12px 8px; border-radius: 12px; cursor: pointer; transition: 0.2s; font-size: 0.8rem; font-weight: 600; color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align: center; }
-        .envelope-item:hover { transform: scale(1.03); background: var(--accent-color); }
-
-        .study-timer-pro-container { width: 100%; max-width: 950px; margin: 15px auto; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.85); border: 1px solid rgba(56, 189, 248, 0.4); background-size: cover; background-position: center; padding: 30px 15px; min-height: 75vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        @media(min-width: 768px) { .study-timer-pro-container { padding: 50px 30px; } }
-        .study-timer-pro-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(8, 12, 20, 0.82), rgba(8, 12, 20, 0.94)); z-index: 1; }
-        .study-timer-content { position: relative; z-index: 2; width: 100%; max-width: 650px; text-align: center; }
-        .timer-glow-display { font-size: 4.2rem; font-weight: 700; margin: 15px 0; font-family: 'Playfair Display', serif; color: #38bdf8; text-shadow: 0 0 25px rgba(56, 189, 248, 0.9); animation: multiColorGlow 7s infinite linear; }
-        @media(min-width: 768px) { .timer-glow-display { font-size: 6.5rem; margin: 25px 0; text-shadow: 0 0 35px rgba(56, 189, 248, 0.9); } }
-        @keyframes multiColorGlow { 0% { color: #38bdf8; text-shadow: 0 0 25px #38bdf8; } 14% { color: #f43f5e; text-shadow: 0 0 25px #f43f5e; } 28% { color: #34d399; text-shadow: 0 0 25px #34d399; } 42% { color: #c084fc; text-shadow: 0 0 25px #c084fc; } 57% { color: #fb923c; text-shadow: 0 0 25px #fb923c; } 71% { color: #60a5fa; text-shadow: 0 0 25px #60a5fa; } 85% { color: #facc15; text-shadow: 0 0 25px #facc15; } 100% { color: #38bdf8; text-shadow: 0 0 25px #38bdf8; } }
-
-        .reason-jar-big-container { width: 100%; max-width: 950px; margin: 20px auto; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.85); border: 1px solid rgba(244, 63, 94, 0.4); background-size: cover; background-position: center; padding: 40px 20px; min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        @media(min-width: 768px) { .reason-jar-big-container { padding: 60px 40px; } }
-        .reason-jar-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(8, 12, 20, 0.78), rgba(8, 12, 20, 0.92)); z-index: 1; }
-        .reason-jar-content { position: relative; z-index: 2; width: 100%; max-width: 650px; }
-
+        .scratch-card-box { margin-top: 25px; background: var(--card-bg); border-radius: 20px; padding: 20px 15px; text-align: center; border: 1px solid rgba(255,255,255,0.12); position: relative; overflow: hidden; }
+        .scratch-container { width: 100%; max-width: 450px; height: 130px; margin: 12px auto 0 auto; position: relative; border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, #4c1d95, #831843); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+        .hidden-message { font-family: 'Playfair Display', serif; font-size: 1rem; color: #fecdd3; font-style: italic; padding: 10px; text-align: center; }
+        .scratch-overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
+        
+        /* ==========================================================
+           CHUNK 05: ZIGZAG TIMELINE & SPECIAL DAY STYLES
+           ========================================================== */
         .special-day-container { max-width: 950px; margin: 20px auto; background: var(--card-bg); border-radius: 22px; padding: 25px 15px; border: 1px solid rgba(244,63,94,0.5); box-shadow: 0 25px 60px rgba(244,63,94,0.25); position: relative; overflow: hidden; background-image: linear-gradient(rgba(15,23,42,0.9), rgba(15,23,42,0.96)), url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center; text-align: center; }
         @media(min-width: 768px) { .special-day-container { padding: 45px; } }
         .special-day-container h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent-color); margin-bottom: 10px; text-shadow: 0 0 20px rgba(244,63,94,0.6); }
@@ -168,35 +148,9 @@
         .zigzag-shayari { font-family: 'Playfair Display', serif; font-size: 0.9rem; color: #fecdd3; font-style: italic; line-height: 1.5; margin-bottom: 10px; border-left: 3px solid var(--accent-color); padding-left: 10px; }
         .zigzag-img { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; }
 
-        .scratch-card-box { margin-top: 25px; background: var(--card-bg); border-radius: 20px; padding: 20px 15px; text-align: center; border: 1px solid rgba(255,255,255,0.12); position: relative; overflow: hidden; }
-        .scratch-container { width: 100%; max-width: 450px; height: 130px; margin: 12px auto 0 auto; position: relative; border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, #4c1d95, #831843); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
-        .hidden-message { font-family: 'Playfair Display', serif; font-size: 1rem; color: #fecdd3; font-style: italic; padding: 10px; text-align: center; }
-        .scratch-overlay-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
-        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; cursor: pointer; background: rgba(30, 41, 59, 0.6); border: 1px dashed var(--accent-color); padding: 10px 16px; border-radius: 10px; color: var(--text-main); font-size: 0.85rem; text-align: center; width: 100%; }
-        @media(min-width: 480px) { .file-upload-wrapper { width: auto; } }
-        .file-upload-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-        
-        .settings-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999998; display: none; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(10px); }
-        .settings-content { background: #0f172a; border: 1px solid rgba(255,255,255,0.15); width: 100%; max-width: 540px; border-radius: 20px; padding: 25px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto; color: #fff; }
-        .tab-menu-bar { display: flex; gap: 6px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; overflow-x: auto; }
-        .tab-menu-btn { background: none; border: none; color: var(--text-sub); font-weight: 600; font-size: 0.9rem; cursor: pointer; padding: 6px 12px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
-        .tab-menu-btn.active-tab { background: var(--accent-color); color: #fff; }
-        .theme-picker-grid, .font-picker-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 18px; }
-        @media(min-width: 480px) { .theme-picker-grid, .font-picker-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
-        .picker-option-btn { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; color: #fff; cursor: pointer; text-align: left; font-size: 0.9rem; }
-        .manage-item { display: flex; justify-content: space-between; align-items: center; background: rgba(30, 41, 59, 0.7); padding: 10px; border-radius: 10px; margin-bottom: 10px; gap: 10px; }
-        .manage-item img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
-        .btn-delete-item { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 4px 8px; font-size: 0.75rem; border-radius: 6px; cursor: pointer; flex-shrink: 0; }
-        .btn-close-modal { background: #334155; color: #fff; border: none; padding: 12px; border-radius: 10px; cursor: pointer; margin-top: 15px; width: 100%; font-weight: 600; }
-        
-        .dynamic-hero-section { width: 100%; border-radius: 20px; padding: 30px 20px; margin: 25px 0; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); text-align: center; position: relative; overflow: hidden; background-size: cover; background-position: center; }
-        @media(min-width: 768px) { .dynamic-hero-section { padding: 45px; } }
-        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 12, 20, 0.82); z-index: 1; }
-        .hero-content { position: relative; z-index: 2; }
-        .quote-slider-text { font-size: 1.1rem; color: #fecdd3; font-style: italic; max-width: 800px; margin: 0 auto; line-height: 1.5; }
-        @media(min-width: 768px) { .quote-slider-text { font-size: 1.3rem; } }
-        .quote-author { margin-top: 12px; font-weight: 600; color: #38bdf8; font-size: 0.95rem; }
-        
+        /* ==========================================================
+           CHUNK 06: SAMVAD CHAT, WEBRTC CALLS & TIC-TAC-TOE STYLES
+           ========================================================== */
         .samvad-bg-container { max-width: 1000px; margin: 15px auto; border-radius: 20px; overflow: hidden; position: relative; background: linear-gradient(rgba(8, 12, 20, 0.85), rgba(8, 12, 20, 0.95)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80') center/cover; padding: 15px; min-height: 80vh; display: flex; flex-direction: column; }
         @media(min-width: 768px) { .samvad-bg-container { padding: 35px; } }
         #samvadLockScreen { background: var(--card-bg); border-radius: 20px; padding: 40px 20px; text-align: center; margin: auto; max-width: 420px; width: 100%; }
@@ -216,10 +170,6 @@
         .call-pulsing-avatar { width: 80px; height: 80px; background: var(--accent-gradient); border: 2px solid var(--accent-color); border-radius: 50%; margin: 0 auto 18px auto; display: flex; align-items: center; justify-content: center; font-size: 2rem; animation: pulseGlow 1.5s infinite; }
         @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.6); } 70% { box-shadow: 0 0 0 20px rgba(244, 63, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); } }
         .btn-hangup { background: #ef4444; color: #fff; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 600; cursor: pointer; margin-top: 20px; font-size: 1rem; width: 100%; }
-
-        #imageZoomModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 9999999; display: none; justify-content: center; align-items: center; padding: 15px; }
-        #imageZoomModal img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
-        .close-zoom-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); color: #fff; border: none; width: 38px; height: 38px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         .urgent-email-banner { background: linear-gradient(135deg, #e11d48, #9f1239); padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
         @media(min-width: 540px) { .urgent-email-banner { flex-direction: row; justify-content: space-between; align-items: center; } }
@@ -249,10 +199,89 @@
         .sender-options-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
         .sender-btn { background: rgba(30,41,59,0.8); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; }
         .sender-btn.selected-sender { background: var(--accent-color); border-color: var(--accent-color); font-weight: 600; }
+
+        /* ==========================================================
+           CHUNK 07: STUDY TIMER, LOFI MUSIC PLAYER & REASON JAR STYLES
+           ========================================================== */
+        #floatingMusicPlayer { position: fixed; bottom: 20px; left: 15px; right: 15px; max-width: 340px; z-index: 5000; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--accent-color); border-radius: 30px; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        @media(min-width: 400px) { #floatingMusicPlayer { left: 20px; right: auto; width: auto; } }
+        .music-spin { animation: spin 4s linear infinite; display: inline-block; font-size: 1.2rem; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .study-timer-pro-container { width: 100%; max-width: 950px; margin: 15px auto; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.85); border: 1px solid rgba(56, 189, 248, 0.4); background-size: cover; background-position: center; padding: 30px 15px; min-height: 75vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        @media(min-width: 768px) { .study-timer-pro-container { padding: 50px 30px; } }
+        .study-timer-pro-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(8, 12, 20, 0.82), rgba(8, 12, 20, 0.94)); z-index: 1; }
+        .study-timer-content { position: relative; z-index: 2; width: 100%; max-width: 650px; text-align: center; }
+        .timer-glow-display { font-size: 4.2rem; font-weight: 700; margin: 15px 0; font-family: 'Playfair Display', serif; color: #38bdf8; text-shadow: 0 0 25px rgba(56, 189, 248, 0.9); animation: multiColorGlow 7s infinite linear; }
+        @media(min-width: 768px) { .timer-glow-display { font-size: 6.5rem; margin: 25px 0; text-shadow: 0 0 35px rgba(56, 189, 248, 0.9); } }
+        @keyframes multiColorGlow { 0% { color: #38bdf8; text-shadow: 0 0 25px #38bdf8; } 14% { color: #f43f5e; text-shadow: 0 0 25px #f43f5e; } 28% { color: #34d399; text-shadow: 0 0 25px #34d399; } 42% { color: #c084fc; text-shadow: 0 0 25px #c084fc; } 57% { color: #fb923c; text-shadow: 0 0 25px #fb923c; } 71% { color: #60a5fa; text-shadow: 0 0 25px #60a5fa; } 85% { color: #facc15; text-shadow: 0 0 25px #facc15; } 100% { color: #38bdf8; text-shadow: 0 0 25px #38bdf8; } }
+
+        .reason-jar-big-container { width: 100%; max-width: 950px; margin: 20px auto; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.85); border: 1px solid rgba(244, 63, 94, 0.4); background-size: cover; background-position: center; padding: 40px 20px; min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        @media(min-width: 768px) { .reason-jar-big-container { padding: 60px 40px; } }
+        .reason-jar-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(8, 12, 20, 0.78), rgba(8, 12, 20, 0.92)); z-index: 1; }
+        .reason-jar-content { position: relative; z-index: 2; width: 100%; max-width: 650px; }
+
+        /* ==========================================================
+           CHUNK 08: HAMARI DIARY & PERSPECTIVES (NAJRIYA) STYLES
+           ========================================================== */
+        .diary-professional-container { width: 100%; max-width: 950px; margin: 15px auto; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.15); background-size: cover; background-position: center; padding: 25px 15px; min-height: 70vh; display: flex; flex-direction: column; }
+        @media(min-width: 768px) { .diary-professional-container { padding: 40px; } }
+        .diary-professional-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(8, 12, 20, 0.8), rgba(8, 12, 20, 0.94)); z-index: 1; }
+        .diary-content-wrapper { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; }
+        .diary-input-card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 16px; padding: 18px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        @media(min-width: 768px) { .diary-input-card { padding: 22px; } }
+        .sticky-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media(min-width: 580px) { .sticky-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media(min-width: 900px) { .sticky-grid { grid-template-columns: repeat(3, 1fr); } }
+        .sticky-note { background: #fef08a; color: #1e293b; padding: 16px; border-radius: 14px; box-shadow: 0 8px 18px rgba(0,0,0,0.4); min-height: 160px; display: flex; flex-direction: column; justify-content: space-between; position: relative; transform: rotate(-1deg); font-family: 'Playfair Display', serif; }
+        .sticky-note:nth-child(even) { background: #fed7aa; transform: rotate(1deg); }
+        .sticky-note:nth-child(3n) { background: #e9d5ff; transform: rotate(-0.5deg); }
+        .sticky-author { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #475569; }
+        .sticky-text { font-size: 1rem; line-height: 1.4; margin: 8px 0; color: #0f172a; word-wrap: break-word; }
+        .sticky-date { font-size: 0.65rem; color: #64748b; text-align: right; }
+
+        .envelope-box-section { background: rgba(15,23,42,0.85); border-radius: 16px; padding: 18px 12px; border: 1px solid rgba(244,63,94,0.3); margin-bottom: 20px; text-align: center; }
+        @media(min-width: 768px) { .envelope-box-section { padding: 20px; } }
+        .envelope-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px; }
+        @media(min-width: 580px) { .envelope-grid { grid-template-columns: repeat(4, 1fr); } }
+        .envelope-item { background: linear-gradient(135deg, #1e1b4b, #831843); border: 1px solid var(--accent-color); padding: 12px 8px; border-radius: 12px; cursor: pointer; transition: 0.2s; font-size: 0.8rem; font-weight: 600; color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align: center; }
+        .envelope-item:hover { transform: scale(1.03); background: var(--accent-color); }
+
+        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; cursor: pointer; background: rgba(30, 41, 59, 0.6); border: 1px dashed var(--accent-color); padding: 10px 16px; border-radius: 10px; color: var(--text-main); font-size: 0.85rem; text-align: center; width: 100%; }
+        @media(min-width: 480px) { .file-upload-wrapper { width: auto; } }
+        .file-upload-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+        
+        .settings-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999998; display: none; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(10px); }
+        .settings-content { background: #0f172a; border: 1px solid rgba(255,255,255,0.15); width: 100%; max-width: 540px; border-radius: 20px; padding: 25px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto; color: #fff; }
+        .tab-menu-bar { display: flex; gap: 6px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; overflow-x: auto; }
+        .tab-menu-btn { background: none; border: none; color: var(--text-sub); font-weight: 600; font-size: 0.9rem; cursor: pointer; padding: 6px 12px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+        .tab-menu-btn.active-tab { background: var(--accent-color); color: #fff; }
+        .theme-picker-grid, .font-picker-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 18px; }
+        @media(min-width: 480px) { .theme-picker-grid, .font-picker-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+        .picker-option-btn { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; color: #fff; cursor: pointer; text-align: left; font-size: 0.9rem; }
+        .manage-item { display: flex; justify-content: space-between; align-items: center; background: rgba(30, 41, 59, 0.7); padding: 10px; border-radius: 10px; margin-bottom: 10px; gap: 10px; }
+        .manage-item img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+        .btn-delete-item { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 4px 8px; font-size: 0.75rem; border-radius: 6px; cursor: pointer; flex-shrink: 0; }
+        .btn-close-modal { background: #334155; color: #fff; border: none; padding: 12px; border-radius: 10px; cursor: pointer; margin-top: 15px; width: 100%; font-weight: 600; }
+        
+        .dynamic-hero-section { width: 100%; border-radius: 20px; padding: 30px 20px; margin: 25px 0; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); text-align: center; position: relative; overflow: hidden; background-size: cover; background-position: center; }
+        @media(min-width: 768px) { .dynamic-hero-section { padding: 45px; } }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 12, 20, 0.82); z-index: 1; }
+        .hero-content { position: relative; z-index: 2; }
+        .quote-slider-text { font-size: 1.1rem; color: #fecdd3; font-style: italic; max-width: 800px; margin: 0 auto; line-height: 1.5; }
+        @media(min-width: 768px) { .quote-slider-text { font-size: 1.3rem; } }
+        .quote-author { margin-top: 12px; font-weight: 600; color: #38bdf8; font-size: 0.95rem; }
+
+        #imageZoomModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 9999999; display: none; justify-content: center; align-items: center; padding: 15px; }
+        #imageZoomModal img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .close-zoom-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); color: #fff; border: none; width: 38px; height: 38px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body class="theme-dark">
 
+    <!-- ========================================================== -->
+    <!-- CHUNK 01: MASTER PASSCODE LOCK SCREEN                      -->
+    <!-- ========================================================== -->
     <div id="appMasterLockScreen">
         <div class="master-lock-card">
             <h2>WWT ✦ Secure App</h2>
@@ -263,6 +292,9 @@
         </div>
     </div>
 
+    <!-- ========================================================== -->
+    <!-- CHUNK 02: GLOBAL MODALS, WEBRTC CALLS & BIRTHDAY POPUP     -->
+    <!-- ========================================================== -->
     <div id="incomingCallModal">
         <div class="webrtc-call-card" style="border-color: #38bdf8;">
             <div class="call-pulsing-avatar" style="background: linear-gradient(135deg, #0369a1, #0284c7);">📞</div>
@@ -305,6 +337,9 @@
     <div id="bhuviSmileModal" class="section-custom-modal"><div class="section-modal-card"><h2>Reason Jar</h2><p>"Bhuvi muskurao jara"</p><button onclick="closeSectionModal('bhuviSmileModal')" style="margin:0 auto; display:block;">Muskura Diya 😊</button></div></div>
     <div id="diaryModal" class="section-custom-modal"><div class="section-modal-card"><h2>Hamari Diary</h2><p>"Man kar raha haina likhne ka"</p><button onclick="closeSectionModal('diaryModal')" style="margin:0 auto; display:block;">Haan bohot zyada ✍️</button></div></div>
 
+    <!-- ========================================================== -->
+    <!-- CHUNK 03: FLOATING MUSIC PLAYER                            -->
+    <!-- ========================================================== -->
     <div id="floatingMusicPlayer">
         <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
             <span class="music-spin" id="musicIcon">💿</span>
@@ -320,6 +355,9 @@
         </div>
     </div>
 
+    <!-- ========================================================== -->
+    <!-- CHUNK 04: MAIN APP CONTENT & NAVIGATION                    -->
+    <!-- ========================================================== -->
     <div id="appMainContent">
         <div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="toggleMobileMenu()"></div>
         <div class="mobile-drawer" id="mobileDrawer">
@@ -354,6 +392,8 @@
         </nav>
 
         <div class="main-container">
+            
+            <!-- SECTION A: DASHBOARD -->
             <div id="sec-dashboard" class="section active">
                 <div class="page-header"><h2>Mission IIT Bombay 2028</h2><p id="dynamicGreetingSub" style="font-size:1rem; color:var(--accent-color); font-weight:600; margin-top:4px;">Good Morning, Bhuvi ☀️</p></div>
                 <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
@@ -388,6 +428,7 @@
                 </div>
             </div>
 
+            <!-- SECTION B: SPECIAL DAY (ZIGZAG TIMELINE) -->
             <div id="sec-specialday" class="section">
                 <div class="special-day-container">
                     <h2>👑 A Special Day — Bhuvi's Birthday Journey</h2>
@@ -396,6 +437,7 @@
                 </div>
             </div>
 
+            <!-- SECTION C: NAJRIYA (PERSPECTIVES) -->
             <div id="sec-views" class="section">
                 <div class="diary-professional-container" id="najriyaBgContainer" style="background-image: url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1200&q=80');">
                     <div class="diary-professional-overlay"></div>
@@ -416,6 +458,7 @@
                 </div>
             </div>
 
+            <!-- SECTION D: SAMVAD CHAT SPACE -->
             <div id="sec-samvad" class="section">
                 <div class="samvad-bg-container">
                     <div id="samvadLockScreen">
@@ -458,6 +501,7 @@
                 </div>
             </div>
 
+            <!-- SECTION E: TIC-TAC-TOE GAME MODAL -->
             <div id="tictactoeModal">
                 <div class="section-modal-card" style="max-width:340px;">
                     <h2>🎮 Live Tic-Tac-Toe</h2>
@@ -478,6 +522,7 @@
                 </div>
             </div>
 
+            <!-- SECTION F: STUDY TIMER SANCTUARY -->
             <div id="sec-timer" class="section">
                 <div class="study-timer-pro-container" id="studyTimerProBgContainer" style="background-image: url('https://images.unsplash.com/photo-1432405972618-fb60b0ceb055?auto=format&fit=crop&w=1400&q=80');">
                     <div class="study-timer-pro-overlay"></div>
@@ -504,6 +549,7 @@
                 </div>
             </div>
 
+            <!-- SECTION G: REASON JAR -->
             <div id="sec-jar" class="section">
                 <div class="reason-jar-big-container" style="background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80');">
                     <div class="reason-jar-overlay"></div>
@@ -516,6 +562,7 @@
                 </div>
             </div>
 
+            <!-- SECTION H: HAMARI DIARY & OPEN-WHEN ENVELOPES -->
             <div id="sec-diary" class="section">
                 <div class="diary-professional-container" id="diaryProBgContainer" style="background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80');">
                     <div class="diary-professional-overlay"></div>
@@ -555,6 +602,9 @@
 
         </div>
 
+        <!-- ========================================================== -->
+        <!-- CHUNK 09: MISC SETTINGS & CONFIG MODALS                     -->
+        <!-- ========================================================== -->
         <div id="envelopeModal" onclick="closeEnvelopeModal()">
             <div class="section-modal-card" onclick="event.stopPropagation()">
                 <div style="font-size:2.5rem; margin-bottom:8px;" id="envModalIcon">💌</div>
@@ -684,7 +734,13 @@
         <audio id="globalAmbientAudio" loop style="display:none;"></audio>
     </div>
 
+    <!-- ========================================================== -->
+    <!-- CHUNK 10: JAVASCRIPT ENGINE & LOGIC                       -->
+    <!-- ========================================================== -->
     <script>
+        /* ==========================================================
+           JS PART A: INITIALIZATION & DEFAULT DATA ARRAYS
+           ========================================================== */
         const defaultMilestones = [
             { id: 1, title: "Step 1: Syllabus Foundation", desc: "Completed basic concepts.", done: true },
             { id: 2, title: "Step 2: Sample Paper Drill", desc: "Solved 5+ math sample tests.", done: true },
@@ -709,14 +765,15 @@
             { id: 12, month: "April (Birthday 👑)", shayari: "Happy Birthday Bhuvi! Ab jaldi se party do aur IIT Bombay fodte hain! 🎂🔥", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80", monthIndex: 3 }
         ];
 
-        // --- FIREBASE INITIALIZATION ---
+        /* ==========================================================
+           JS PART B: FIREBASE & SOCKET.IO CONNECTION SETUP
+           ========================================================== */
         const firebaseConfig = {
             databaseURL: "https://samvad1-86b6c-default-rtdb.firebaseio.com/"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // --- SOCKET.IO SIGNALING SERVER CONNECTION (FIXED CONNECTION & ROOM RECONNECT) ---
         const socket = io("https://sabvas2-o.onrender.com");
         socket.on('connect', () => {
             console.log("Socket connected successfully. Joining private room...");
@@ -750,7 +807,9 @@
         function handleMasterKeydown(e) { if (e.key === 'Enter') unlockMasterApp(); }
         function closeSectionModal(id) { document.getElementById(id).style.display = "none"; }
 
-        // --- REAL-TIME WEBRTC & SOCKET.IO CALL SIGNALING SYSTEM ---
+        /* ==========================================================
+           JS PART C: WEBRTC VOICE CALLS & SIGNALING LOGIC
+           ========================================================== */
         let localAudioStream = null;
         let peerConnection = null;
         const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
@@ -871,7 +930,9 @@
             document.getElementById("incomingCallModal").style.display = "none";
         }
 
-        // --- VOICE NOTE RECORDING FEATURE ---
+        /* ==========================================================
+           JS PART D: REALTIME SAMVAD CHAT, VOICE NOTES & GAMES
+           ========================================================== */
         let mediaRecorder = null, audioChunks = [];
         async function toggleVoiceRecording() {
             let btn = document.getElementById("recordVoiceBtn");
@@ -903,12 +964,10 @@
             }
         }
 
-        // --- MESSAGE REACTIONS FEATURE ---
         function addReaction(msgFirebaseKey, emoji) {
             db.ref(`samvadMessages/${msgFirebaseKey}/reactions`).set(emoji);
         }
 
-        // --- REAL-TIME MULTIPLAYER TIC-TAC-TOE GAME ---
         function openTicTacToeModal() { document.getElementById("tictactoeModal").style.display = "flex"; }
         function closeTicTacToeModal() { document.getElementById("tictactoeModal").style.display = "none"; }
 
@@ -940,7 +999,7 @@
         }
 
         function initFirebaseTttListener() {
-            db.ref('tictactoeGame').off('value'); // Prevent duplicate triggers / memory leaks
+            db.ref('tictactoeGame').off('value');
             db.ref('tictactoeGame').on('value', (snapshot) => {
                 let game = snapshot.val();
                 if (!game) return;
@@ -1078,6 +1137,9 @@
             } else { alert("Select an image!"); }
         }
 
+        /* ==========================================================
+           JS PART E: STUDY TIMER, LOFI MUSIC PLAYER & AUDIO ENGINE
+           ========================================================== */
         const studyTracksList = [
             { name: "Gentle Rain Lofi", src: "https://assets.mixkit.co/active_storage/sfx/1255/1255-preview.mp3" },
             { name: "Forest Wind", src: "https://assets.mixkit.co/active_storage/sfx/2653/2653-preview.mp3" },
@@ -1144,6 +1206,9 @@
             } catch(e) {}
         }
 
+        /* ==========================================================
+           JS PART F: ROADMAP, ZIGZAG TIMELINE & SCRATCHPAD
+           ========================================================== */
         function loadRoadmap() {
             let container = document.getElementById("roadmapGridContainer"), milestones = JSON.parse(localStorage.getItem("wwtRoadmapSteps") || JSON.stringify(defaultMilestones));
             container.innerHTML = "";
@@ -1259,7 +1324,7 @@
             let isDrawing = false;
             let scratch = (e) => {
                 if (!isDrawing) return;
-                if (e.cancelable) e.preventDefault(); // Fixed mobile scroll bug while scratching
+                if (e.cancelable) e.preventDefault();
                 const rect = canvas.getBoundingClientRect();
                 const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
                 const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
@@ -1298,6 +1363,9 @@
         }
         function deleteScratchNote(idx) { let notes = getScratchNotesDb(); notes.splice(idx, 1); localStorage.setItem("wwtCustomScratchNotes", JSON.stringify(notes)); openScratchNotesManager(); }
 
+        /* ==========================================================
+           JS PART G: DIARY, PERSPECTIVES (NAJRIYA) & REASON JAR
+           ========================================================== */
         const quotesDb = [{ text: "If you want to shine like a sun, first burn like a sun.", author: "— Dr. A.P.J. Abdul Kalam", bg: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=80" }, { text: "The future belongs to those who believe in the beauty of their dreams.", author: "— Eleanor Roosevelt", bg: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80" }];
         let quoteClickIdx = 0;
         function loadDailyQuoteFromDb() {
@@ -1369,7 +1437,6 @@
             localStorage.setItem("wwtDiaryNotes", JSON.stringify(notes)); loadDiaryNotes();
         }
 
-        // --- NAJRIYA / PERSPECTIVES SYSTEM ---
         let currentViewSender = "Manu";
         function setViewSender(n) {
             currentViewSender = n;
@@ -1421,7 +1488,6 @@
         }
         function handleSamvadKeydown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); dropSamvadMessage(); } }
         
-        // --- FIREBASE REALTIME CHAT FUNCTIONS (FIXED LISTENER MEMORY LEAK) ---
         function dropSamvadMessage() {
             let txt = document.getElementById("samvadMsgInput").value.trim(), imgInp = document.getElementById("samvadImageInput");
             if (!txt && imgInp.files.length === 0) return;
@@ -1435,7 +1501,7 @@
         }
 
         function initFirebaseSamvadListener() {
-            db.ref('samvadMessages').off('value'); // Prevent duplicate listener stacking & memory leaks
+            db.ref('samvadMessages').off('value');
             db.ref('samvadMessages').on('value', (snapshot) => {
                 let stream = document.getElementById("samvadMessagesList");
                 if (!stream) return;
