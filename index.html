@@ -312,7 +312,7 @@
             <div class="call-pulsing-avatar">🎙️</div>
             <h3 style="color:var(--accent-color); font-family:'Playfair Display',serif; font-size:1.4rem; margin-bottom:8px;">Live Voice Call</h3>
             <p style="color:var(--text-sub); font-size:0.85rem; margin-bottom:15px;" id="callStatusText">Connecting direct audio channel...</p>
-            <audio id="remoteAudioStream" autoplay controls playsinline style="width: 100%; margin-bottom: 12px;"></audio>
+            <audio id="remoteAudioStream" autoplay controls playsinline style="width: 100%; margin-bottom: 12px;" onclick="this.play()"></audio>
             <button class="btn-hangup" onclick="endWebRtcCall()">End Call ❌</button>
         </div>
     </div>
@@ -1500,48 +1500,73 @@
             if (imgInp.files.length > 0) reader.readAsDataURL(imgInp.files[0]); else reader.onload();
         }
 
+        // --- FIXED FIREBASE SAMVAD LISTENER & DATE FILTER ---
+        let allSamvadMessagesCache = {};
+
         function initFirebaseSamvadListener() {
             db.ref('samvadMessages').off('value');
             db.ref('samvadMessages').on('value', (snapshot) => {
-                let stream = document.getElementById("samvadMessagesList");
-                if (!stream) return;
-                stream.innerHTML = "";
-                let data = snapshot.val();
-                if (!data) {
-                    stream.innerHTML = '<div style="color:var(--text-sub); text-align:center; margin:auto;">No chats yet. Say hello! 💌</div>';
-                    return;
-                }
-                Object.entries(data).forEach(([key, m]) => {
-                    let isRight = m.sender.toLowerCase().includes('bhuvi') || m.sender.toLowerCase().includes('bhumi');
-                    let contentHtml = '';
-                    if (m.text) contentHtml += `<div class="chat-text">${m.text}</div>`;
-                    if (m.img) contentHtml += `<img src="${m.img}" onclick="openImageZoom('${m.img}')" title="Click to view full screen">`;
-                    if (m.audioUrl) contentHtml += `<audio controls src="${m.audioUrl}" style="width:100%; max-height:40px; margin-top:6px;"></audio>`;
-                    
-                    let reactionsHtml = m.reactions ? `<span style="font-size:0.8rem; background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:10px; margin-top:4px; display:inline-block;">${m.reactions}</span>` : '';
-                    
-                    stream.innerHTML += `
-                        <div class="chat-bubble ${isRight ? 'chat-right' : 'chat-left'}">
-                            <button class="btn-tiny-delete" onclick="deleteFirebaseMsg('${m.id}')">×</button>
-                            <div class="chat-sender">${m.sender}</div>
-                            ${contentHtml}
-                            ${reactionsHtml}
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
-                                <div style="display:flex; gap:4px; font-size:0.75rem;">
-                                    <span style="cursor:pointer;" onclick="addReaction('${key}', '❤️')">❤️</span>
-                                    <span style="cursor:pointer;" onclick="addReaction('${key}', '🔥')">🔥</span>
-                                    <span style="cursor:pointer;" onclick="addReaction('${key}', '😂')">😂</span>
-                                </div>
-                                <div class="chat-footer" style="font-size:0.65rem; color:var(--text-sub);">${m.timeDisplay}</div>
-                            </div>
-                        </div>`;
-                });
-                stream.scrollTop = stream.scrollHeight;
+                allSamvadMessagesCache = snapshot.val() || {};
+                renderFilteredSamvadMessages(allSamvadMessagesCache);
             });
         }
 
-        function loadSamvadMessagesFromFirebase() {}
-        function clearDateFilter() { loadSamvadMessagesFromFirebase(); }
+        function loadSamvadMessagesFromFirebase() {
+            let selectedDateVal = document.getElementById("calendarFilter").value;
+            if (!selectedDateVal) {
+                renderFilteredSamvadMessages(allSamvadMessagesCache);
+                return;
+            }
+            let filteredData = {};
+            Object.entries(allSamvadMessagesCache).forEach(([key, m]) => {
+                let msgDateStr = new Date(m.id).toISOString().split('T')[0];
+                if (msgDateStr === selectedDateVal) {
+                    filteredData[key] = m;
+                }
+            });
+            renderFilteredSamvadMessages(filteredData);
+        }
+
+        function clearDateFilter() {
+            document.getElementById("calendarFilter").value = "";
+            renderFilteredSamvadMessages(allSamvadMessagesCache);
+        }
+
+        function renderFilteredSamvadMessages(data) {
+            let stream = document.getElementById("samvadMessagesList");
+            if (!stream) return;
+            stream.innerHTML = "";
+            if (!data || Object.keys(data).length === 0) {
+                stream.innerHTML = '<div style="color:var(--text-sub); text-align:center; margin:auto;">No chats found. 💌</div>';
+                return;
+            }
+            Object.entries(data).forEach(([key, m]) => {
+                let isRight = m.sender.toLowerCase().includes('bhuvi') || m.sender.toLowerCase().includes('bhumi');
+                let contentHtml = '';
+                if (m.text) contentHtml += `<div class="chat-text">${m.text}</div>`;
+                if (m.img) contentHtml += `<img src="${m.img}" onclick="openImageZoom('${m.img}')" title="Click to view full screen">`;
+                if (m.audioUrl) contentHtml += `<audio controls src="${m.audioUrl}" style="width:100%; max-height:40px; margin-top:6px;"></audio>`;
+                
+                let reactionsHtml = m.reactions ? `<span style="font-size:0.8rem; background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:10px; margin-top:4px; display:inline-block;">${m.reactions}</span>` : '';
+                
+                stream.innerHTML += `
+                    <div class="chat-bubble ${isRight ? 'chat-right' : 'chat-left'}">
+                        <button class="btn-tiny-delete" onclick="deleteFirebaseMsg('${m.id}')">×</button>
+                        <div class="chat-sender">${m.sender}</div>
+                        ${contentHtml}
+                        ${reactionsHtml}
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                            <div style="display:flex; gap:4px; font-size:0.75rem;">
+                                <span style="cursor:pointer;" onclick="addReaction('${key}', '❤️')">❤️</span>
+                                <span style="cursor:pointer;" onclick="addReaction('${key}', '🔥')">🔥</span>
+                                <span style="cursor:pointer;" onclick="addReaction('${key}', '😂')">😂</span>
+                            </div>
+                            <div class="chat-footer" style="font-size:0.65rem; color:var(--text-sub);">${m.timeDisplay}</div>
+                        </div>
+                    </div>`;
+            });
+            stream.scrollTop = stream.scrollHeight;
+        }
 
         function deleteFirebaseMsg(id) {
             db.ref('samvadMessages').orderByChild('id').equalTo(Number(id)).once('value', (snapshot) => {
