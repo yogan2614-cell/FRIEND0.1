@@ -716,9 +716,15 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // --- SOCKET.IO SIGNALING SERVER CONNECTION ---
+        // --- SOCKET.IO SIGNALING SERVER CONNECTION (FIXED CONNECTION & ROOM RECONNECT) ---
         const socket = io("https://sabvas2-o.onrender.com");
-        socket.emit('join-room', 'wwt-private-room-2028');
+        socket.on('connect', () => {
+            console.log("Socket connected successfully. Joining private room...");
+            socket.emit('join-room', 'wwt-private-room-2028');
+        });
+        socket.on('disconnect', () => {
+            console.log("Socket disconnected. Attempting to reconnect...");
+        });
 
         function unlockMasterApp() {
             let val = document.getElementById("masterPassInput").value.trim();
@@ -934,6 +940,7 @@
         }
 
         function initFirebaseTttListener() {
+            db.ref('tictactoeGame').off('value'); // Prevent duplicate triggers / memory leaks
             db.ref('tictactoeGame').on('value', (snapshot) => {
                 let game = snapshot.val();
                 if (!game) return;
@@ -1082,7 +1089,8 @@
         function playPresetSong(src, name, btn) {
             let audio = document.getElementById("globalAmbientAudio");
             document.querySelectorAll('.btn-ambient').forEach(b => b.classList.remove('active-ambient'));
-            audio.src = src; audio.play().catch(e => console.log(e));
+            audio.src = src; 
+            audio.play().catch(e => console.log("Audio play blocked/failed:", e));
             if (btn) btn.classList.add('active-ambient');
             document.getElementById("currentTrackTitle").innerText = name;
             document.getElementById("trackStatus").innerText = "Playing 🎵";
@@ -1097,7 +1105,7 @@
             let audio = document.getElementById("globalAmbientAudio"), btn = document.getElementById("floatingPlayBtn"), status = document.getElementById("trackStatus");
             if (!isMusicPlaying) {
                 if (!audio.src) audio.src = studyTracksList[0].src;
-                audio.play().catch(e => console.log(e));
+                audio.play().catch(e => console.log("Audio play blocked/failed:", e));
                 btn.innerText = "❚❚"; status.innerText = "Playing 🎵"; isMusicPlaying = true;
             } else { audio.pause(); btn.innerText = "▶"; status.innerText = "Paused"; isMusicPlaying = false; }
         }
@@ -1247,13 +1255,27 @@
             ctx.fillText("✨ Scratch Here to Reveal Note ✨", canvas.width / 2, 70);
             let notesList = getScratchNotesDb();
             document.getElementById("scratchMessageText").innerText = `"${notesList[Math.floor(Math.random() * notesList.length)]}"`;
-            let isDrawing = false, scratch = (e) => {
+            
+            let isDrawing = false;
+            let scratch = (e) => {
                 if (!isDrawing) return;
-                const rect = canvas.getBoundingClientRect(), x = (e.clientX || e.touches[0].clientX) - rect.left, y = (e.clientY || e.touches[0].clientY) - rect.top;
-                ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(x, y, 22, 0, Math.PI * 2, false); ctx.fill();
+                if (e.cancelable) e.preventDefault(); // Fixed mobile scroll bug while scratching
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+                const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+                const x = clientX - rect.left, y = clientY - rect.top;
+                
+                ctx.globalCompositeOperation = 'destination-out'; 
+                ctx.beginPath(); 
+                ctx.arc(x, y, 22, 0, Math.PI * 2, false); 
+                ctx.fill();
             };
-            canvas.onmousedown = () => isDrawing = true; canvas.onmouseup = () => isDrawing = false; canvas.onmousemove = scratch;
-            canvas.ontouchstart = () => isDrawing = true; canvas.ontouchend = () => isDrawing = false; canvas.ontouchmove = scratch;
+            canvas.onmousedown = () => isDrawing = true; 
+            canvas.onmouseup = () => isDrawing = false; 
+            canvas.onmousemove = scratch;
+            canvas.ontouchstart = () => isDrawing = true; 
+            canvas.ontouchend = () => isDrawing = false; 
+            canvas.ontouchmove = scratch;
         }
         function resetScratchCard() { initScratchCard(); }
         function openScratchNotesManager() {
@@ -1399,7 +1421,7 @@
         }
         function handleSamvadKeydown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); dropSamvadMessage(); } }
         
-        // --- FIREBASE REALTIME CHAT FUNCTIONS ---
+        // --- FIREBASE REALTIME CHAT FUNCTIONS (FIXED LISTENER MEMORY LEAK) ---
         function dropSamvadMessage() {
             let txt = document.getElementById("samvadMsgInput").value.trim(), imgInp = document.getElementById("samvadImageInput");
             if (!txt && imgInp.files.length === 0) return;
@@ -1413,6 +1435,7 @@
         }
 
         function initFirebaseSamvadListener() {
+            db.ref('samvadMessages').off('value'); // Prevent duplicate listener stacking & memory leaks
             db.ref('samvadMessages').on('value', (snapshot) => {
                 let stream = document.getElementById("samvadMessagesList");
                 if (!stream) return;
